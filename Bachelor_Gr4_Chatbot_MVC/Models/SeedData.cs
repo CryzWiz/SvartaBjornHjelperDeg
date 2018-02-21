@@ -26,6 +26,11 @@ public class SeedData
         {
             await CreateRolesAsync(context, roleManager);
         }
+
+        if(!context.Users.Any())
+        {
+            await CreateAdminAsync(context, userManager);
+        }
     }
 
     /// <summary>
@@ -38,6 +43,32 @@ public class SeedData
     {
         await roleManager.CreateAsync(new IdentityRole(AdminRole));
         await roleManager.CreateAsync(new IdentityRole(ChatEmployeeRole));
+        await context.SaveChangesAsync();
+    }
+
+
+    /// <summary>
+    /// Creates an admin for the system
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="userManager"></param>
+    /// <returns></returns>
+    private static async Task CreateAdminAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    {
+        var admin = new ApplicationUser
+        {
+            UserName = "admin@nk.no",
+            Email = "admin@nk.no",
+            IsActive = true
+        };
+        string password = userManager.PasswordHasher.HashPassword(admin, "Password1");
+        admin.PasswordHash = password;
+        
+        await userManager.CreateAsync(admin);
+        await context.SaveChangesAsync();
+
+        //await userManager.AddToRoleAsync(admin, AdminRole);
+        //await context.SaveChangesAsync();
     }
 
 

@@ -11,7 +11,7 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180221080621_Initial")]
+    [Migration("20180221101224_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("IsActive");
 
                     b.Property<bool>("LockoutEnabled");
 

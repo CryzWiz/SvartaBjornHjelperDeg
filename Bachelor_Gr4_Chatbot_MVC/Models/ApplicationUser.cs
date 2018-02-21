@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models
 {
-    // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        // Indicates if the account is active. If not, it should not be possible to log in. 
+        public bool IsActive { get; set; }
     }
 }
