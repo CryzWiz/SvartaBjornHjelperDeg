@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Bachelor_Gr4_Chatbot_MVC.Data.Migrations
+namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180221162603_test mysql")]
-    partial class testmysql
+    [Migration("20180221174459_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
