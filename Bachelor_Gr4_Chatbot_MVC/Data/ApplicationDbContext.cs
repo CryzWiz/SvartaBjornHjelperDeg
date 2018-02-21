@@ -10,6 +10,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
+       /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseMySql(@"Server=allanarnesen.com;database=bachelor_gr4_chatbot;uid=benedicte; pwd=nhykgnsyej2");*/
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
