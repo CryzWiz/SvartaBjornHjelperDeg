@@ -67,8 +67,8 @@ public class SeedData
         await userManager.CreateAsync(admin);
         await context.SaveChangesAsync();
 
-        //await userManager.AddToRoleAsync(admin, AdminRole);
-        //await context.SaveChangesAsync();
+        await userManager.AddToRoleAsync(admin, AdminRole);
+        await context.SaveChangesAsync();
     }
 
 
