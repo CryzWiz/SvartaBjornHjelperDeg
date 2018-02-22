@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Bachelor_Gr4_Chatbot_MVC.Data;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Services;
+using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 
 namespace Bachelor_Gr4_Chatbot_MVC
 {
@@ -38,7 +39,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddTransient<IAdminRepository, EFAdminRepository>();
             services.AddMvc();
         }
 
