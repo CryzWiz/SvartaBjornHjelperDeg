@@ -30,6 +30,7 @@ public class SeedData
         if(!context.Users.Any())
         {
             await CreateAdminAsync(context, userManager);
+            await CreateUserAsync(context, userManager);
         }
     }
 
@@ -68,6 +69,46 @@ public class SeedData
         await context.SaveChangesAsync();
 
         await userManager.AddToRoleAsync(admin, AdminRole);
+        await context.SaveChangesAsync();
+    }
+
+
+    /// <summary>
+    /// Creates two users for the system
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="userManager"></param>
+    /// <returns></returns>
+    private static async Task CreateUserAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    {
+        var user = new ApplicationUser
+        {
+            UserName = "user1@nk.no",
+            Email = "user1@nk.no",
+            IsActive = true
+        };
+        string password = userManager.PasswordHasher.HashPassword(user, "Password1");
+        user.PasswordHash = password;
+
+        await userManager.CreateAsync(user);
+        await context.SaveChangesAsync();
+
+        await userManager.AddToRoleAsync(user, ChatEmployeeRole);
+        await context.SaveChangesAsync();
+
+        var user2 = new ApplicationUser
+        {
+            UserName = "user2@nk.no",
+            Email = "user2@nk.no",
+            IsActive = true
+        };
+        string password2 = userManager.PasswordHasher.HashPassword(user2, "Password2");
+        user2.PasswordHash = password2;
+
+        await userManager.CreateAsync(user2);
+        await context.SaveChangesAsync();
+
+        await userManager.AddToRoleAsync(user2, ChatEmployeeRole);
         await context.SaveChangesAsync();
     }
 
