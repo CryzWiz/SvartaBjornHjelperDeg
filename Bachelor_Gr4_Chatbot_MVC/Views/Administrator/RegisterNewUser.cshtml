@@ -1,8 +1,7 @@
-﻿
+﻿@model RegisterNewUserViewModel
 @{
     ViewData["Title"] = "Register New User";
 }
-
 <div id="wrapper">
 
     @await Html.PartialAsync("_Navbar_admin")
@@ -16,16 +15,19 @@
                     <h1 class="page-header">Registrer ny bruker</h1>
 
                     <div class="col-lg-6">
-                        <form role="form">
+                        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
                             <div class="form-group">
-                                <label>Epost</label>
-                                <input class="form-control">
-                                <p class="help-block">Brukerens epost</p>
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label>Navn</label>
-                                <input class="form-control">
-                                <p class="help-block">Brukerens navn.</p>
+                                <label asp-for="FirstName"></label>
+                                <input asp-for="FirstName" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="LastName"></label>
+                                <input asp-for="LastName" class="form-control" />
                             </div>
                             <button type="submit" class="btn btn-default">Registrer bruker</button>
                         </form>
