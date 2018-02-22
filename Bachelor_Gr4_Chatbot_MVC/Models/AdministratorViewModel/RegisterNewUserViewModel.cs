@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bachelor_Gr4_Chatbot_MVC.Models
+namespace Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModels
 {
 
     public class RegisterNewUserViewModel
@@ -21,7 +21,5 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         [Required]
         [Display(Name = "Etternavn")]
         public string LastName { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }

@@ -7,8 +7,10 @@ using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Bachelor_Gr4_Chatbot_MVC.Models.AccountViewModels;
+using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModels;
 using Microsoft.AspNetCore.Identity;
 using Bachelor_Gr4_Chatbot_MVC.Services;
+
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -72,7 +74,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
         public ActionResult RegisterNewUser(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -82,7 +83,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -93,15 +93,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
                 if(result.Succeeded)
                 {
+                    TempData["success"] = String.Format("Bruker ble opprettet for {0} {1}.", model.FirstName, model.LastName);
                     // Email example from AccountController: 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("RegisterNewUser");
                 }
             }
 
             // Something went wrong, show form again
+            TempData["error"] = "Feil under oppretting av bruker.";
             return View(model);
         }
 
