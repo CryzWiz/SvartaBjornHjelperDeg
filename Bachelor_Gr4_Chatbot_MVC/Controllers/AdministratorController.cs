@@ -21,19 +21,21 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        //S
         [HttpGet]
-        public ActionResult Users()
+        public async Task<ActionResult> Users()
         {
             ViewData["Message"] = "User page.";
-            var u = repository.GetAllUsers();
+            var u = await repository.GetAllUsers();
             return View(u);
         }
 
         [HttpGet]
-        public ActionResult ManageUser(string username)
+        public async Task<ActionResult> ManageUser(string username)
         {
             ViewData["Message"] = "Manage User Page." + username;
-            User u = repository.GetUser(username);
+            // ViewData just used for debugging.. Can be deleted, Not used!
+            User u = await repository.GetUser(username);
             return View(u);
         }
 
@@ -41,7 +43,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public ActionResult Register_New_User()
         {
             ViewData["Message"] = "Register new user page";
-
+            // ViewData just used for debugging.. Can be deleted, Not used!
             return View();
         }
     }

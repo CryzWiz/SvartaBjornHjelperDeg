@@ -19,23 +19,32 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             manager = userManager;
         }
 
-        public List<User> GetAllUsers()
+        /// <summary>
+        /// Fetch all the users in the database and store the information we want to
+        /// display as a User in a List<User>
+        /// </summary>
+        /// <returns>All users</returns>
+        public async Task<List<User>> GetAllUsers()
         {
             //return await manager.Users.ToListAsync();
-            var r = (from u in manager.Users
-
-                                         select new User
-                                         {
-                                             Email = u.Email,
-                                             Username = u.UserName,
-                                             Active = u.IsActive
-                                         }).ToList();
+            var r = await (from u in manager.Users
+                           select new User
+                           {
+                               Email = u.Email,
+                               Username = u.UserName,
+                               Active = u.IsActive
+                           }).ToListAsync();
             return r;
         }
 
-        public User GetUser(String username)
+        /// <summary>
+        /// Fetch all the user with the given username
+        /// </summary>
+        /// <paramref name="username"/></param>
+        /// <returns>One User</returns>
+        public async Task<User> GetUser(String username)
         {
-            var u = manager.Users.FirstOrDefault(X => X.Email == username);
+            var u = await Task.Run(() => manager.Users.FirstOrDefault(X => X.Email == username));
             if(u != null)
             {
                 User user = new User();
