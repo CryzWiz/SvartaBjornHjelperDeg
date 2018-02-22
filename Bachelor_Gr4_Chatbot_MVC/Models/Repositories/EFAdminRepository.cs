@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 {
+    /// <summary>
+    /// Repository for Administrator functions -> Database access and management
+    /// </summary>
     public class EFAdminRepository : IAdminRepository
     {
         private ApplicationDbContext db;
