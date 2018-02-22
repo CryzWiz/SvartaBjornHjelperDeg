@@ -71,7 +71,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
-        //[ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public ActionResult RegisterNewUser(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -80,6 +81,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
