@@ -7,6 +7,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 {
     public interface IAdminRepository
     {
-        List<User> GetAllUsers();
+        Task<List<User>> GetAllUsers();
+        Task<User> GetUser(String username);
     }
 }
