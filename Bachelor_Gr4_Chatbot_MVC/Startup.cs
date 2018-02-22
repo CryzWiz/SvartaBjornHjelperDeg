@@ -29,13 +29,19 @@ namespace Bachelor_Gr4_Chatbot_MVC
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             //services.AddDbContext<ApplicationDbContext>(options =>
             //  options.UseMySql(Configuration.GetConnectionString("AllanConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                // Require users to confirm email
+                config.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            // Options
+            services.Configure<EmailSenderOptions>(Configuration);
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();

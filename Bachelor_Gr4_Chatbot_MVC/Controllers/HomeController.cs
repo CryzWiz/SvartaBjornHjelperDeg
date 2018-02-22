@@ -5,11 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bachelor_Gr4_Chatbot_MVC.Models;
+using Bachelor_Gr4_Chatbot_MVC.Services;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
     public class HomeController : Controller
     {
+        IEmailSender _emailSender;
+        public HomeController(IEmailSender emailSender)
+        {
+            this._emailSender = emailSender;
+        }
+
         public IActionResult Index()
         {
             return View();
