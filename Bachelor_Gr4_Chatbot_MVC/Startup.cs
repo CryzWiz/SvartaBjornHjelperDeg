@@ -30,7 +30,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             //services.AddDbContext<ApplicationDbContext>(options =>
-              //  options.UseMySql(Configuration.GetConnectionString("AllanConnection")));
+            //  options.UseMySql(Configuration.GetConnectionString("AllanConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

@@ -26,5 +26,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
             return View();
         }
+
+        public IActionResult Register_New_User()
+        {
+            ViewData["Message"] = "Register new user page";
+
+            return View();
+        }
     }
 }
