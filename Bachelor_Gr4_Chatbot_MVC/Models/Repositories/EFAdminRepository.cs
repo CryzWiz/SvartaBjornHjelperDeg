@@ -32,5 +32,23 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                                          }).ToList();
             return r;
         }
+
+        public User GetUser(String username)
+        {
+            var u = manager.Users.FirstOrDefault(X => X.Email == username);
+            if(u != null)
+            {
+                User user = new User();
+                user.Active = u.IsActive;
+                user.Email = u.Email;
+                user.Username = u.UserName;
+                return user;
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
     }
 }

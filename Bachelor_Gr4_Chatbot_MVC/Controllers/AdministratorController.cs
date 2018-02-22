@@ -30,11 +30,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
-        public ActionResult ManageUser()
+        public ActionResult ManageUser(string username)
         {
-            ViewData["Message"] = "Manage User Page.";
-
-            return View();
+            ViewData["Message"] = "Manage User Page." + username;
+            User u = repository.GetUser(username);
+            return View(u);
         }
 
         [HttpGet]

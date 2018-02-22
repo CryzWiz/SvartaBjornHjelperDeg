@@ -3,7 +3,7 @@
     ViewData["Title"] = "Users";
 }
 
-
+<h3>@ViewData["Message"]</h3>
 <div id="wrapper">
 
     @await Html.PartialAsync("_Navbar_admin")
@@ -81,7 +81,8 @@
                                                     @Html.ActionLink(" Delete", "DeleteBlog", new { id = item.BlogId })
 
                                                 }*@
-                                                <a asp-area="" asp-controller="Administrator" asp-action="ManageUser">Behandle</a>
+                                                @Html.ActionLink("Behandle ", "ManageUser", new { username = item.Username })
+                                                @*<a asp-area="" asp-controller="Administrator" asp-action="ManageUser">Behandle</a>*@
 
                                             </td>
                                         </tr>
