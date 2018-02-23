@@ -93,11 +93,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
                 if(result.Succeeded)
                 {
-                    TempData["success"] = String.Format("Bruker ble opprettet for {0} {1}.", model.FirstName, model.LastName);
+                    TempData["success"] = String.Format("Bruker ble opprettet for {0} {1} og e-post med instrukser for fullføring av registreringen er sendt til {2}.", model.FirstName, model.LastName, model.Email);
                     // Email example from AccountController: 
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
                     return RedirectToAction("RegisterNewUser");
                 }
             }
