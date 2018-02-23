@@ -329,7 +329,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(nameof(ExternalLogin), model);
         }
 
-        [HttpGet]
+
+        /*[HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -344,11 +345,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
-        }
+        }*/
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailAndSetPassword(string userId, string code)
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
             {
@@ -357,7 +358,32 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userId}'.");
+                TempData["error"] = String.Format("Finner ikke bruker med id: {0} ", userId);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if(user.PasswordHash == null)
+            {
+                TempData["error"] = String.Format("Passord er ikke satt");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> SetPassword(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+    
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                TempData["error"] = String.Format("Finner ikke bruker med id: {0} ", userId);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
