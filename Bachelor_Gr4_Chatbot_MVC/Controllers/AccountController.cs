@@ -362,30 +362,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            if(user.PasswordHash == null)
+            if(result.Succeeded)
             {
-                TempData["error"] = String.Format("Passord er ikke satt");
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                // Set password if not already set
+                if (user.PasswordHash == null)
+                {
+                    await _signInManager.SignInAsync(user, false);
+                    TempData["error"] = String.Format("Du må sette passord");
+                    return RedirectToAction(nameof(ManageController.SetPassword), "Manage");
+                }
             }
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
-        }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> SetPassword(string userId, string code)
-        {
-            if (userId == null || code == null)
-            {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
-    
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                TempData["error"] = String.Format("Finner ikke bruker med id: {0} ", userId);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
