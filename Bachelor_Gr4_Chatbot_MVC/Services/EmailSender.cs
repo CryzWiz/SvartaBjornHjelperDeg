@@ -13,17 +13,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
     // This class is based upon https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
-        public EmailSender(IOptions<EmailSenderOptions> options)
+        public EmailSender(IOptions<EmailSenderOptions> emailSenderOptions)
         {
-            Options = options.Value;
+            EmailSenderOptions = emailSenderOptions.Value;
         }
 
-        public EmailSenderOptions Options { get; set; }
-
+        public EmailSenderOptions EmailSenderOptions { get; set; }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute(Options.APIKey, subject, message, email);
+            return Execute(EmailSenderOptions.APIKey, subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
@@ -31,7 +30,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("Test@test.test", "Gr4 - ChatBot"),
+                From = new EmailAddress("donotreply@chatbot.com", "Gr4 - ChatBot"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
@@ -39,7 +38,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
 
             msg.AddTo(new EmailAddress(email));
             return client.SendEmailAsync(msg);
-
         }
     }
 }

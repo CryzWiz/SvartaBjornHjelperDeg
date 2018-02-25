@@ -11,8 +11,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
     {
         public static Task SendEmailConfirmationAsync(this IEmailSender emailSender, string email, string link)
         {
-            return emailSender.SendEmailAsync(email, "Confirm your email",
-                $"Please confirm your account by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = String.Format("Fullfør registrering");
+            string url = HtmlEncoder.Default.Encode(link);
+            string message = String.Format("En konto er blitt opprettet for deg i ChatBot. " +
+                "Vennligst fullfør registreringen ved å bekrefte e-post adressen din: <a href={0}>Bekreft e-post adresse</a>", url);
+            return emailSender.SendEmailAsync(email, subject, message);
         }
     }
 }

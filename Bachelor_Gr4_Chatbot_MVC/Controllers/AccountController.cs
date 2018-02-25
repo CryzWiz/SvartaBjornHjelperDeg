@@ -343,6 +343,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 TempData["error"] = String.Format("Finner ikke bruker med id: {0} ", userId);
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
+
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if(result.Succeeded)
             {
