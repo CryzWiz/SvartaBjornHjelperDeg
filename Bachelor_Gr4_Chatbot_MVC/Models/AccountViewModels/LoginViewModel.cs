@@ -10,13 +10,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.AccountViewModels
     {
         [Required]
         [EmailAddress]
+        [Display(Name = "E-post")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
+        [Display(Name = "Passord")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Husk innlogging?")]
         public bool RememberMe { get; set; }
     }
 }

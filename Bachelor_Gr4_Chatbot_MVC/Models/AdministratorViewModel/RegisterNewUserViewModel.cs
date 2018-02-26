@@ -11,7 +11,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModels
     {
         [Required]
         [EmailAddress]
-        [Display(Name ="Epost")]
+        [Display(Name = "E-post")]
         public string Email { get; set; }
 
         [Required]

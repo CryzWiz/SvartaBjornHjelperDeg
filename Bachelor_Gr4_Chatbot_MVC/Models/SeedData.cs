@@ -60,7 +60,8 @@ public class SeedData
         {
             UserName = "admin@nk.no",
             Email = "admin@nk.no",
-            IsActive = true
+            IsActive = true,
+            EmailConfirmed = true
         };
         string password = userManager.PasswordHasher.HashPassword(admin, "Password1");
         admin.PasswordHash = password;
@@ -85,7 +86,8 @@ public class SeedData
         {
             UserName = "user1@nk.no",
             Email = "user1@nk.no",
-            IsActive = true
+            IsActive = true,
+            EmailConfirmed = true
         };
         string password = userManager.PasswordHasher.HashPassword(user, "Password1");
         user.PasswordHash = password;
@@ -100,7 +102,8 @@ public class SeedData
         {
             UserName = "user2@nk.no",
             Email = "user2@nk.no",
-            IsActive = true
+            IsActive = true,
+            EmailConfirmed = true
         };
         string password2 = userManager.PasswordHasher.HashPassword(user2, "Password2");
         user2.PasswordHash = password2;
