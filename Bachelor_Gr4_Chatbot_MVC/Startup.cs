@@ -46,6 +46,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IAdminRepository, EFAdminRepository>();
+            services.AddSignalR();
             services.AddMvc();
         }
 
@@ -66,6 +67,11 @@ namespace Bachelor_Gr4_Chatbot_MVC
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("chat");
+            });
 
             app.UseMvc(routes =>
             {
