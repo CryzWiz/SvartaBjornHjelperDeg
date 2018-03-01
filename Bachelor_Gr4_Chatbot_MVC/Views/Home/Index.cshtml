@@ -45,7 +45,7 @@
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
 
-        var messageInput = document.getElementById('message');
+        var messageInput = document.getElementById('messageProxy');
 
         // Get the user name and store it to prepend to messages.
         var name = prompt('Enter your name:', '');
@@ -67,7 +67,7 @@
         })
             .then(function (connection) {
                 console.log('connection started');
-                document.getElementById('sendmessage').addEventListener('click', function (event) {
+                document.getElementById('testProxy').addEventListener('click', function (event) {
                     // Call the Send method on the hub.
                     connection.invoke('send', name, messageInput.value);
 
