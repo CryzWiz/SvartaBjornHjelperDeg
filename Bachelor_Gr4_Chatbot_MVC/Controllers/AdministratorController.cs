@@ -107,6 +107,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeactivateUser(string username)
+        {
+            var result = await repository.DeactivateUser(username);
+            if (result)
+            {
+                TempData["success"] = String.Format("Bruker {0} ble deaktivert.", username);
+            }
+            else
+            {
+                TempData["error"] = String.Format("Bruker {0} ble IKKE deaktivert.", username);
+            }
+            return RedirectToAction("Users");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateUser(string username)
+        {
+            var result = await repository.ActivateUser(username);
+            if (result)
+            {
+                TempData["success"] = String.Format("Bruker {0} ble aktivert.", username);
+            }
+            else
+            {
+                TempData["error"] = String.Format("Bruker {0} ble IKKE aktivert.", username);
+            }
+            return RedirectToAction("Users");
+        }
+
         // Copied from Auto generated code in AccountController
         private IActionResult RedirectToLocal(string returnUrl)
         {

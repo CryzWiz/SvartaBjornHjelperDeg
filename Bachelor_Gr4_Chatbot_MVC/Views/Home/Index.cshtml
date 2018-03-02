@@ -4,11 +4,13 @@
 
 <h1>Test-sider</h1>
 <p>Flyttet over fra vanlig html til MVC løsning. Må enda tilpasses en del. Selve chatboksen hostes fra kark.uit.no da denne ligger utenfor MVC prosjektet.</p>
-<p>For å teste kan du logge inn med følgende brukere:</p>
+<p>For å teste kan du logge inn med følgende brukere(du kan også registrere ny bruker):</p>
 <ul>
     <li>Bruker: admin@nk.no, Pass: Password1</li>
+    <li>User1: user1@nk.no, Pass: Password1</li>
+    <li>User2: user2@nk.no, Pass:Password1</li>
 </ul>
-<p>Følgende sider er laget og er under konstruksjon:</p>
+<p>Følgende sider er laget og er under konstruksjon/påfyll:</p>
 <ul>
     <li><a asp-area="" asp-controller="Administrator" asp-action="Index">Dashboard (admin)</a></li>
     <li><a asp-area="" asp-controller="Administrator" asp-action="Users">Users (admin)</a></li>
@@ -17,72 +19,12 @@
     <li><a href="http://kark.uit.no/~aar029/Bacheloroppgave_Gr4-ChatBot/Chat_Widget/" target="_blank">Chatboks (ligger utenfor MVC løsning)</a></li>
 </ul>
 
-
-<!-- The following is copied directly from our earlier project HiN_Ventures (By Allan Arnesen and Benedicte Karlsen) just to see if things work, will be removed -->
-
-<!-- This is just layed here for now. We need one of these on every relevant page so we can push out a new message
-    when there is a new project registered.
-    But is implemented and works!
-    -->
+<ul>
+    Under aktiv utvikling
+    <li><a asp-area="" asp-controller="Home" asp-action="Chat">Chat-test</a></li>
+</ul>
 
 
-<div class="container">
-    <input type="text" id="messageProxy" />
-    <input type="button" id="testProxy" value="SendProxy" />
-    <input type="hidden" id="connectionId" /> 
-    <ul id="discussion"></ul>
-</div>
-<!--Script references. -->
-<!--Reference the SignalR library. -->
-@section scripts {
-
-
-<script src="Scripts/jquery-1.10.2.min.js"></script>
-<script src="Scripts/jquery.signalR-2.1.0.min.js"></script>
-<script src="signalr/hubs"></script>
-    <script>
-        $(function () {
-
-            // Create reference to chathub proxy
-            var chatHubProxy = $.connection.chatHub;
-
-            // Callback to display messages
-            chatHubProxy.client.broadcastMessage = function (name, message) {
-                // Add message to page
-                $('#discussion').append('<li><strong>' + name + '</strong>: ' + message + '</li>');
-            };
-
-            // Username - TESTDATA FOR NOW!!! To be updated!
-            var name = "TestName";
-
-
-
-
-            // Start connection
-            $.connection.hub.start().done(function () {
-                $('#testProxy').click(function () {
-                    var name = "testName2";
-                    var msg = $('#messageProxy').val('');
-                    // Call send method in ChatHub
-                    chatHubProxy.server.send(name, msg);
-                    msg.focus();
-                });
-            });
-
-        });
-</script>
-
-
-
-
-
-        
-
-
-
-}
-
-<!--Add script to update the page and send messages.-->
 
 
 

@@ -12,6 +12,7 @@ using Bachelor_Gr4_Chatbot_MVC.Data;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Services;
 using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
+using Bachelor_Gr4_Chatbot_MVC.Hubs;
 
 namespace Bachelor_Gr4_Chatbot_MVC
 {
@@ -70,7 +71,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("chatHub");
+                routes.MapHub<TestChat>("chat");
             });
 
             app.UseMvc(routes =>

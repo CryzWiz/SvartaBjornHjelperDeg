@@ -22,9 +22,9 @@ namespace Bachelor_Gr4_Chatbot_MVC
         /// <param name="name">Name of the author of the message</param>
         /// <param name="message">Message content</param>
         /// <returns></returns>
-        public Task Send(string name, string message)
+        public Task Send(string message)
         {
-            return Clients.All.InvokeAsync("broadcastMessage", name, message);
+            return Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} : {message}");
         }
 
         /// <summary>
