@@ -1,5 +1,6 @@
 ﻿(function ($) {
     $(document).ready(function () {
+
         var $chatbox = $('.chatbox'),
             $chatboxTitle = $('.chatbox__title'),
             $chatboxTitleClose = $('.chatbox__title__close');
@@ -15,14 +16,14 @@
             if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
 
         });
+
         //$chatboxCredentials.on('submit', function(e) {
         //    e.preventDefault();
         //    $chatbox.removeClass('chatbox--empty');
         //});
-    });
+});
 })(jQuery);
-
-
+ 
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
 
@@ -39,26 +40,31 @@ document.addEventListener('DOMContentLoaded', function () {
             //var encodedName = name;
             var encodedMsg = message;
             // Add the message to the page.
-            var liElement = document.createElement('li');
-            liElement.innerHTML = '<strong>' + '</strong>:&nbsp;&nbsp;' + encodedMsg;
-            document.getElementById('discussion').appendChild(liElement);
+            var liElement = document.createElement('div');
+            liElement.className += "chatbox__body__message";
+            liElement.className += " chatbox__body__message--left";
+            liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+            liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+            document.getElementById('chatbox__body').appendChild(liElement);
+            document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
         });
     })
         .then(function (connection) {
-            console.log('connection started');
-            document.getElementById('sendmessage').addEventListener('click', function (event) {
-                // Call the Send method on the hub.
-                connection.invoke('send', messageInput.value);
+        console.log('connection started');
+    document.getElementById('sendmessage').addEventListener('click', function (event) {
+        // Call the Send method on the hub.
+        connection.invoke('send', messageInput.value);
 
-                // Clear text box and reset focus for next comment.
-                messageInput.value = '';
+    // Clear text box and reset focus for next comment.
+    messageInput.value = '';
                 messageInput.focus();
                 event.preventDefault();
             });
         })
         .catch(error => {
-            console.error(error.message);
-        });
+        console.error(error.message);
+    });
 
     // Starts a connection with transport fallback - if the connection cannot be started using
     // the webSockets transport the function will fallback to the serverSentEvents transport and
@@ -66,19 +72,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // any of the available transports the function will return a rejected Promise.
     function startConnection(url, configureConnection) {
         return function start(transport) {
-            console.log(`Starting connection using ${signalR.TransportType[transport]} transport`)
-            var connection = new signalR.HubConnection(url, { transport: transport });
+        console.log(`Starting connection using ${signalR.TransportType[transport]} transport`)
+            var connection = new signalR.HubConnection(url, {transport: transport });
             if (configureConnection && typeof configureConnection === 'function') {
-                configureConnection(connection);
-            }
+        configureConnection(connection);
+    }
 
             return connection.start()
                 .then(function () {
                     return connection;
                 })
                 .catch(function (error) {
-                    console.log(`Cannot start the connection use ${signalR.TransportType[transport]} transport. ${error.message}`);
-                    if (transport !== signalR.TransportType.LongPolling) {
+        console.log(`Cannot start the connection use ${signalR.TransportType[transport]} transport. ${error.message}`);
+    if (transport !== signalR.TransportType.LongPolling) {
                         return start(transport + 1);
                     }
 
