@@ -9,5 +9,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
     {
         Task<List<User>> GetAllUsers();
         Task<User> GetUser(String username);
+        Task<bool> DeactivateUser(String username);
+        Task<bool> ActivateUser(String username);
     }
 }

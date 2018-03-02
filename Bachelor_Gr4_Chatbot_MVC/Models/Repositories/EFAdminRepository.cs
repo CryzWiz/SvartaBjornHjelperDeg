@@ -23,6 +23,46 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         }
 
         /// <summary>
+        /// Deactivate the user-account that is related to given username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<bool> DeactivateUser(string username)
+        {
+            var u = await Task.Run(() => db.Users.FirstOrDefault(X => X.UserName == username));
+            if(u != null)
+            {
+                u.IsActive = false;
+                await db.SaveChangesAsync();               
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Activate user-account that is related to given username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<bool> ActivateUser(string username)
+        {
+            var u = await Task.Run(() => db.Users.FirstOrDefault(X => X.UserName == username));
+            if (u != null)
+            {
+                u.IsActive = true;
+                await db.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Fetch all the users in the database and store the information we want to
         /// display as a User in a List<User>
         /// </summary>
