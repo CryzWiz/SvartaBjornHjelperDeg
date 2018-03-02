@@ -3,6 +3,7 @@
 
 function testWithProxy() {
     var chatHubProxy = $.connection.chatHub;
+    var name = "testName";
     chatHubProxy.client.Send = function (name, message) {
         console.log(name + ' ' + message);
     }
@@ -15,3 +16,5 @@ function testWithProxy() {
         });
     });
 }
+
+// Private chat - This is not done!!!
