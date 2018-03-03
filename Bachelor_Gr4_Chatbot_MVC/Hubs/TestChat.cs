@@ -33,7 +33,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string name = Context.ConnectionId;
             _connections.Remove(name, Context.ConnectionId);
 
-
             await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left");
             await DisplayConnectedUsers();
 
@@ -42,7 +41,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task DisplayConnectedUsers()
         {
             // Display all current users
-            // TODO: TESTCODE: This needs to be updated to only be shown inside Chat-workers site
+            // TODO: TESTCODE: This needs to be updated to only be shown inside Chat-workers sites
             IEnumerable<string> keys = _connections.GetConnectionKeys();
             await Clients.All.InvokeAsync("displayConnections", keys);
         }
