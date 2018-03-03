@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Bachelor_Gr4_Chatbot_MVC.Models;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 {
     public class TestChat : Hub
     {
+        public readonly static ConnectionMapping<string> _connections =
+            new ConnectionMapping<string>();
+
         public override async Task OnConnectedAsync()
         {
+            // Map connections using in-memory ConnectionMapping
+            // TODO: Name is set to be connectionId, to be changed later..
+            string name = Context.ConnectionId;
+            _connections.Add(name, Context.ConnectionId);
+
             await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} joined");
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
+            // Map connections using in-memory ConnectionMapping
+            // TODO: Name is set to be connectionId, to be changed later..
+            string name = Context.ConnectionId;
+            _connections.Remove(name, Context.ConnectionId);
+
+
             await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left");
         }
 
