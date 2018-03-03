@@ -49,7 +49,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             }
         }
 
-        public IEnumerable<string> GetConnections(T key)
+        public IEnumerable<string> GetConnection(T key)
         {
             HashSet<string> connections;
             if(_connections.TryGetValue(key, out connections))
@@ -81,6 +81,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 }
 
             }
+        }
+
+        public IEnumerable<string> GetConnectionKeys()
+        {
+            IEnumerable<string> keys = new List<string>();
+            keys = (IEnumerable<string>)_connections.Keys.ToList();
+            return keys;
+
+
         }
 
     }

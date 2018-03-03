@@ -23,7 +23,27 @@
         //});
 });
 })(jQuery);
- 
+
+function updateConnectionList() {
+    listConnections(function (connections) {
+        var str = "";
+        $.each(connections, function (index, connection) {
+            str += "<ul class='list-group'></ul>";
+            str += "<li>";
+            str += "ConnectionId: " + connections.key;
+            str += "</li></ul>";
+        });
+        $("#connectionList").html(str);
+    });
+}
+
+function listConnections(callback) {
+    $.ajax({
+
+    })
+
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
 
@@ -49,6 +69,19 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 
         });
+
+        connection.on('displayConnections', function (connections) {
+            var str = "";
+            $.each(connections, function (index, key) {
+                str += "";
+                str += "<li>";
+                str += "ConnectionId: " + key;
+                str += "</li></ul>";
+            });
+            $("#connectionList").html(str);
+        });
+
+        //connection.on('displayConnections', updateConnectionList(connections));
     })
         .then(function (connection) {
         console.log('connection started');

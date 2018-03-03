@@ -12,14 +12,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
+        public static int counter = 0;
+
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
             string name = Context.ConnectionId;
+            counter++;
             _connections.Add(name, Context.ConnectionId);
 
             await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} joined");
+            await DisplayConnectedUsers();
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
@@ -31,6 +35,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
 
             await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left");
+            await DisplayConnectedUsers();
+
+        }
+
+        public async Task DisplayConnectedUsers()
+        {
+            // Display all current users
+            // TODO: TESTCODE: This needs to be updated to only be shown inside Chat-workers site
+            IEnumerable<string> keys = _connections.GetConnectionKeys();
+            await Clients.All.InvokeAsync("displayConnections", keys);
         }
 
         public Task Send(string message)
