@@ -12,17 +12,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        public static int counter = 0;
-
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
             string name = Context.ConnectionId;
-            counter++;
             _connections.Add(name, Context.ConnectionId);
 
-            await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} joined");
+            await Clients.All.InvokeAsync("broadcastMessage", $"{name} joined");
             await DisplayConnectedUsers();
         }
 
@@ -33,11 +30,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string name = Context.ConnectionId;
             _connections.Remove(name, Context.ConnectionId);
 
-            await Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left");
+            await Clients.All.InvokeAsync("broadcastMessage", $"{name} left");
             await DisplayConnectedUsers();
-
         }
 
+        /// <summary>
+        /// Display a list of all connected users
+        /// </summary>
         public async Task DisplayConnectedUsers()
         {
             // Display all current users
@@ -74,5 +73,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
         }
+
+
     }
 }
