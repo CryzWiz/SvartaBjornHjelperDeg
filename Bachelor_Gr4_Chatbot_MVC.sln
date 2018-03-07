@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bachelor_Gr4_Chatbot_MVC", "Bachelor_Gr4_Chatbot_MVC\Bachelor_Gr4_Chatbot_MVC.csproj", "{E9F984ED-1517-4056-8CE1-224FFC4B600F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bachelor_Gr4_Chatbot_MVC", "Bachelor_Gr4_Chatbot_MVC\Bachelor_Gr4_Chatbot_MVC.csproj", "{E9F984ED-1517-4056-8CE1-224FFC4B600F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatbot", "Chatbot\Chatbot.csproj", "{DAEDADD2-7F4F-4217-B252-F1B6FAD3F1AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E9F984ED-1517-4056-8CE1-224FFC4B600F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9F984ED-1517-4056-8CE1-224FFC4B600F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9F984ED-1517-4056-8CE1-224FFC4B600F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAEDADD2-7F4F-4217-B252-F1B6FAD3F1AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAEDADD2-7F4F-4217-B252-F1B6FAD3F1AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAEDADD2-7F4F-4217-B252-F1B6FAD3F1AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAEDADD2-7F4F-4217-B252-F1B6FAD3F1AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
