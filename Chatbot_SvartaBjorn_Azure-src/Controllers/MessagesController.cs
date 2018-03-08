@@ -5,6 +5,9 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Web.Http.Description;
 using System.Net.Http;
+using SimpleEchoBot.Dialogs;
+using Autofac;
+using System.Linq;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -22,16 +25,16 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new EchoDialog());
+                await Conversation.SendAsync(activity, () => new RootDialog());
             }
             else
             {
-                HandleSystemMessage(activity);
+                await HandleSystemMessage(activity);
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
-        private Activity HandleSystemMessage(Activity message)
+        private async Task<Activity> HandleSystemMessage(Activity message)
         {
             if (message.Type == ActivityTypes.DeleteUserData)
             {
@@ -43,6 +46,23 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 // Handle conversation state changes, like members being added and removed
                 // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
                 // Not available in all channels
+                IConversationUpdateActivity update = message;
+                using (var scope = Microsoft.Bot.Builder.Dialogs.Internals.DialogModule.BeginLifetimeScope(Conversation.Container, message))
+                {
+                    var client = scope.Resolve<IConnectorClient>();
+                    if (update.MembersAdded.Any())
+                    {
+                        foreach (var newMember in update.MembersAdded)
+                        {
+                            if (newMember.Id != message.Recipient.Id)
+                            {
+                                var reply = message.CreateReply();
+                                reply.Text = $"Velkommen til Svarta Bjørn Chatbot, {newMember.Name}! Pr nå er det kun test og lek å finne her, men du må gjerne teste meg :)";
+                                await client.Conversations.ReplyToActivityAsync(reply);
+                            }
+                        }
+                    }
+                }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
             {
