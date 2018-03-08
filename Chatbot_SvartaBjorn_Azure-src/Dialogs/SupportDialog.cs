@@ -19,7 +19,7 @@ namespace SimpleEchoBot.Dialogs
 
             var ticketNumber = new Random().Next(0, 20000);
 
-            await context.PostAsync($"Your message '{message.Text}' was registered. Once we resolve it; we will get back to you.");
+            await context.PostAsync($"Din beskjed '{message.Text}' ble registrert.");
 
             context.Done(ticketNumber);
         }

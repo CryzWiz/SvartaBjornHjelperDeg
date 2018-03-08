@@ -11,6 +11,7 @@ namespace SimpleEchoBot.Dialogs
         public async Task StartAsync(IDialogContext context)
         {
             context.Fail(new NotImplementedException("Denne er ikke implementert og ligger her kun for å vise Context.Fail."));
+            
         }
     }
 }

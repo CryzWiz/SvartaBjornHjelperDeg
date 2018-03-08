@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.Internals.Fibers;
 
 namespace SimpleEchoBot
 {
@@ -35,7 +36,19 @@ namespace SimpleEchoBot
                         .SingleInstance();
 
                 });
+            // Register modules, like GlobalMessageHandlerBotModule
+            this.RegisterBotModules();
             GlobalConfiguration.Configure(WebApiConfig.Register);
+        }
+
+        // Add the modules
+        private void RegisterBotModules()
+        {
+            Conversation.UpdateContainer(builder =>
+            {
+                builder.RegisterModule(new ReflectionSurrogateModule());
+                builder.RegisterModule<GlobalMessageHandlersBotModule>();
+            });
         }
     }
 }
