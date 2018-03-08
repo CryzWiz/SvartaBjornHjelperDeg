@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Threading.Tasks;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
@@ -16,6 +12,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public string ChatResponse { get; set; }
         public string watermark { get; set; }
     }
+
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class ChatbotController : Controller
     {
@@ -37,7 +35,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         // POST api/values
         [HttpPost]
-        public virtual async Task<OkResult> Post(Activity activity)
+        public virtual async Task<IActionResult> Post(Activity activity)
         {
             if (activity.Type == ActivityTypes.Message)
             {
@@ -49,8 +47,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             {
                 await HandleSystemMessage(activity);
             }
-
-            return Ok();
+            var result = new { test = "suksess - vi har kontakt!" };
+            //return Ok();
+            return Json(result);
         }
 
         /// <summary>
