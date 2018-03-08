@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 {
+
+    /// Referanser: 
+    /// https://code.msdn.microsoft.com/ASPNET-CORE-20-uses-7a771742
+    /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
     public class TestChat : Hub
     {
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
+
+        private static int _counter = 0;
 
         public override async Task OnConnectedAsync()
         {
@@ -45,11 +51,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.All.InvokeAsync("displayConnections", keys);
         }
 
+        /// <summary>
+        /// Send a message to everyone connected to the chat. 
+        /// </summary>
+        /// <param name="message">Message content.</param>
         public Task Send(string message)
         {
             return Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
         }
 
+        /// <summary>
+        /// Send a message to a specified user group. 
+        /// </summary>
+        /// <param name="groupName">Group name</param>
+        /// <param name="message">Message content</param>
         public Task SendToGroup(string groupName, string message)
         {
             return Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId}@{groupName}: {message}");
@@ -62,10 +77,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
         }
 
+        /// <summary>
+        /// Connected user leaves the specified group
+        /// </summary>
+        /// <param name="groupName">Group name</param>
         public async Task LeaveGroup(string groupName)
         {
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
-
             await Clients.Group(groupName).InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left {groupName}");
         }
 
@@ -74,6 +92,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
         }
 
+        public string GetAvailableChatGroup()
+        {
+            _counter++;
+            return "ChatGroup - " + _counter;
+        }
 
     }
 }

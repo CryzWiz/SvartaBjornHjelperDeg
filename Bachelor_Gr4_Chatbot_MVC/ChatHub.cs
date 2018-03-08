@@ -19,7 +19,6 @@ namespace Bachelor_Gr4_Chatbot_MVC
         /// <summary>
         /// Send a message to everyone. 
         /// </summary>
-        /// <param name="name">Name of the author of the message</param>
         /// <param name="message">Message content</param>
         /// <returns></returns>
         public Task Send(string message)
@@ -61,7 +60,6 @@ namespace Bachelor_Gr4_Chatbot_MVC
         public async Task LeaveGroup(string groupName)
         {
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
-
         }
     }
 }

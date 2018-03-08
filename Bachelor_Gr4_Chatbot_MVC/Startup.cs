@@ -43,10 +43,12 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             // Options
             services.Configure<EmailSenderOptions>(Configuration);
+            services.Configure<ChatGroupOptions>(Configuration);
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IAdminRepository, EFAdminRepository>();
+            services.AddTransient<IChatRepository, EFChatRepository>();
             services.AddSignalR();
             services.AddMvc();
         }
