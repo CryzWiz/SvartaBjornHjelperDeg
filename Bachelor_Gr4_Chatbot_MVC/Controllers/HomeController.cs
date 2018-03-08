@@ -43,6 +43,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        public IActionResult Test()
+        {
+            ViewData["Message"] = "Chat-client";
+
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

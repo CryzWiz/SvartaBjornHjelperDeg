@@ -12,7 +12,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
     public class Chat
     {
-        public string ChatMessage { get; set; }
+        public string Text { get; set; }
         public string ChatResponse { get; set; }
         public string watermark { get; set; }
     }
@@ -29,10 +29,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         {
             appCredentials = new MicrosoftAppCredentials(configuration);
         }
+        [HttpGet]
+        public IActionResult Test()
+        {
+            return View();
+        }
 
         // POST api/values
-        [HttpPost, Authorize(Roles = "Bot")]
-        public virtual async Task<OkResult> Post([FromBody]Activity activity)
+        [HttpPost]
+        public virtual async Task<OkResult> Post(Activity activity)
         {
             if (activity.Type == ActivityTypes.Message)
             {
