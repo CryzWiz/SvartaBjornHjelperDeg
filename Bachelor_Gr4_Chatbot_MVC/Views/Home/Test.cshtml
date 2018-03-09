@@ -4,8 +4,49 @@
 }
 
 
+<div class="col-md-4" id="commentForm">
+    <form asp-action="CreateComment">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Kommentar</label>
+            <input class="form-control" id="text" />
+            <span class="text-danger"></span>
+        </div>
+        
+        <div class="form-group">
+            <input type="button" value="Create" id="save" onclick="addComment()" class="btn btn-default" />
+        </div>
+    </form>
+</div>
 
+@section Scripts {
+<script type="text/javascript">
+            function addComment() {
+                Activity = {
+                    "From": { "id": "default", "name": "user"}
+                    ,
+                    "Type": "Message",
+                    "Text": $("#text").val()
+                };
 
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Chatbot/",
+                    data: JSON.stringify(Activity),
+                    contentType: "application/ json; charset = utf-8",
+                    dataType: 'json',
+                    success: function (result) {
+                        $("#update").html("<p>" + result.test + "</p>");
+                        
+                    },
+                    error: function (req, status, error) {
+                        $("#update").html("AJAX error");
+                    }
+                });
+            }
+</script>
+}
+<div id="update"></div>
 
 
 

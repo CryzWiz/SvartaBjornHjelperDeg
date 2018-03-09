@@ -37,17 +37,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Post(Activity activity)
         {
+            Activity a = activity as Activity;
+
+            var result = new { test = "failed -> Vi kom ikke inn i noen" };
+
             if (activity.Type == ActivityTypes.Message)
             {
                 // calculate something for us to return
                 int length = (activity.Text ?? string.Empty).Length;
                 await ReplyMessage(activity, $"You sent {activity.Text} which was {length} characters");
+                result = new { test = "suksess - vi har kontakt og er i ReplyMessage!" };
             }
             else
             {
                 await HandleSystemMessage(activity);
+                if (activity is Activity)
+                {
+                    var t = "Do I work?";
+                    result = new { test = "suksess - vi har kontakt og er i HandleSystemMessage! Vi har en Activity. " +
+                        "Activity.Type == " + a.Text};
+                }
+                else
+                {
+                    result = new { test = "suksess - vi har kontakt og er i HandleSystemMessage! Activity == null" };
+                }
+                
             }
-            var result = new { test = "suksess - vi har kontakt!" };
+            
             //return Ok();
             return Json(result);
         }
