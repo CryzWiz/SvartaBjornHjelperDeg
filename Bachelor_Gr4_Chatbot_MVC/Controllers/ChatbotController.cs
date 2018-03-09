@@ -2,6 +2,8 @@
 using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
@@ -18,6 +20,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
     public class ChatbotController : Controller
     {
         private readonly MicrosoftAppCredentials appCredentials;
+        private HttpResponseMessage response;
+        private HttpClient client;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatbotController"/> class.
@@ -33,6 +37,42 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        private async Task<bool> PostMessage(string message)
+        {
+
+            bool IsReplyReceived = false;
+
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://directline.botframework.com/api/conversations/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("BotConnector", "[YourAccessToken]");
+            response = await client.GetAsync("/api/tokens/");
+            if (response.IsSuccessStatusCode)
+            {
+                var conversation = new Conversation();
+                response = await client.PostAsJsonAsync("/api/conversations/", conversation);
+                if (response.IsSuccessStatusCode)
+                {
+                    Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+                    string conversationUrl = ConversationInfo.conversationId + "/messages/";
+                    BotDirectLineApproch.Models.Message msg = new BotDirectLineApproch.Models.Message() { text = message };
+                    response = await client.PostAsJsonAsync(conversationUrl, msg);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response = await client.GetAsync(conversationUrl);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
+                            ViewBag.Messages = BotMessage;
+                            IsReplyReceived = true;
+                        }
+                    }
+                }
+
+            }
+            return IsReplyReceived;
+        }
         // POST api/values
         [HttpPost]
         public virtual async Task<IActionResult> Post(Activity activity)
