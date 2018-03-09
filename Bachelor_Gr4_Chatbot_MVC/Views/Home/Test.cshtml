@@ -5,7 +5,7 @@
 
 
 <div class="col-md-4" id="commentForm">
-    <form asp-action="CreateComment">
+    <form asp-action="PostMessage">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label">Kommentar</label>
@@ -32,7 +32,7 @@
                 $.ajax({
                     type: "POST",
                     url: "/api/Chatbot/",
-                    data: JSON.stringify(Activity),
+                    data: JSON.stringify($("#text").val()),
                     contentType: "application/ json; charset = utf-8",
                     dataType: 'json',
                     success: function (result) {
