@@ -38,9 +38,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.All.InvokeAsync("broadcastMessage", $"{name} joined");
             await DisplayConnectedUsers();
 
-            // TODO: Testcode!!!
-            await Clients.All.InvokeAsync("testMessageToUser", $"Tralala, her tester vi on connected");
-        }
+         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
@@ -98,13 +96,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId}@{groupName}: {message}");
         }
 
+        public Task SendToGroupTest(string groupName, string message)
+        {
+            return Clients.Group(groupName).InvokeAsync("testMessage", $"{Context.ConnectionId}@{groupName}: {message}");
+        }
+
         public async Task JoinGroup(string groupName)
         {
             await Groups.AddAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
+            //await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
 
-            // TODO: Testcode!!!
-            await Clients.Group(groupName).InvokeAsync("TestMessageToUser", $"{Context.ConnectionId} joined {groupName}");
+            await SendToGroupTest(groupName, $"{Context.ConnectionId} joined {groupName}"); // TODO: Bytt ut til SendToGroup når testing er over
+        }
+
+        public Task SendTest()
+        {
+            return Clients.All.InvokeAsync("testMessage", $"To ALL Test");
         }
 
         /// <summary>

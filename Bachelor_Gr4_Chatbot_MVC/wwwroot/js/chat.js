@@ -128,11 +128,10 @@ document.addEventListener('DOMContentLoaded', function () {
             updateConnectionList2(connections);
         });
 
-        connection.on('testMessageToUser'), function (message) {
+        connection.on('testMessage', function (message) {
             // TODO: Testkode, må endres
-            alert("Testmessagetouser invoked");
-            $("#testMessageToUser").html("TESTER AT MELDING GÅR TIL RETT USER");
-        }
+            $("#testMessageToUser").html(message);
+        });
     })
         .then(function (connection) {
             console.log('connection started');
@@ -150,9 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Join Group
             $("#join").click(function (event) {
-                alert("join group"); // TODO: Test
-                //var groupId = $("#chatGroupId").value;
-                var groupId = "Guest - 4";
+                //alert("join group"); // TODO: Test
+
+    
+                var groupId = $("#chatGroupId").val();
                 connection.invoke('joinGroup', groupId);
             });
 
