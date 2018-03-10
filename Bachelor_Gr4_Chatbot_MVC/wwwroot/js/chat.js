@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var groupId = "";
 
     // Get the user name and store it to prepend to messages.
-    var name = 'demo-user';
+    var name = 'Guest';
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
+        
+        /// SignalR Client methods: 
         connection.on('send', function (message) {
             // TODO: Html encode display name and message.
             //var encodedName = name;
@@ -169,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Join Group
             $("#join").click(function (event) {
-                //alert("join group"); // TODO: Test
                 groupId = $("#chatGroupId").val();
                 connection.invoke('joinGroup', groupId);
             });

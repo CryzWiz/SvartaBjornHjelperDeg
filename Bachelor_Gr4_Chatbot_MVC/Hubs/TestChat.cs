@@ -16,6 +16,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
+       
         //private List<string> _connections2 = new List<string>();
 
         private static int _counter = 0;
@@ -25,19 +26,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
             string connectionId = Context.ConnectionId;
-            string name = connectionId;
-            //string name = SetName(connectionId);
+            //string name = connectionId;
+            string name = SetConnectionName();
 
             _connections.Add(name, Context.ConnectionId);
             //_connections2.Add(connectionId);
 
-            // Join persons own group TODO: Change this later! TESTCODE
+            // Join persons own group 
+            // TODO: Change this later! TESTCODE
             //name = GetAvailableChatGroup();
             await JoinGroup(name);
 
             await Clients.All.InvokeAsync("broadcastMessage", $"{name} joined");
             await DisplayConnectedUsers();
-
          }
 
         public override async Task OnDisconnectedAsync(Exception ex)
@@ -45,8 +46,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
             string connectionId = Context.ConnectionId;
-            string name = connectionId;
-            //string name = SetName(connectionId);
+            //string name = connectionId;
+            string name = SetConnectionName();
 
             _connections.Remove(name, Context.ConnectionId);
             //_connections2.Remove(connectionId);
@@ -55,12 +56,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayConnectedUsers();
         }
 
-        public string SetName(string connectionId)
+        public string SetConnectionName()
         {
-            string name = Context.User.Identity.Name;
-            if (name.Length == 0)
+            string name = Context.ConnectionId;
+            if (Context.User.Identity.IsAuthenticated)
             {
-                name = connectionId;
+                name = Context.User.Identity.Name;
             }
             return name;
         }
@@ -77,6 +78,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
+        
         /// <summary>
         /// Send a message to everyone connected to the chat. 
         /// </summary>
@@ -93,7 +95,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <param name="message">Message content</param>
         public Task SendToGroup(string groupName, string message)
         {
+            // TODO: Testkode som må fjernes: 
+            if(groupName.Length == 0)
+            {
+                return Send(message);
+            }
+
             return Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId}@{groupName}: {message}");
+            
         }
 
         public Task SendToGroupTest(string groupName, string message)
