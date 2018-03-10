@@ -79,7 +79,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                         _connections.Remove(key);
                     }
                 }
-
             }
         }
 
@@ -88,8 +87,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             IEnumerable<string> keys = new List<string>();
             keys = (IEnumerable<string>)_connections.Keys.ToList();
             return keys;
-
-
         }
 
     }
