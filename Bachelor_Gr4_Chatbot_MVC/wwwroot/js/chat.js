@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         
-        /// SignalR Client methods: 
+        /// SignalR Client methods called from hub: 
         connection.on('send', function (message) {
             // TODO: Html encode display name and message.
             //var encodedName = name;
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         connection.on('displayConnections', function (connections) {
-            updateConnectionList2(connections);
+            updateConnectionList(connections);
         });
 
         connection.on('testMessage', function (message) {
@@ -152,23 +152,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })
         .then(function (connection) {
-            console.log('connection started');
+            console.log('connection started'); // TODO: 
 
             // Send message
-            document.getElementById('sendmessage').addEventListener('click', function (event) {
-                // Call the Send method on the hub.
-
+            $("#sendmessage").click(function (event) {
                 // TODO: Bytt ut kode her
                 //connection.invoke('send', messageInput.value);
                 connection.invoke('sendToGroup', groupId, messageInput.value);
-
 
                 // Clear text box and reset focus for next comment.
                 messageInput.value = '';
                 messageInput.focus();
                 event.preventDefault();
             });
-            
+
             // Join Group
             $("#join").click(function (event) {
                 groupId = $("#chatGroupId").val();

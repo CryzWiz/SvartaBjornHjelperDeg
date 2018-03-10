@@ -138,12 +138,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
         }
 
-        public string GetAvailableChatGroup()
+        // TODO: Trenger å oppdateres
+        public string GetDisplayName()
         {
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                return Context.User.Identity.Name;
+            }
+
             _counter++;
-            return "Guest - " + _counter;
+            return "Guest " + _counter;
         }
 
- 
+
     }
 }
