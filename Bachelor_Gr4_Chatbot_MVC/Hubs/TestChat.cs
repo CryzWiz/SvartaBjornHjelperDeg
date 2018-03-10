@@ -16,28 +16,55 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
+        //private List<string> _connections2 = new List<string>();
+
         private static int _counter = 0;
 
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
-            string name = Context.ConnectionId;
+            string connectionId = Context.ConnectionId;
+            string name = connectionId;
+            //string name = SetName(connectionId);
+
             _connections.Add(name, Context.ConnectionId);
+            //_connections2.Add(connectionId);
+
+            // Join persons own group TODO: Change this later! TESTCODE
+            //name = GetAvailableChatGroup();
+            await JoinGroup(name);
 
             await Clients.All.InvokeAsync("broadcastMessage", $"{name} joined");
             await DisplayConnectedUsers();
+
+            // TODO: Testcode!!!
+            await Clients.All.InvokeAsync("testMessageToUser", $"Tralala, her tester vi on connected");
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
             // Map connections using in-memory ConnectionMapping
             // TODO: Name is set to be connectionId, to be changed later..
-            string name = Context.ConnectionId;
+            string connectionId = Context.ConnectionId;
+            string name = connectionId;
+            //string name = SetName(connectionId);
+
             _connections.Remove(name, Context.ConnectionId);
+            //_connections2.Remove(connectionId);
 
             await Clients.All.InvokeAsync("broadcastMessage", $"{name} left");
             await DisplayConnectedUsers();
+        }
+
+        public string SetName(string connectionId)
+        {
+            string name = Context.User.Identity.Name;
+            if (name.Length == 0)
+            {
+                name = connectionId;
+            }
+            return name;
         }
 
         /// <summary>
@@ -49,6 +76,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // TODO: TESTCODE: This needs to be updated to only be shown inside Chat-workers sites
             IEnumerable<string> keys = _connections.GetConnectionKeys();
             await Clients.All.InvokeAsync("displayConnections", keys);
+            
         }
 
         /// <summary>
@@ -73,8 +101,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task JoinGroup(string groupName)
         {
             await Groups.AddAsync(Context.ConnectionId, groupName);
-
             await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
+
+            // TODO: Testcode!!!
+            await Clients.Group(groupName).InvokeAsync("TestMessageToUser", $"{Context.ConnectionId} joined {groupName}");
         }
 
         /// <summary>
@@ -85,6 +115,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
             await Clients.Group(groupName).InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left {groupName}");
+            await Clients.Group(groupName).InvokeAsync("testMessageToUser", $"{Context.ConnectionId} left {groupName}");
         }
 
         public Task Echo(string message)
@@ -95,8 +126,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public string GetAvailableChatGroup()
         {
             _counter++;
-            return "ChatGroup - " + _counter;
+            return "Guest - " + _counter;
         }
 
+ 
     }
 }
