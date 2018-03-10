@@ -100,6 +100,7 @@ function updateConnectionList2(connections) {
 // SignalR: 
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
+    var groupId = "";
 
     // Get the user name and store it to prepend to messages.
     var name = 'demo-user';
@@ -110,6 +111,21 @@ document.addEventListener('DOMContentLoaded', function () {
     startConnection('/chat', function (connection) {
         // Create a function that the hub can call to broadcast messages.
         connection.on('broadcastMessage', function (message) {
+            // TODO: Html encode display name and message.
+            //var encodedName = name;
+            var encodedMsg = message;
+            // Add the message to the page.
+            var liElement = document.createElement('div');
+            liElement.className += "chatbox__body__message";
+            liElement.className += " chatbox__body__message--left";
+            liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+            liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+            document.getElementById('chatbox__body').appendChild(liElement);
+            document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+        });
+
+        connection.on('send', function (message) {
             // TODO: Html encode display name and message.
             //var encodedName = name;
             var encodedMsg = message;
@@ -139,7 +155,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Send message
             document.getElementById('sendmessage').addEventListener('click', function (event) {
                 // Call the Send method on the hub.
-                connection.invoke('send', messageInput.value);
+
+                // TODO: Bytt ut kode her
+                //connection.invoke('send', messageInput.value);
+                connection.invoke('sendToGroup', groupId, messageInput.value);
+
 
                 // Clear text box and reset focus for next comment.
                 messageInput.value = '';
@@ -150,9 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Join Group
             $("#join").click(function (event) {
                 //alert("join group"); // TODO: Test
-
-    
-                var groupId = $("#chatGroupId").val();
+                groupId = $("#chatGroupId").val();
                 connection.invoke('joinGroup', groupId);
             });
 

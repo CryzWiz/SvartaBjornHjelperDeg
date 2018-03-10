@@ -105,8 +105,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             await Groups.AddAsync(Context.ConnectionId, groupName);
             //await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
-
-            await SendToGroupTest(groupName, $"{Context.ConnectionId} joined {groupName}"); // TODO: Bytt ut til SendToGroup når testing er over
+            
         }
 
         public Task SendTest()
