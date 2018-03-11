@@ -11,7 +11,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
     /// Referanser: 
     /// https://code.msdn.microsoft.com/ASPNET-CORE-20-uses-7a771742
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
-    public class TestChat : Hub
+    public class ChatHub : Hub
     {
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();

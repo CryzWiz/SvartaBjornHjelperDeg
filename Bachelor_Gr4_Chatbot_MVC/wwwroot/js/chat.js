@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     messageInput.focus();
 
     // Start the connection.
-    startConnection('/chat', function (connection) {
+    startConnection('/chathub', function (connection) {
         // Create a function that the hub can call to broadcast messages.
         connection.on('broadcastMessage', function (message) {
             // TODO: Html encode display name and message.
