@@ -24,35 +24,32 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
-            // TODO: Name is set to be connectionId, to be changed later..
             string connectionId = Context.ConnectionId;
-            //string name = connectionId;
-            string name = SetConnectionName();
+            string connectionName = SetConnectionName();
 
-            _connections.Add(name, Context.ConnectionId);
-            //_connections2.Add(connectionId);
+            // Add to connection list
+            _connections.Add(connectionName, Context.ConnectionId);
 
             // Join persons own group 
             // TODO: Change this later! TESTCODE
-            //name = GetAvailableChatGroup();
-            await JoinGroup(name);
+            await JoinGroup(connectionName);
 
-            await Clients.All.InvokeAsync("broadcastMessage", $"{name} joined");
+            string displayName = GetDisplayName();
+            await Clients.All.InvokeAsync("broadcastMessage", $"{displayName} joined");
             await DisplayConnectedUsers();
          }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
             // Map connections using in-memory ConnectionMapping
-            // TODO: Name is set to be connectionId, to be changed later..
             string connectionId = Context.ConnectionId;
-            //string name = connectionId;
-            string name = SetConnectionName();
+            string connectionName = SetConnectionName();
 
-            _connections.Remove(name, Context.ConnectionId);
-            //_connections2.Remove(connectionId);
+            // Remove from connection list
+            _connections.Remove(connectionName, Context.ConnectionId);
 
-            await Clients.All.InvokeAsync("broadcastMessage", $"{name} left");
+            string displayName = GetDisplayName();
+            await Clients.All.InvokeAsync("broadcastMessage", $"{displayName} left");
             await DisplayConnectedUsers();
         }
 
@@ -105,21 +102,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
-        public Task SendToGroupTest(string groupName, string message)
-        {
-            return Clients.Group(groupName).InvokeAsync("testMessage", $"{Context.ConnectionId}@{groupName}: {message}");
-        }
-
         public async Task JoinGroup(string groupName)
         {
             await Groups.AddAsync(Context.ConnectionId, groupName);
             //await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
             
-        }
-
-        public Task SendTest()
-        {
-            return Clients.All.InvokeAsync("testMessage", $"To ALL Test");
         }
 
         /// <summary>
