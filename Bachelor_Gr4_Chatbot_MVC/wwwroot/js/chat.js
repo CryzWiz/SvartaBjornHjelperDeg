@@ -17,10 +17,7 @@
 
         });
 
-        
-
-
-
+       
         //$chatboxCredentials.on('submit', function(e) {
         //    e.preventDefault();
         //    $chatbox.removeClass('chatbox--empty');
@@ -60,42 +57,28 @@ function test() {
 }
 
 
-
+/*
 $('#connectionListTable tbody').click(function (event) {
     var row = $(this).find("tr");
-    var value = row.find("td:second").html();
-
-
+    var value = row.find("td:nth-child(2)").html();
     alert(value);
 });
+*/
 
 
-
-
+// -------------- List of all connections ------------------
 function updateConnectionList(connections) {
     var str = "";
     $.each(connections, function (index, key) {
-        str += "<tr><td>" + (index + 1) + "</td>";
-        str += "<td>" + key + "</td>";
-        str += "<td>test</td><td>test</td></tr>";
+        str += "<tr>";
+            str += "<td>" + (index + 1) + "</td>";
+            str += "<td>" + key + "</td>"; // TODO: Endres
+            str += "<td>test</td><td>test</td>"; // TODO: Endres
+            str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' > Åpne chat</button></td>";
+        str += "</tr>";
     });
     $("#connectionList").html(str);
 }
-
-function updateConnectionList2(connections) {
-    var url = document.URL;
-    var urlStart = url.substring(0, url.indexOf("/"));
-    var str = "";
-    $.each(connections, function (index, key) {
-        str += "<tr><td>" + (index + 1) + "</td>";
-        str += "<td>" + key + "</td>";
-        str += "<td>test</td><td>test</td>";
-        //str += "<td><a href=" + urlStart + "/Chat/ConnectToChat?" + "chatGroup=" + key + ">Åpne chat</a></td></tr>";
-        str += "<td><button name='joinGroup' value='" + key + "'>Åpne chat</button></td></tr>";
-    });
-    $("#connectionList").html(str);
-}
-
 
 // SignalR: 
 document.addEventListener('DOMContentLoaded', function () {
@@ -108,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     messageInput.focus();
 
     // Start the connection.
-    startConnection('/chat', function (connection) {
+    startConnection('/chathub', function (connection) {
         // Create a function that the hub can call to broadcast messages.
         connection.on('broadcastMessage', function (message) {
             // TODO: Html encode display name and message.
@@ -145,11 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
         connection.on('displayConnections', function (connections) {
             updateConnectionList(connections);
         });
-
-        connection.on('testMessage', function (message) {
-            // TODO: Testkode, må endres
-            $("#testMessageToUser").html(message);
-        });
     })
         .then(function (connection) {
             console.log('connection started'); // TODO: 
@@ -166,12 +144,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 event.preventDefault();
             });
 
-            // Join Group
-            $("#join").click(function (event) {
-                groupId = $("#chatGroupId").val();
+            // Join Chat-Group
+            $("#connectionList").on('click', "button[name='joinGroup']", function (event) {
+                groupId = $(this).val();
                 connection.invoke('joinGroup', groupId);
             });
-
+            
         })
         .catch(error => {
             console.error(error.message);
