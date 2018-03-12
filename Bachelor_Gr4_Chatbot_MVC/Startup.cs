@@ -77,7 +77,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<TestChat>("chat");
+                routes.MapHub<Hubs.ChatHub>("chathub");
             });
 
             app.UseMvc(routes =>
