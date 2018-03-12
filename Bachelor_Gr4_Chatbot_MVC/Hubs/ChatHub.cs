@@ -16,11 +16,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-       
-        //private List<string> _connections2 = new List<string>();
-
-        private static int _counter = 0;
-
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
@@ -77,12 +72,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         
         /// <summary>
-        /// Send a message to everyone connected to the chat. 
+        /// Send a message to everyone connected to the hub.  
         /// </summary>
         /// <param name="message">Message content.</param>
         public Task Send(string message)
         {
-            return Clients.All.InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
+            string displayName = GetDisplayName();
+            return Clients.All.InvokeAsync("broadcastMessage", $"{displayName}: {message}");
         }
 
         /// <summary>
@@ -98,7 +94,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 return Send(message);
             }
 
-            return Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId}@{groupName}: {message}");
+            string displayName = GetDisplayName();
+            return Clients.Group(groupName).InvokeAsync("Send", $"{displayName}@{groupName}: {message}");
             
         }
 
@@ -116,25 +113,25 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task LeaveGroup(string groupName)
         {
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).InvokeAsync("broadcastMessage", $"{Context.ConnectionId} left {groupName}");
-            await Clients.Group(groupName).InvokeAsync("testMessageToUser", $"{Context.ConnectionId} left {groupName}");
+            string displayName = GetDisplayName();
+            await Clients.Group(groupName).InvokeAsync("broadcastMessage", $"{displayName} left {groupName}");
+            
         }
 
         public Task Echo(string message)
         {
-            return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{Context.ConnectionId}: {message}");
+            string displayName = GetDisplayName();
+            return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{displayName}: {message}");
         }
 
-        // TODO: Trenger å oppdateres
+        // TODO: DisplayName - Trenger å oppdateres
         public string GetDisplayName()
         {
             if (Context.User.Identity.IsAuthenticated)
             {
                 return Context.User.Identity.Name;
             }
-
-            _counter++;
-            return "Guest " + _counter;
+            return "Guest";
         }
 
 

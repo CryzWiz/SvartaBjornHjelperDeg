@@ -25,6 +25,8 @@
 });
 })(jQuery);
 
+
+
 // Starts a SignalR connection with transport fallback - if the connection cannot be started using
 // the webSockets transport the function will fallback to the serverSentEvents transport and
 // if this does not work it will try longPolling. If the connection cannot be started using
@@ -80,7 +82,7 @@ function updateConnectionList(connections) {
     $("#connectionList").html(str);
 }
 
-// SignalR: 
+// 
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
@@ -108,8 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
-        
-        /// SignalR Client methods called from hub: 
+
+        /// SignalR Client methods called from hub:
         connection.on('send', function (message) {
             // TODO: Html encode display name and message.
             //var encodedName = name;
@@ -130,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })
         .then(function (connection) {
-            console.log('connection started'); // TODO: 
+            console.log('connection started'); // TODO:
 
             // Send message
             $("#sendmessage").click(function (event) {
@@ -149,12 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 groupId = $(this).val();
                 connection.invoke('joinGroup', groupId);
             });
-            
+
         })
         .catch(error => {
             console.error(error.message);
         });
-
-
 });
 

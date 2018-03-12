@@ -8,18 +8,21 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Sockets;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 
+
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
     public class ChatController : Controller
     {
         IChatRepository _repository;
         ConnectionManager _connectionManager;
+        private readonly IHubContext<ChatHub> _chatHub;
         
 
-        public ChatController(IChatRepository repository, ConnectionManager connectionManager)
+        public ChatController(IChatRepository repository, ConnectionManager connectionManager, IHubContext<ChatHub> chatHub)
         {
             _repository = repository;
             _connectionManager = connectionManager;
+            _chatHub = chatHub;
         }
 
         public IActionResult Index()
@@ -33,8 +36,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             //var testHub = _connectionManager.GetHubContext<TestChat>();
 
             // Slettes: 
+
             return View();
         }
+
+        
 
    
     }
