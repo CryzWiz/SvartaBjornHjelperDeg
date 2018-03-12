@@ -16,6 +16,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
+        private Queue<string> _queue = new Queue<string>();
+
+
         public override async Task OnConnectedAsync()
         {
             // Map connections using in-memory ConnectionMapping
@@ -34,6 +37,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayConnectedUsers();
          }
 
+        
+
         public override async Task OnDisconnectedAsync(Exception ex)
         {
             // Map connections using in-memory ConnectionMapping
@@ -46,6 +51,23 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string displayName = GetDisplayName();
             await Clients.All.InvokeAsync("broadcastMessage", $"{displayName} left");
             await DisplayConnectedUsers();
+            await DisplayQueue();
+        }
+
+        public async Task JoinQueue()
+        {
+            _queue.Enqueue(Context.ConnectionId);
+            await Clients.All.InvokeAsync("displayQueue", GetQueue());
+        }
+
+        public string PickFromQueue()
+        {
+            return _queue.Dequeue();
+        }
+
+        public IEnumerable<string> GetQueue()
+        {
+            return _queue.ToArray();
         }
 
         public string SetConnectionName()
@@ -70,6 +92,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
+        public async Task DisplayQueue()
+        {
+            IEnumerable<string> queue = GetQueue();
+            await Clients.All.InvokeAsync("displayQueue", queue);
+        }
+
         
         /// <summary>
         /// Send a message to everyone connected to the hub.  
@@ -88,10 +116,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <param name="message">Message content</param>
         public Task SendToGroup(string groupName, string message)
         {
-            // TODO: Testkode som må fjernes: 
+            // TODO: Testkode som må fjernes
             if(groupName.Length == 0)
             {
-                return Send(message);
+                return Clients.Group(Context.ConnectionId).InvokeAsync("Send", $"Du er ikke koblet til noen chat. ");
             }
 
             string displayName = GetDisplayName();

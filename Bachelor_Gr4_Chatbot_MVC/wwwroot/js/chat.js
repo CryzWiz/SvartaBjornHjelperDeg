@@ -76,10 +76,34 @@ function updateConnectionList(connections) {
             str += "<td>" + (index + 1) + "</td>";
             str += "<td>" + key + "</td>"; // TODO: Endres
             str += "<td>test</td><td>test</td>"; // TODO: Endres
-            str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' > Åpne chat</button></td>";
+            str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
         str += "</tr>";
     });
     $("#connectionList").html(str);
+}
+
+function displayQueue(connections) {
+    var str = "";
+    $.each(connections, function (index, key) {
+        str += "<tr>";
+        str += "<td>" + (index + 1) + "</td>";
+        str += "<td>" + key + "</td>"; // TODO: Endres
+        str += "<td>test</td><td>test</td>"; // TODO: Endres
+        str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
+        str += "</tr>";
+    });
+    $("#queueList").html(str);
+}
+
+function addToQueue(connection) {
+    var str = "";
+    str += "<tr>";
+    str += "<td>" + test + "</td>";
+    str += "<td>" + key + "</td>"; // TODO: Endres
+    str += "<td>test</td><td>test</td>"; // TODO: Endres
+    str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
+    str += "</tr>";
+    $("#queueList").append(str);
 }
 
 // 
@@ -130,6 +154,14 @@ document.addEventListener('DOMContentLoaded', function () {
         connection.on('displayConnections', function (connections) {
             updateConnectionList(connections);
         });
+
+        connection.on('displayQueue', function (connections) {
+            displayQueue(connections);
+        });
+
+        connection.on('addToQueue', function (connection) {
+            addToQueue(connection);
+        });
     })
         .then(function (connection) {
             console.log('connection started'); // TODO:
@@ -150,6 +182,15 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#connectionList").on('click', "button[name='joinGroup']", function (event) {
                 groupId = $(this).val();
                 connection.invoke('joinGroup', groupId);
+            });
+            $("#queueList").on('click', "button[name='joinGroup']", function (event) {
+                groupId = $(this).val();
+                connection.invoke('joinGroup', groupId);
+            });
+
+            // Add to queue
+            $("#addToQueue").click(function (event) {
+                connection.invoke('joinQueue');
             });
 
         })

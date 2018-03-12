@@ -16,6 +16,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         private readonly Dictionary<T, HashSet<string>> _connections = 
             new Dictionary<T, HashSet<string>>();
 
+
+
         public int Count
         {
             get
