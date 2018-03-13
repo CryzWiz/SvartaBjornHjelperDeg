@@ -115,6 +115,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                     }
                 }
             }
+
+            // Send the entire activityset in return for now. 
             return Json(response.Content.ReadAsStringAsync().Result);
         }
     }
