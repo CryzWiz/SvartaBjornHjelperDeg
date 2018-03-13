@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "Påkoblede brukere: ";
+}
+@section AddToHead{
+    <link href="@Url.Content("~/css/popupChat.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="container">
+    <table class="table" id="connectionListTable">
+        <thead>
+            <tr>
+                <td>#</td>
+                <th>Chat ID</th>
+                <th>Tid / klokkeslett</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+
+        </thead>
+        <tbody id="connectionList">
+
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <iframe src='https://webchat.botframework.com/embed/Chatbot_SvartaBjorn_Azure?s=0EHMWUP76KI.cwA.Sds.wy7NypTmRGbx3oXxgjUc-4OHWwBikhE0rSUVxjIvkhs'
+                style="min-height:350px;"></iframe>
+    </div>
+</div>
+
+
+
+
+<!-- PopUp chatbox -->
+
+
+<div class="chatbox chatbox--tray">
+    <div class="chatbox__title" id="chatbox__title">
+        <h5><a href="#">ChatBot</a></h5>
+        <button class="chatbox__title__tray">
+            <span></span>
+        </button>
+        <button class="chatbox__title__close" id="chatbox__title_close">
+            <span>
+                <svg viewBox="0 0 12 12" width="12px" height="12px">
+                    <line stroke="#FFFFFF" x1="11.75" y1="0.25" x2="0.25" y2="11.75"></line>
+                    <line stroke="#FFFFFF" x1="11.75" y1="11.75" x2="0.25" y2="0.25"></line>
+                </svg>
+            </span>
+        </button>
+    </div>
+    <div class="chatbox__body" id="chatbox__body">
+        <div class="chatbox__body__message chatbox__body__message--left">
+            <img src="~/images/narvik_kommune_small.jpg" alt="Picture">
+            <p>Hei, og velkommen til Narvik Kommunes websider. Er det noe jeg kan hjelpe deg med?</p>
+        </div>
+
+        @*<div class="chatbox__body__message chatbox__body__message--right">
+                <img src="~/images/user.png" alt="Picture">
+                <p>
+                    Hei, jeg ønsker at min datter skal lære å spille blokkfløyte. Vi har nettopp flyttet
+                    til Narvik kommune - hva gjør jeg for å melde henne på?
+                </p>
+            </div>*@
+
+    </div>
+    <!--
+    <form class="chatbox__credentials">
+        <div class="form-group">
+            <label for="inputName">Name:</label>
+            <input type="text" class="form-control" id="inputName" required>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email:</label>
+            <input type="email" class="form-control" id="inputEmail" required>
+        </div>
+        <button type="submit" class="btn btn-success btn-block">Enter Chat</button>
+    </form>
+    -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-inline">
+                <input type="text" id="message" placeholder="Din kommentar ...">
+                <input type="button" id="sendmessage" value="send" />
+                <input type="hidden" id="displayname" />
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@section Scripts {
+    <!--Add script to update the page and send messages.-->
+    <!--<script src="~/scripts/popupChat.js"></script>-->
+    <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>
+    <script src="~/js/chat.js"></script>
+}

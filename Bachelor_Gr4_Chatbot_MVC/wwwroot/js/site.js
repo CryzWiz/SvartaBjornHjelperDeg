@@ -2,7 +2,7 @@
 // https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/hubs-api-guide-javascript-client
 
 function testWithProxy() {
-    var chatHubProxy = $.connection.chatHub;
+    var chatHubProxy = $.connection.chat;
     var name = "testName";
     chatHubProxy.client.Send = function (name, message) {
         console.log(name + ' ' + message);
