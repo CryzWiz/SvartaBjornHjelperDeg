@@ -40,6 +40,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        public IActionResult UserChat()
+        {
+            return View();
+        }
+
         
 
    

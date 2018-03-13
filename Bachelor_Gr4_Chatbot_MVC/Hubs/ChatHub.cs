@@ -21,19 +21,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            // Map connections using in-memory ConnectionMapping
+            /*
+             * Map connections using in-memory connection mapping
+             * for keeping track of all active connections. 
+             */
             string connectionId = Context.ConnectionId;
-            string connectionName = SetConnectionName();
+            string key = connectionId;
+            
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                key = Context.User.Identity.Name;
 
-            // Add to connection list
-            _connections.Add(connectionName, Context.ConnectionId);
+                // Add to single-user group
+                await Groups.AddAsync(Context.ConnectionId, key);
+            }
+            _connections.Add(key, connectionId);
 
-            // Join persons own group 
-            // TODO: Change this later! TESTCODE
-            await JoinGroup(connectionName);
-
-            string displayName = GetDisplayName();
-            await Clients.All.InvokeAsync("broadcastMessage", $"{displayName} joined");
             await DisplayConnectedUsers();
          }
 
@@ -41,23 +44,35 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            // Map connections using in-memory ConnectionMapping
+            /*
+             * Map connections using in-memory connection mapping
+             * for keeping track of all active connections. 
+             */
             string connectionId = Context.ConnectionId;
-            string connectionName = SetConnectionName();
+            string key = connectionId;
+
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                key = Context.User.Identity.Name;
+            }
 
             // Remove from connection list
-            _connections.Remove(connectionName, Context.ConnectionId);
+            _connections.Remove(key, Context.ConnectionId);
 
-            string displayName = GetDisplayName();
-            await Clients.All.InvokeAsync("broadcastMessage", $"{displayName} left");
-            await DisplayConnectedUsers();
+            // TODO: Gjør endringer her!
+            await DisplayConnectedUsers(); 
             await DisplayQueue();
         }
+
+        
 
         public async Task JoinQueue()
         {
             _queue.Enqueue(Context.ConnectionId);
+            int placeInQueue = _queue.Count();
+
             await Clients.All.InvokeAsync("displayQueue", GetQueue());
+            await Clients.Client(Context.ConnectionId).InvokeAsync("displayQueueNumber", placeInQueue);
         }
 
         public string PickFromQueue()
@@ -68,16 +83,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public IEnumerable<string> GetQueue()
         {
             return _queue.ToArray();
-        }
-
-        public string SetConnectionName()
-        {
-            string name = Context.ConnectionId;
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                name = Context.User.Identity.Name;
-            }
-            return name;
         }
 
         /// <summary>
@@ -98,70 +103,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.All.InvokeAsync("displayQueue", queue);
         }
 
-        
         /// <summary>
-        /// Send a message to everyone connected to the hub.  
-        /// </summary>
-        /// <param name="message">Message content.</param>
-        public Task Send(string message)
-        {
-            string displayName = GetDisplayName();
-            return Clients.All.InvokeAsync("broadcastMessage", $"{displayName}: {message}");
-        }
-
-        /// <summary>
-        /// Send a message to a specified user group. 
+        /// Send a message to a specified single-user group.
         /// </summary>
         /// <param name="groupName">Group name</param>
         /// <param name="message">Message content</param>
-        public Task SendToGroup(string groupName, string message)
+        public async Task SendToGroup(string groupName, string message)
         {
-            // TODO: Testkode som må fjernes
-            if(groupName.Length == 0)
-            {
-                return Clients.Group(Context.ConnectionId).InvokeAsync("Send", $"Du er ikke koblet til noen chat. ");
-            }
-
-            string displayName = GetDisplayName();
-            return Clients.Group(groupName).InvokeAsync("Send", $"{displayName}@{groupName}: {message}");
-            
-        }
-
-        public async Task JoinGroup(string groupName)
-        {
-            await Groups.AddAsync(Context.ConnectionId, groupName);
-            //await Clients.Group(groupName).InvokeAsync("Send", $"{Context.ConnectionId} joined {groupName}");
-            
-        }
-
-        /// <summary>
-        /// Connected user leaves the specified group
-        /// </summary>
-        /// <param name="groupName">Group name</param>
-        public async Task LeaveGroup(string groupName)
-        {
-            await Groups.RemoveAsync(Context.ConnectionId, groupName);
-            string displayName = GetDisplayName();
-            await Clients.Group(groupName).InvokeAsync("broadcastMessage", $"{displayName} left {groupName}");
-            
-        }
-
-        public Task Echo(string message)
-        {
-            string displayName = GetDisplayName();
-            return Clients.Client(Context.ConnectionId).InvokeAsync("broadcastMessage", $"{displayName}: {message}");
-        }
-
-        // TODO: DisplayName - Trenger å oppdateres
-        public string GetDisplayName()
-        {
+            string from = Context.ConnectionId;
             if (Context.User.Identity.IsAuthenticated)
             {
-                return Context.User.Identity.Name;
+                from = Context.User.Identity.Name;
             }
-            return "Guest";
+            await Clients.Group(groupName).InvokeAsync("Send", message, from); 
         }
-
-
     }
 }

@@ -1,6 +1,6 @@
 ﻿(function ($) {
     $(document).ready(function () {
-
+        $("#popup_chatbox_placeholder").load("~/chatbox/chatbox.html");
         var $chatbox = $('.chatbox'),
             $chatboxTitle = $('.chatbox__title'),
             $chatboxTitleClose = $('.chatbox__title__close');
@@ -17,15 +17,13 @@
 
         });
 
-       
+
         //$chatboxCredentials.on('submit', function(e) {
         //    e.preventDefault();
         //    $chatbox.removeClass('chatbox--empty');
         //});
-});
+    });
 })(jQuery);
-
-$("#popup_chatbox_placeholder").load("chatbox.html");
 
 // Starts a SignalR connection with transport fallback - if the connection cannot be started using
 // the webSockets transport the function will fallback to the serverSentEvents transport and
@@ -67,16 +65,36 @@ $('#connectionListTable tbody').click(function (event) {
 });
 */
 
+function displaySentMessage() {
+    var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
+    str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
+    str += "<p>" + message + "</p>";
+    str += "</div>";
+}
+
+function displayReceivedMessage(message) {
+    // TODO: Html encode message.
+    var encodedMsg = message;
+    // Add the sent message to the page.
+    var liElement = document.createElement('div');
+    liElement.className += "chatbox__body__message";
+    liElement.className += " chatbox__body__message--left";
+    liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    document.getElementById('chatbox__body').appendChild(liElement);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+}
+
 
 // -------------- List of all connections ------------------
 function updateConnectionList(connections) {
     var str = "";
     $.each(connections, function (index, key) {
         str += "<tr>";
-            str += "<td>" + (index + 1) + "</td>";
-            str += "<td>" + key + "</td>"; // TODO: Endres
-            str += "<td>test</td><td>test</td>"; // TODO: Endres
-            str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
+        str += "<td>" + (index + 1) + "</td>";
+        str += "<td>" + key + "</td>"; // TODO: Endres
+        str += "<td>test</td><td>test</td>"; // TODO: Endres
+        str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
         str += "</tr>";
     });
     $("#connectionList").html(str);
@@ -108,6 +126,8 @@ function addToQueue(connection) {
 
 // 
 document.addEventListener('DOMContentLoaded', function () {
+    $("#popup_chatbox_placeholder").load("~/chatbox/chatbox.html");
+
     var messageInput = document.getElementById('message');
     var groupId = "";
 
@@ -152,17 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-        connection.on('displayConnections', function (connections) {
-            updateConnectionList(connections);
+        connection.on('displayQueueNumber', function (queNumber) {
+            displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
         });
 
-        connection.on('displayQueue', function (connections) {
-            displayQueue(connections);
-        });
 
-        connection.on('addToQueue', function (connection) {
-            addToQueue(connection);
-        });
     })
         .then(function (connection) {
             console.log('connection started'); // TODO:
@@ -178,21 +192,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 messageInput.focus();
                 event.preventDefault();
             });
-
-            // Join Chat-Group
-            $("#connectionList").on('click', "button[name='joinGroup']", function (event) {
-                groupId = $(this).val();
-                connection.invoke('joinGroup', groupId);
-            });
-            $("#queueList").on('click', "button[name='joinGroup']", function (event) {
-                groupId = $(this).val();
-                connection.invoke('joinGroup', groupId);
-            });
-
-            // Add to queue
-            $("#addToQueue").click(function (event) {
+            
+            // Start chat by joining queue
+            $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
                 connection.invoke('joinQueue');
             });
+
+
 
         })
         .catch(error => {

@@ -91,5 +91,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return keys;
         }
 
+        public IEnumerable<string> GetConnections(T key)
+        {
+            HashSet<string> connections;
+            if(_connections.TryGetValue(key, out connections))
+            {
+                return connections;
+            }
+            return Enumerable.Empty<string>();
+        }
+
     }
 }

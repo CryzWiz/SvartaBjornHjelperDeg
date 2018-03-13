@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "UserChat";
+}
+@section AddToHead{
+    <link href="@Url.Content("~/css/popupChat.css")" rel="stylesheet" type="text/css" />
+}
+
+<h2>UserChat</h2>
+Tom side, viser chat fra brukers side. 
+<!-- PopUp chatbox -->
+
+<div id="chatbox_placeholder">
+    <div class="chatbox chatbox--tray">
+        <div class="chatbox__title" id="chatbox__title">
+            <h5><a href="#">ChatBot</a></h5>
+            <button class="chatbox__title__tray">
+                <span></span>
+            </button>
+            <button class="chatbox__title__close" id="chatbox__title_close">
+                <span>
+                    <svg viewBox="0 0 12 12" width="12px" height="12px">
+                        <line stroke="#FFFFFF" x1="11.75" y1="0.25" x2="0.25" y2="11.75"></line>
+                        <line stroke="#FFFFFF" x1="11.75" y1="11.75" x2="0.25" y2="0.25"></line>
+                    </svg>
+                </span>
+            </button>
+        </div>
+        <div class="chatbox__body" id="chatbox__body">
+            <div class="chatbox__body__message chatbox__message">
+
+                <p>Velkommen til Narvik Kommunes chat!</p>
+
+                <button id="startChat" class="btn btn-primary">Start chat</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-inline">
+                    <input type="text" id="message" placeholder="Din kommentar ...">
+                    <input type="button" id="sendmessage" value="send" />
+                    <input type="hidden" id="displayname" />
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+@section Scripts {
+    <!--Add script to update the page and send messages.-->
+    <!--<script src="~/scripts/popupChat.js"></script>-->
+    <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>
+    <script src="~/chatbox/chat-external.js"></script>
+}
