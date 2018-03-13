@@ -60,32 +60,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0");
-            response2 = await client.GetAsync("/v3/directline/tokens/generate");
+            
+            response = await client.PostAsync("/v3/directline/tokens/generate", null);
 
-            //if (response2.IsSuccessStatusCode)
-            //{
-            //    var conversation = new Conversation();
-            //    response3 = await client.PostAsJsonAsync("/api/conversations/", conversation);
-            //    if (response3.IsSuccessStatusCode)
-            //    {
-            //        Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-            //        string conversationUrl = ConversationInfo.ConversationId + "/messages/";
-            //        Message msg = new Message() { text = message };
-            //        response = await client.PostAsJsonAsync(conversationUrl, msg);
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            response = await client.GetAsync(conversationUrl);
-            //            if (response.IsSuccessStatusCode)
-            //            {
-            //                MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
-            //                ViewBag.Messages = BotMessage;
-            //                IsReplyReceived = true;
-            //            }
-            //        }
-            //    }
+            if (response.IsSuccessStatusCode)
+            {
+                var conversation = new Conversation();
+                response = await client.PostAsJsonAsync("/v3/directline/conversations", conversation);
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+                //    string conversationUrl = ConversationInfo.ConversationId + "/messages/";
+                //    Message msg = new Message() { text = message };
+                //    response = await client.PostAsJsonAsync(conversationUrl, msg);
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        response = await client.GetAsync(conversationUrl);
+                //        if (response.IsSuccessStatusCode)
+                //        {
+                //            MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
+                //            ViewBag.Messages = BotMessage;
+                //            IsReplyReceived = true;
+                //        }
+                //    }
+                //}
 
-            //}
-            return Json(response2);
+            }
+            return Json(response.Content.ReadAsStringAsync());
         }
 
 

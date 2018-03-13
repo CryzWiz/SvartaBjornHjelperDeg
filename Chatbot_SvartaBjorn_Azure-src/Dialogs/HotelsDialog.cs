@@ -16,7 +16,6 @@ namespace SimpleEchoBot.Dialogs
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("Velkommen til Hotell-søk -> Bare for test!");
-
             var hotelsFormDialog = FormDialog.FromForm(this.BuildHotelsForm, FormOptions.PromptInStart);
 
             context.Call(hotelsFormDialog, this.ResumeAfterHotelsFormDialog);
