@@ -28,10 +28,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
     public class ChatbotController : Controller
     {
         private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
-        private object result;
         private HttpResponseMessage response;
-        private HttpResponseMessage response2;
-        private HttpResponseMessage response3;
         private HttpClient client;
 
         private static string contentType = "application/json";
@@ -42,19 +39,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         private static string botAutorizeTokenScheme_V3 = "Bearer";
         private static string directLineConversation_V3 = "/v3/directline/conversations/";
 
-        private static string directLineAddress_V1 = "https://directline.botframework.com/api/conversations";
-        private static string tokenAddress_V1 = "/api/tokens/conversation";
-        private static string botAutorizeTokenScheme_V1 = "BotConnector";
-        private static string directLineConversation_V1 = "/api/conversations";
-
-        private static string ApiExt = "api/messages";
-        private static string ApiEndPoint = "https://chatbotsvartabjorn.azurewebsites.net/";
-
-
         private static string DiretlineUrl = @"https://chatbotsvartabjorn.azurewebsites.net/api/messages";
-        private static string directLineSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0";
-        String messagereturn;
-        Activity activity;
+
         private static string botId = "Chatbot_SvartaBjorn_Azure";
 
         public ActivitySet activitySet;
