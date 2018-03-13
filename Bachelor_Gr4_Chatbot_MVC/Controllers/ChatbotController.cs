@@ -57,6 +57,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         Activity activity;
         private static string botId = "Chatbot_SvartaBjorn_Azure";
 
+        public ActivitySet activitySet;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatbotController"/> class.
         /// </summary>
@@ -81,79 +83,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, BotSecret);
             // Fetch a new token for just this chat
             response = await client.PostAsync(tokenAddress_V3, null);
-            Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-            // Clear the headers and set the new token
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, conversationinfo.Token);
-            // Start the conversation
-            response = await client.PostAsync(directLineConversation_V3, null);
-            Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-            // Set the conversation url
-            string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
-            // Create activity
-            Activity thisActivity = new Activity { Type = "message", Text = "tester tester", From = new ChannelAccount { Id = currentConversation.ConversationId }};
-            var myContent = JsonConvert.SerializeObject(thisActivity);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            // Post the activity
-            response = await client.PostAsync(conversationUrl, byteContent);
-
-            // Fetch messages
-            response = await client.GetAsync(conversationUrl);
-
-            //response = await client.PostAsJsonAsync(conversationUrl, requestMessage);
-
-
             if (response.IsSuccessStatusCode) // Yey -> We got a connection and a reply
             {
-                
-                //Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+                Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+                // Clear the headers and set the new token
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, conversationinfo.Token);
+                // Start the conversation
+                response = await client.PostAsync(directLineConversation_V3, null);
 
-                
-                //string conversationUrl = "/v3/directline/conversations/" + conversationinfo.ConversationId + "/activities";
+                if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
+                {
+                    Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+                    // Set the conversation url
+                    string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
+                    // Create activity
+                    Activity thisActivity = new Activity { Type = "message", Text = "tester tester", From = new ChannelAccount { Id = currentConversation.ConversationId } };
+                    var myContent = JsonConvert.SerializeObject(thisActivity);
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                    var byteContent = new ByteArrayContent(buffer);
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    // Post the activity
+                    response = await client.PostAsync(conversationUrl, byteContent);
 
-                //ChannelAccount user = new ChannelAccount { Id = conversationinfo.ConversationId, Name = "allan_name" };
-                //ConversationAccount conversationAccount = new ConversationAccount { Id = conversationinfo.ConversationId };
-                //activity = new Activity { From = user, Text = "Hei", Type = "message", Conversation = conversationAccount };
-                //Message msg = new Message() { text = message, from = user, conversationId = conversationinfo.ConversationId,
-                //type = "message"};
-                //var a = Activity.CreateMessageActivity();
-                //a.From = user;
-                //a.Text = "hello";
-                //a.Type = "message";
-                //HttpRequestMessage requestMessage = new HttpRequestMessage();
-                //requestMessage.Content = new StringContent("{\"type\":\"message\",\"from\": {\"id\": \"user1\" }, \"text\":\"Hello\"}", Encoding.UTF8, "application/json");
-                //response = await client.PostAsJsonAsync(conversationUrl, requestMessage);
-                //response = await client.GetAsync(conversationUrl);
+                    if (response.IsSuccessStatusCode) // Yey -> It was posted
+                    {
+                        // Fetch messages
+                        response = await client.GetAsync(conversationUrl);
+                        activitySet = response.Content.ReadAsAsync(typeof(ActivitySet)).Result as ActivitySet;
+                    }
+                }
             }
-            
-
-
-            
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    var conversation = new Conversation();
-            //    response = await client.PostAsJsonAsync("/v3/directline/conversations", conversation);
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-            //        string conversationUrl = "/v3/directline/conversations/"+ConversationInfo.ConversationId + " / activities/";
-            //        Message msg = new Message() { text = message };
-            //        response = await client.PostAsJsonAsync(conversationUrl, msg);
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            response = await client.GetAsync(conversationUrl);
-            //            if (response.IsSuccessStatusCode)
-            //            {
-            //                MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
-            //                ViewBag.Messages = BotMessage;
-            //                IsReplyReceived = true;
-            //            }
-            //        }
-            //    }
-            //}
             return Json(response.Content.ReadAsStringAsync().Result);
         }
     }
