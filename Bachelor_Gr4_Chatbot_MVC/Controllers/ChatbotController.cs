@@ -1,5 +1,6 @@
 ﻿//using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
 using Bachelor_Gr4_Chatbot_MVC.Extensions;
+using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector.DirectLine;
@@ -25,6 +26,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
         private object result;
         private HttpResponseMessage response;
+        private HttpResponseMessage response2;
+        private HttpResponseMessage response3;
         private HttpClient client;
         private static string directLineAddress = "https://directline.botframework.com/v3/directline/conversations";
         private static string BaseAddress = "https://chatbotsvartabjorn.azurewebsites.net/";
@@ -52,76 +55,43 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
             bool IsReplyReceived = false;
 
-            // Connect to the DirectLine service
-            DirectLineClient client = new DirectLineClient(directLineSecret);
-             
-            // Try to get the existing Conversation
-            //Conversation conversation = HttpContext.Session["conversation"] as Conversation;
-            // Try to get an existing watermark 
-            // the watermark marks the last message we received
-            //string watermark =
-            //    System.Web.HttpContext.Current.Session["watermark"] as string;
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://directline.botframework.com/v3/directline");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0");
+            response2 = await client.GetAsync("/v3/directline/tokens/generate");
 
-            if (HttpContext.Session.Get("conversation") == null)
-            {
-                // There is no existing conversation
-                // start a new one
-                Conversation conversation = client.Conversations.StartConversation();
-            }
+            //if (response2.IsSuccessStatusCode)
+            //{
+            //    var conversation = new Conversation();
+            //    response3 = await client.PostAsJsonAsync("/api/conversations/", conversation);
+            //    if (response3.IsSuccessStatusCode)
+            //    {
+            //        Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+            //        string conversationUrl = ConversationInfo.ConversationId + "/messages/";
+            //        Message msg = new Message() { text = message };
+            //        response = await client.PostAsJsonAsync(conversationUrl, msg);
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            response = await client.GetAsync(conversationUrl);
+            //            if (response.IsSuccessStatusCode)
+            //            {
+            //                MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
+            //                ViewBag.Messages = BotMessage;
+            //                IsReplyReceived = true;
+            //            }
+            //        }
+            //    }
 
-            var conv = new byte[250];
-            HttpContext.Session.Get("conversation");
-
-            var watermk = new byte[250];
-            string wtmk = HttpContext.Session.GetString("watermark");
-            //["watermark"] as string;
-            var keys = HttpContext.Session.Keys.ToString();
-
-            var x = HttpContext.Session.Get<Conversation>("conversation");
-
-            //client = new HttpClient();
-            //client.BaseAddress = new Uri(directLineAddress);
-            //client.DefaultRequestHeaders.Accept.Clear();
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0");
-            //response = await client.GetAsync(directLineAddress);
-            if (client.Conversations != null)
-            {
-                //var conversation = new Conversation();
-                //response = await client.PostAsJsonAsync("/api/conversations/", conversation);
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    Conversation ConversationInfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-                //    string conversationUrl = ConversationInfo.conversationId + "/messages/";
-                //    Message msg = new Message() { text = message };
-                //    response = await client.PostAsJsonAsync(conversationUrl, msg);
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        result = new { test = "suksess - Beskjeden er sendt og vi fikk i retur: " + response.IsSuccessStatusCode };
-                //        response = await client.GetAsync(conversationUrl);
-                        //if (response.IsSuccessStatusCode)
-                        //{
-                        //    MessageSet BotMessage = response.Content.ReadAsAsync(typeof(MessageSet)).Result as MessageSet;
-                        //    ViewBag.Messages = BotMessage;
-                        //    IsReplyReceived = true;
-                        //}
-                //    }
-                //}
-                result = new { test = "Yes, vi har en connection!: " + client.Conversations.GetType() };
-                result = x;
-                return Json(result);
-
-            }
-            else
-            {
-                result = new { test = "Nope - Vi klarte ikke koble til...RESPONCE: " + client.Credentials.GetType() };
-                // return IsReplyReceived;
-                return Json(result);
-            }
-            //result = new { test = "Nope - Vi klarte ikke koble til...RESPONCE: " + client.Tokens };
-            //return IsReplyReceived;
-            //return Json(result);
+            //}
+            return Json(response2);
         }
+
+
+
+
+
         // POST api/values
         //[HttpPost]
         //public virtual async Task<IActionResult> Post(Activity activity)
