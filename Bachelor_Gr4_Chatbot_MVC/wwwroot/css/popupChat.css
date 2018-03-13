@@ -216,3 +216,23 @@
 .chatbox--empty .chatbox__credentials {
     display: block;
 }
+
+.chat-message-sender {
+    position: relative;
+    background-color: #fff;
+    border-radius: .4em;
+}
+
+.chat-message-sender:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 18px solid transparent;
+        border-right-color: #336699;
+        border-left: 0;
+        margin-top: -18px;
+        margin-left: -18px;
+    }

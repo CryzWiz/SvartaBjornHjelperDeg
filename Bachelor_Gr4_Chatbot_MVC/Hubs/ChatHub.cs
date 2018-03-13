@@ -26,17 +26,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              * for keeping track of all active connections. 
              */
             string connectionId = Context.ConnectionId;
-            string key = connectionId;
-            
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                key = Context.User.Identity.Name;
-
-                // Add to single-user group
-                await Groups.AddAsync(Context.ConnectionId, key);
-            }
+            string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
             _connections.Add(key, connectionId);
 
+            // Add to single-user group
+            await Groups.AddAsync(Context.ConnectionId, key);
+            
             await DisplayConnectedUsers();
          }
 
@@ -49,14 +44,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              * for keeping track of all active connections. 
              */
             string connectionId = Context.ConnectionId;
-            string key = connectionId;
-
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                key = Context.User.Identity.Name;
-            }
-
-            // Remove from connection list
+            string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
             _connections.Remove(key, Context.ConnectionId);
 
             // TODO: Gjør endringer her!
@@ -110,11 +98,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <param name="message">Message content</param>
         public async Task SendToGroup(string groupName, string message)
         {
-            string from = Context.ConnectionId;
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                from = Context.User.Identity.Name;
-            }
+            string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
             await Clients.Group(groupName).InvokeAsync("Send", message, from); 
         }
     }

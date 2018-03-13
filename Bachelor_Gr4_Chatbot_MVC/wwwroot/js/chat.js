@@ -94,7 +94,7 @@ function displayQueue(connections) {
     });
     $("#queueList").html(str);
 }
-
+ /*
 function addToQueue(connection) {
     var str = "";
     str += "<tr>";
@@ -104,7 +104,7 @@ function addToQueue(connection) {
     str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
     str += "</tr>";
     $("#queueList").append(str);
-}
+}*/
 
 // 
 document.addEventListener('DOMContentLoaded', function () {

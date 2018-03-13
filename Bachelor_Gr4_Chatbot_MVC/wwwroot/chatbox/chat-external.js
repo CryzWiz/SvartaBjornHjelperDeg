@@ -57,6 +57,8 @@ function test() {
 }
 
 
+
+
 /*
 $('#connectionListTable tbody').click(function (event) {
     var row = $(this).find("tr");
@@ -79,7 +81,7 @@ function displayReceivedMessage(message) {
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
-    liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
@@ -156,8 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /// SignalR Client methods called from hub:
-        connection.on('send', function (message) {
-            // TODO: Html encode message.
+        connection.on('send', function (message, from) {
+            groupId = from;
+            displayReceivedMessage(message);
+            /*// TODO: Html encode message.
             var encodedMsg = message;
             // Add the sent message to the page.
             var liElement = document.createElement('div');
@@ -167,11 +171,11 @@ document.addEventListener('DOMContentLoaded', function () {
             liElement.innerHTML += '<p>' + encodedMsg + '</p>';
             document.getElementById('chatbox__body').appendChild(liElement);
             document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
-
+            groupId = from;*/
         });
 
 
-
+        // TODO: for 
         connection.on('displayQueueNumber', function (queNumber) {
             displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
         });
