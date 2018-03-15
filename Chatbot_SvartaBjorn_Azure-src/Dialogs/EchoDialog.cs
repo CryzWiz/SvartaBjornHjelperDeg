@@ -15,6 +15,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
 
         public async Task StartAsync(IDialogContext context)
         {
+            await context.PostAsync("Tester kun echo og teller beskjeder her. Reset teller med ordet 'reset'.");
             context.Wait(MessageReceivedAsync);
         }
 
@@ -27,13 +28,13 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 PromptDialog.Confirm(
                     context,
                     AfterResetAsync,
-                    "Are you sure you want to reset the count?",
-                    "Didn't get that!",
+                    "Vil du nullstille telleren?",
+                    "Forstod deg ikke!",
                     promptStyle: PromptStyle.Auto);
             }
             else
             {
-                await context.PostAsync($"{this.count++}: You said {message.Text}");
+                await context.PostAsync($"{this.count++}: Du sa: {message.Text}");
                 context.Wait(MessageReceivedAsync);
             }
         }
@@ -44,13 +45,13 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             if (confirm)
             {
                 this.count = 1;
-                await context.PostAsync("Reset count.");
+                await context.PostAsync("Telleren er nullstilt. Sender deg tilbake til start igjen.");
             }
             else
             {
-                await context.PostAsync("Did not reset count.");
+                await context.PostAsync("Nullstilling ble ikke gjort. Sender deg tilbake til start igjen.");
             }
-            context.Wait(MessageReceivedAsync);
+            context.Done<object>(null);
         }
 
     }

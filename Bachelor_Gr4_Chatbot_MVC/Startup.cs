@@ -54,7 +54,8 @@ namespace Bachelor_Gr4_Chatbot_MVC
             services.AddTransient<IAdminRepository, EFAdminRepository>();
             services.AddTransient<IChatRepository, EFChatRepository>();
             services.AddSignalR();
-            services.AddMvc();
+            services.AddMvc() .AddSessionStateTempDataProvider();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,10 +76,13 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             app.UseAuthentication();
 
+            app.UseSession();
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<Hubs.ChatHub>("chathub");
             });
+
 
             app.UseMvc(routes =>
             {
@@ -86,6 +90,8 @@ namespace Bachelor_Gr4_Chatbot_MVC
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            
         }
     }
 }
