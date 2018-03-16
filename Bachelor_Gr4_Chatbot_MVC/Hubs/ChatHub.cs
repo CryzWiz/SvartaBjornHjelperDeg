@@ -1,6 +1,7 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        private Queue<string> _queue = new Queue<string>();
+        private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
 
 
         public override async Task OnConnectedAsync()
@@ -72,6 +73,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task<string> PickFromQueue()
         {
+            string connectionId;
+
+            if(!_queue.TryPeek(out connectionId))
+            {
+                // TODO: Håndter feil her! 
+            }
             string connectionId = _queue.Dequeue();
             await DisplayQueue();
             return connectionId;
@@ -124,16 +131,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task SendToGroup(string groupName, string message)
         {
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-            /*Message msg = new Message
+            Message msg = new Message
             {
                 From = from,
                 To = groupName,
                 DisplayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Guest"),
                 DateTime = DateTime.Now,
                 Content = message
-            };*/
+            };
 
-
+            
             await DisplayMessage(groupName, from, message);
 
         }
@@ -141,6 +148,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
             await Clients.Group(groupFrom).InvokeAsync("sendMessage", message);
+            
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         }
         public virtual DbSet<Conversation> Conversations { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<OpeningHours> OpeningHours {get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,6 +27,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Conversation>().ToTable("Conversation");
             builder.Entity<Message>().ToTable("Message");
+            builder.Entity<>
         }
     }
 }

@@ -205,6 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
         connection.on('sendMessage', function (message) {
             displaySentMessage(message);
         });
+
+ 
+
     })
         .then(function (connection) {
             console.log('connection started'); // TODO:
