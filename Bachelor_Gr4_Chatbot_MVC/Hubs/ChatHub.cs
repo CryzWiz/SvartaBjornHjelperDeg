@@ -56,16 +56,25 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task JoinQueue()
         {
+            /* Create conversation
+            Conversation conversation = new Conversation
+            {
+                IsChatBot = false,
+                StartTime = DateTime.Now
+            };*/
+
             _queue.Enqueue(Context.ConnectionId);
             int placeInQueue = _queue.Count();
 
-            await Clients.All.InvokeAsync("displayQueue", GetQueue());
+            await DisplayQueue();
             await Clients.Client(Context.ConnectionId).InvokeAsync("displayQueueNumber", placeInQueue);
         }
 
-        public string PickFromQueue()
+        public async Task<string> PickFromQueue()
         {
-            return _queue.Dequeue();
+            string connectionId = _queue.Dequeue();
+            await DisplayQueue();
+            return connectionId;
         }
 
         public IEnumerable<string> GetQueue()
@@ -85,6 +94,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
+        public async Task JoinChat(string groupName) {
+            // TODO: Skal ikke hardkodes men hentes fra databasen: Denne meldingen hører hjemme i pickfromque, ikke joinchat
+            string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+            string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
+
+
+            /*Message msg = new Message
+            {
+                Content = "test",
+                From = "fra meg"
+            };*/
+            string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+
+            await DisplayMessage(groupName, from, message);
+        }
+
         public async Task DisplayQueue()
         {
             IEnumerable<string> queue = GetQueue();
@@ -99,7 +124,23 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task SendToGroup(string groupName, string message)
         {
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-            await Clients.Group(groupName).InvokeAsync("Send", message, from); 
+            /*Message msg = new Message
+            {
+                From = from,
+                To = groupName,
+                DisplayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Guest"),
+                DateTime = DateTime.Now,
+                Content = message
+            };*/
+
+
+            await DisplayMessage(groupName, from, message);
+
+        }
+        public async Task DisplayMessage(string groupTo, string groupFrom, string message)
+        {
+            await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
+            await Clients.Group(groupFrom).InvokeAsync("sendMessage", message);
         }
     }
 }

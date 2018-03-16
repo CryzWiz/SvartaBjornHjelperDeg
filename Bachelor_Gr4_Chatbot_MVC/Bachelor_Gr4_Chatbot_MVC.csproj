@@ -5,6 +5,12 @@
     <UserSecretsId>aspnet-Bachelor_Gr4_Chatbot_MVC-D673FEC9-4E01-4AFA-A8F3-0F9A68509FBA</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Views\Chat\chatbox.html">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.3.1" />

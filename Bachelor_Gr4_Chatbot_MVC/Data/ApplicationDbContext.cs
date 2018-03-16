@@ -15,6 +15,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
             : base(options)
         {
         }
+        public virtual DbSet<Conversation> Conversations { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +24,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
+            builder.Entity<Conversation>().ToTable("Conversation");
+            builder.Entity<Message>().ToTable("Message");
         }
     }
 }

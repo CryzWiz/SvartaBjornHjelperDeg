@@ -1,6 +1,5 @@
 ﻿(function ($) {
     $(document).ready(function () {
-        $("#popup_chatbox_placeholder").load("~/chatbox/chatbox.html");
         var $chatbox = $('.chatbox'),
             $chatboxTitle = $('.chatbox__title'),
             $chatboxTitleClose = $('.chatbox__title__close');
@@ -16,7 +15,6 @@
             if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
 
         });
-
 
         //$chatboxCredentials.on('submit', function(e) {
         //    e.preventDefault();
@@ -67,11 +65,21 @@ $('#connectionListTable tbody').click(function (event) {
 });
 */
 
-function displaySentMessage() {
-    var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
+function displaySentMessage(message) {
+    /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
     str += "<p>" + message + "</p>";
-    str += "</div>";
+    str += "</div>";*/
+    // TODO: Html encode message.
+    var encodedMsg = message;
+    // Add the sent message to the page.
+    var liElement = document.createElement('div');
+    liElement.className += "chatbox__body__message";
+    liElement.className += " chatbox__body__message--left";
+    //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    document.getElementById('chatbox__body').appendChild(liElement);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }
 
 function displayReceivedMessage(message) {
@@ -158,10 +166,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /// SignalR Client methods called from hub:
-        connection.on('send', function (message, from) {
+        /*connection.on('send', function (message, from) {
             groupId = from;
+            
             displayReceivedMessage(message);
-            /*// TODO: Html encode message.
+            // TODO: Html encode message.
             var encodedMsg = message;
             // Add the sent message to the page.
             var liElement = document.createElement('div');
@@ -171,8 +180,19 @@ document.addEventListener('DOMContentLoaded', function () {
             liElement.innerHTML += '<p>' + encodedMsg + '</p>';
             document.getElementById('chatbox__body').appendChild(liElement);
             document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
-            groupId = from;*/
+            groupId = from;
+        });*/
+
+        connection.on('receiveMessage', function(groupFrom, message) {
+            groupId = groupFrom;
+            displayReceivedMessage(message);
         });
+
+        connection.on('sendMessage', function (message) {
+            displaySentMessage(message);
+        });
+
+        
 
 
         // TODO: for 
@@ -201,6 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
                 connection.invoke('joinQueue');
             });
+
+
 
 
 

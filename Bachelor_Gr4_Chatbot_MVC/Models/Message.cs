@@ -14,11 +14,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         // Connection ID
         public string From { get; set; }
         public string To { get; set; }
+        public string DisplayName { get; set; }
+        public string Content { get; set; }
 
         public bool IsChatBot { get; set; }
         public bool IsChatWorker { get; set; }
 
         public DateTime DateTime { get; set; }
+
+        public int ConversationId { get; set; }
+        public Conversation Conversation { get; set; }
 
     }
 }
