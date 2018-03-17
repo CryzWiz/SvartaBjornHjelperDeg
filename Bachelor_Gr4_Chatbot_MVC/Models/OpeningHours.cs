@@ -13,17 +13,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         [Key]
         public int OpeningHoursId { get; set; }
         public int DayOfWeek{ get; set; }
-        public TimeSpan OpenFrom { get; set; }
-        public TimeSpan OpenTo { get; set; }
-
-        /*
-         * DateFrom and DateTo are set if special opening hours are required. 
-         * Otherwise they are set to null. 
-         */
-        [Column(TypeName = "date")]
-        public DateTime? DateFrom { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime? DateTo { get; set; }
-
+        public DateTime OpenFrom { get; set; }
+        public DateTime OpenTo { get; set; }
+        public bool StandardOpeningHours { get; set; }
     }
 }
