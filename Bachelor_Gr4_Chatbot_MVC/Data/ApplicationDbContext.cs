@@ -27,7 +27,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Conversation>().ToTable("Conversation");
             builder.Entity<Message>().ToTable("Message");
-            builder.Entity<>
+
         }
     }
 }

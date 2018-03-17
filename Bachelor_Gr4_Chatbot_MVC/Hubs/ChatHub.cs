@@ -17,7 +17,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+        private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
 
 
         public override async Task OnConnectedAsync()
@@ -71,17 +71,40 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.Client(Context.ConnectionId).InvokeAsync("displayQueueNumber", placeInQueue);
         }
 
-        public async Task<string> PickFromQueue()
+        public async Task PickFromQueue()
         {
-            string connectionId;
-
-            if(!_queue.TryPeek(out connectionId))
+            // Be sure queue is not empty
+            if(!_queue.IsEmpty)
             {
-                // TODO: Håndter feil her! 
-            }
-            string connectionId = _queue.Dequeue();
-            await DisplayQueue();
-            return connectionId;
+                if(_queue.TryDequeue(out string groupId))
+                {
+                    // TODO: Skal ikke hardkodes men hentes fra databasen
+                    string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+                    string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
+                    string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+
+                    await DisplayMessage(groupId, from, message);
+
+                    await DisplayQueue();
+                } else
+                {
+                    // TODO: SLETTES
+                    string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+                    string message = String.Format("TryDeque failed");
+                    string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+
+                    await DisplayMessage(from, from, message);
+                }
+            } else
+            {
+                // Queue is empty
+                // TODO: SLETTES
+                string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+                string message = String.Format("Køen er tom");
+                string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+
+                await DisplayMessage(from, from, message);
+            }            
         }
 
         public IEnumerable<string> GetQueue()
