@@ -2,6 +2,7 @@
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +32,11 @@ public class SeedData
         {
             await CreateAdminAsync(context, userManager);
             await CreateUserAsync(context, userManager);
+        }
+
+        if(!context.OpeningHours.Any())
+        {
+            await CreateOpeningHours(context);
         }
     }
 
@@ -112,6 +118,26 @@ public class SeedData
         await context.SaveChangesAsync();
 
         await userManager.AddToRoleAsync(user2, ChatEmployeeRole);
+        await context.SaveChangesAsync();
+    }
+
+    private static async Task CreateOpeningHours(ApplicationDbContext context)
+    {
+        List<OpeningHours> hours = new List<OpeningHours>();
+        for(int i = 1; i <= 5; i++)
+        {
+
+            OpeningHours openingHours = new OpeningHours
+            {
+                DayOfWeek = i,
+                OpenFrom = DateTime.Today.Add(new TimeSpan(8, 30, 0)),
+                OpenTo = new DateTime(2050, 1, 1, 16, 0, 0),
+                StandardOpeningHours = true
+            };
+            hours.Add(openingHours);
+        }
+
+        await context.AddRangeAsync(hours);
         await context.SaveChangesAsync();
     }
 
