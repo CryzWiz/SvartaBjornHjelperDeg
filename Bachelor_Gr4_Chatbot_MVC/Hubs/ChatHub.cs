@@ -89,7 +89,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 } else
                 {
                     // TODO: SLETTES
-                    string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
                     string message = String.Format("TryDeque failed");
                     string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
@@ -99,7 +98,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 // Queue is empty
                 // TODO: SLETTES
-                string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
                 string message = String.Format("Køen er tom");
                 string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
