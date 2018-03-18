@@ -7,16 +7,20 @@ using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Sockets;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
-
+using Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
+
     public class ChatController : Controller
     {
         IChatRepository _repository;
         ConnectionManager _connectionManager;
         private readonly IHubContext<ChatHub> _chatHub;
-        
+        public enum WeekDay { Mandag = 1, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag, Ukedager, Helg, Alle};
+
 
         public ChatController(IChatRepository repository, ConnectionManager connectionManager, IHubContext<ChatHub> chatHub)
         {
@@ -45,8 +49,40 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
-        
+        [Authorize]
+        [HttpGet]
+        public IActionResult OpeningHours()
+        {
+            List<SelectListItem> list = new List<SelectListItem>{
+                new SelectListItem { Selected = false, Text = WeekDay.Mandag.ToString(), Value =  ((int)WeekDay.Mandag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Tirsdag.ToString(), Value =  ((int)WeekDay.Tirsdag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Onsdag.ToString(), Value =  ((int)WeekDay.Onsdag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Torsdag.ToString(), Value =  ((int)WeekDay.Torsdag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Fredag.ToString(), Value =  ((int)WeekDay.Fredag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Lørdag.ToString(), Value =  ((int)WeekDay.Lørdag).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Søndag.ToString(), Value =  ((int)WeekDay.Søndag).ToString()},
+                new SelectListItem { Selected = true, Text = WeekDay.Ukedager.ToString(), Value =  ((int)WeekDay.Ukedager).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Helg.ToString(), Value =  ((int)WeekDay.Helg).ToString()},
+                new SelectListItem { Selected = false, Text = WeekDay.Alle.ToString(), Value =  ((int)WeekDay.Alle).ToString()}
+            };
+            ChatOpeningHoursViewModel model = new ChatOpeningHoursViewModel
+            {
+                DaysOfWeek = list,
+               // DateFrom = (DateTime.Today).Date,
+                DateFrom = DateTime.Today,
+                DateTo = (DateTime.MaxValue).Date,
+                OpenFrom = new TimeSpan(08,30,00),
+                OpenTo = new TimeSpan(16,00,00)
+            };
+            return View(model);
+        }
 
-   
+
+
+
+
+
+
+
     }
 }
