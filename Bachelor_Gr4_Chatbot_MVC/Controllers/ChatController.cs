@@ -10,6 +10,7 @@ using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Bachelor_Gr4_Chatbot_MVC.Models;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
@@ -75,6 +76,70 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 OpenTo = new TimeSpan(16,00,00)
             };
             return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> OpeningHours(ChatOpeningHoursViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                int[] daysOfWeek = GetOpeningHoursDays(Convert.ToInt32(model.SelectedDayOfWeek));
+                if(daysOfWeek != null)
+                {
+                    List<OpeningHours> openingHours = new List<OpeningHours>();
+                    DateTime from = model.DateFrom.Add(model.OpenFrom);
+                    DateTime to = model.DateTo.Add(model.OpenTo);
+                    for (int i = 0; i < daysOfWeek.Length; i++)
+                    {
+                        OpeningHours hours = new OpeningHours
+                        {
+                            DayOfWeek = daysOfWeek[i],
+                            OpenFrom = from,
+                            OpenTo = to,
+                            StandardOpeningHours = false
+                        };
+                        openingHours.Add(hours);
+                    }
+                    await _repository.SaveOpeningHours(openingHours);
+                }
+
+            }
+            return View(model); // If we get here, something is wrong! Return view again
+            
+
+            
+            
+            /*ChatOpeningHoursViewModel model = new ChatOpeningHoursViewModel
+            {
+                DaysOfWeek = list,
+                // DateFrom = (DateTime.Today).Date,
+                DateFrom = DateTime.Today,
+                DateTo = (DateTime.MaxValue).Date,
+                OpenFrom = new TimeSpan(08, 30, 00),
+                OpenTo = new TimeSpan(16, 00, 00)
+            };*/
+            //return View(model);
+        }
+
+        private int[] GetOpeningHoursDays(int dayOfWeek)
+        {
+            switch(dayOfWeek)
+            {
+                case (int)WeekDay.Mandag:
+                case (int)WeekDay.Onsdag:
+                case (int)WeekDay.Søndag:
+                    return new int[] { dayOfWeek };
+                case (int)WeekDay.Ukedager:
+                    return new int[] { (int)WeekDay.Mandag, (int)WeekDay.Tirsdag, (int)WeekDay.Onsdag, (int)WeekDay.Torsdag, (int)WeekDay.Fredag };
+                case (int)WeekDay.Helg:
+                    return new int[] { (int)WeekDay.Lørdag, (int)WeekDay.Søndag };
+                case (int)WeekDay.Alle:
+                    return new int[] { (int)WeekDay.Mandag, (int)WeekDay.Tirsdag, (int)WeekDay.Onsdag, (int)WeekDay.Torsdag, (int)WeekDay.Fredag, (int)WeekDay.Lørdag, (int)WeekDay.Søndag };
+                default:
+                    return null;
+            }
+
         }
 
 
