@@ -102,6 +102,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                         openingHours.Add(hours);
                     }
                     await _repository.SaveOpeningHours(openingHours);
+                    return RedirectToAction("Index", "Home");
                 }
 
             }
@@ -127,7 +128,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             switch(dayOfWeek)
             {
                 case (int)WeekDay.Mandag:
+                case (int)WeekDay.Tirsdag:
                 case (int)WeekDay.Onsdag:
+                case (int)WeekDay.Torsdag:
+                case (int)WeekDay.Fredag:
+                case (int)WeekDay.Lørdag:
                 case (int)WeekDay.Søndag:
                     return new int[] { dayOfWeek };
                 case (int)WeekDay.Ukedager:
