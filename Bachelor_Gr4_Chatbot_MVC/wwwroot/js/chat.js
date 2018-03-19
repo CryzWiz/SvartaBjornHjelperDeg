@@ -206,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
             displaySentMessage(message);
         });
 
+
  
 
     })
