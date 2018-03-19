@@ -104,7 +104,10 @@ function updateConnectionList(connections) {
             str += "<td>" + (index + 1) + "</td>";
             str += "<td>" + key + "</td>"; // TODO: Endres
             str += "<td>test</td><td>test</td>"; // TODO: Endres
-            str += "<td><button class='btn btn-default' name='joinChat' value='" + key + "' >Åpne chat</button></td>";
+            str += "<td>"
+            str += "Testknapp fjernet ";
+            //str += "<button class='btn btn-default' name= 'joinChat' value= '" + key + "'> Åpne chat</button>";
+            str += "</td>";
         str += "</tr>";
     });
     $("#connectionList").html(str);
@@ -114,10 +117,13 @@ function displayQueue(connections) {
     var str = "";
     $.each(connections, function (index, key) {
         str += "<tr>";
-        str += "<td>" + (index + 1) + "</td>";
-        str += "<td>" + key + "</td>"; // TODO: Endres
-        str += "<td>test</td><td>test</td>"; // TODO: Endres
-        str += "<td><button class='btn btn-default' name='joinChat' value='" + key + "' >Åpne chat</button></td>";
+            str += "<td>" + (index + 1) + "</td>";
+            str += "<td>" + key + "</td>"; // TODO: Endres
+            str += "<td>test</td><td>test</td>"; // TODO: Endres
+            str += "<td>"
+            str += "Testknapp fjernet ";
+            //str += "<button class='btn btn-default' name= 'joinChat' value= '" + key + "'> Åpne chat</button>";
+            str += "</td>";
         str += "</tr>";
     });
     $("#queueList").html(str);
