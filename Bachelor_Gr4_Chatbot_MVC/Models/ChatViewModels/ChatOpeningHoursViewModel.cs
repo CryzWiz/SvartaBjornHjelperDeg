@@ -1,29 +1,43 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using static Bachelor_Gr4_Chatbot_MVC.Controllers.ChatController;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels
 {
     public class ChatOpeningHoursViewModel
     {
-        [Display(Name = "Velg ukedag(er) åpningstiden skal gjelde for")]
-        public IEnumerable<SelectListItem> DaysOfWeek { get; set; }
-        public string SelectedDayOfWeek { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode=true, DataFormatString ="{0:yyyy/MM/dd}")]
-        [DataType(DataType.Date), Display(Name = "Fra dato", Description = "Velg dato åpningstidene skal være gyldig fra")]
+        public int OpeningHoursId { get; set; }
+        public int WeekDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        [DataType(DataType.Date), Display(Name = "Gyldig fra dato")]
         public DateTime DateFrom { get; set; }
-        [DataType(DataType.Date), Display(Name = "Til dato", Description = "Velg dato åpningstidene skal være gyldig til")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
+        [DataType(DataType.Date), Display(Name = "Gyldig til dato")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
 
         public DateTime DateTo { get; set; }
-        [Display(Name = "Fra klokken", Description = "Velg tidspunkt det er åpent fra")]
+
+        /*[Display(Name = "Åpent fra")]
+
         public TimeSpan OpenFrom { get; set; }
-        [Display(Name = "Til klokken", Description = "Velg tidspunkt det er åpent til")]
-        public TimeSpan OpenTo { get; set; }
+        [Display(Name = "Åpent til")]
+        public TimeSpan OpenTo { get; set; }*/
+
+
+        [Display(Name = "Åpent fra")]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}")]
+        public DateTime OpenFrom { get; set; }
+        [Display(Name = "Åpent til")]
+        [DisplayFormat(DataFormatString = "{0:HH:mm}")]
+        public DateTime OpenTo { get; set; }
+
+        public bool IsStandard { get; set; }
+
+
+
+
 
     }
 }

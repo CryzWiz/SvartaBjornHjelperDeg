@@ -1,4 +1,4 @@
-﻿@model Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels.ChatOpeningHoursViewModel
+﻿@model IEnumerable<Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels.ChatOpeningHoursViewModel>
 
 @{
     ViewData["Title"] = "OpeningHours";
@@ -15,51 +15,80 @@
                 <div class="col-lg-12">
 
 
+                    <h2>Åpningstider</h2>
 
-                    <h2>Chat åpningstider</h2>
+                    <p>
+                        <a asp-action="RegisterOpeningHours">Registrer ny åpningstid</a>
+                    </p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OpeningHoursId)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.WeekDay)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateFrom)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateTo)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OpenFrom)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OpenTo)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IsStandard)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OpeningHoursId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.WeekDay)
+                                    </td>
+                                    <td>
+                                    @if(!item.IsStandard)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.DateFrom)
+                                    }
+                                    </td>
+                                    <td>
+                                    @if (!item.IsStandard)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.DateTo)
+                                    }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OpenFrom)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OpenTo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsStandard)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
 
-                    <h4>Registrer ny åpningstid</h4>
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-4">
-                            <form asp-action="OpeningHours">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="form-group">
-                                    <label asp-for="DaysOfWeek" class="control-label"></label>
 
-                                    @Html.DropDownListFor(x => x.SelectedDayOfWeek, new SelectList(Model.DaysOfWeek, "Value", "Text"))
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="DateFrom" class="control-label"></label>
-                                    <input asp-for="DateFrom" class="form-control" />
-                                    <span asp-validation-for="DateFrom" class="text-danger"></span>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label asp-for="DateTo" class="control-label"></label>
-                                    <input asp-for="DateTo" class="form-control" />
-                                    <span asp-validation-for="DateTo" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="OpenFrom" class="control-label"></label>
-                                    <input asp-for="OpenFrom" class="form-control" />
-                                    <span asp-validation-for="OpenFrom" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="OpenTo" class="control-label"></label>
-                                    <input asp-for="OpenTo" class="form-control" />
-                                    <span asp-validation-for="OpenTo" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Save" class="btn btn-default" />
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-
-                </div> 
+                </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
@@ -69,12 +98,3 @@
     <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
-                @section Scripts{
-
-                    <!-- Metis Menu Plugin JavaScript -->
-                    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
-                    <!-- Custom Theme JavaScript -->
-                    <script src="~/dist/js/sb-admin-2.js"></script>
-
-                }
-

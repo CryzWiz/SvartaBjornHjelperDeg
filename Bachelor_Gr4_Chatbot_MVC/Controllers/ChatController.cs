@@ -50,9 +50,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> OpeningHours()
+        {
+            IEnumerable<ChatOpeningHoursViewModel> modelList = await _repository.GetAllOpeningHours();
+            return View(modelList);
+        }
+
+
         [Authorize]
         [HttpGet]
-        public IActionResult OpeningHours()
+        public IActionResult RegisterOpeningHours()
         {
             List<SelectListItem> list = new List<SelectListItem>{
                 new SelectListItem { Selected = false, Text = WeekDay.Mandag.ToString(), Value =  ((int)WeekDay.Mandag).ToString()},
@@ -66,7 +74,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 new SelectListItem { Selected = false, Text = WeekDay.Helg.ToString(), Value =  ((int)WeekDay.Helg).ToString()},
                 new SelectListItem { Selected = false, Text = WeekDay.Alle.ToString(), Value =  ((int)WeekDay.Alle).ToString()}
             };
-            ChatOpeningHoursViewModel model = new ChatOpeningHoursViewModel
+            ChatOpeningHoursRegisterViewModel model = new ChatOpeningHoursRegisterViewModel
             {
                 DaysOfWeek = list,
                // DateFrom = (DateTime.Today).Date,
@@ -80,7 +88,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> OpeningHours(ChatOpeningHoursViewModel model)
+        public async Task<IActionResult> RegisterOpeningHours(ChatOpeningHoursRegisterViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -102,7 +110,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                         openingHours.Add(hours);
                     }
                     await _repository.SaveOpeningHours(openingHours);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Administrator");
                 }
 
             }
