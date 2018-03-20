@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bachelor_Gr4_Chatbot_MVC", "Bachelor_Gr4_Chatbot_MVC\Bachelor_Gr4_Chatbot_MVC.csproj", "{E9F984ED-1517-4056-8CE1-224FFC4B600F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.SimpleEchoBot", "Chatbot_SvartaBjorn_Azure-src\Microsoft.Bot.Sample.SimpleEchoBot.csproj", "{9C7E3A46-B60F-4052-9A21-DC8D1A942216}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatbot", "Chatbot_SvartaBjorn_Azure-src\Chatbot.csproj", "{9C7E3A46-B60F-4052-9A21-DC8D1A942216}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
