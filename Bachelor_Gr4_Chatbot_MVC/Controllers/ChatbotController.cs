@@ -16,14 +16,6 @@ using System.Web;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
-    
-    public class Chat
-    {
-        public string Text { get; set; }
-        public string ChatResponse { get; set; }
-        public string watermark { get; set; }
-    }
-
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class ChatbotController : Controller
@@ -103,9 +95,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                     }
                 }
             }
-
+            string responseString = null;
+            foreach (Activity a in activitySet.Activities)
+            {
+                responseString = a.Text;
+            }
             // Send the entire activityset in return for now. 
-            return Json(response.Content.ReadAsStringAsync().Result);
+            return Json(responseString);
         }
     }
 }
