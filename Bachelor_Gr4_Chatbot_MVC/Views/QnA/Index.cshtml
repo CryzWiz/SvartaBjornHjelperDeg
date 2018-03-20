@@ -1,9 +1,11 @@
-﻿
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAIndexViewModel
+
 @{
-    ViewData["Title"] = "Test";
+    ViewData["Title"] = "QnAIndexViewModel";
 }
 
-
+<h4>QnAIndexViewModel</h4>
+<hr />
 <div class="col-md-4" id="commentForm">
     <form asp-action="PostMessage">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -12,7 +14,7 @@
             <input class="form-control" id="text" />
             <span class="text-danger"></span>
         </div>
-        
+
         <div class="form-group">
             <input type="button" value="Create" id="save" onclick="addComment()" class="btn btn-default" />
         </div>
@@ -20,7 +22,7 @@
 </div>
 
 @section Scripts {
-<script type="text/javascript">
+    <script type="text/javascript">
             function addComment() {
                 QnA = {
                     "query": $("#text").val()
@@ -28,49 +30,23 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/api/Chatbot/",
+                    url: "/api/QnA/",
                     data: JSON.stringify(QnA),
                     contentType: "application/ json; charset = utf-8",
                     dataType: 'json',
                     success: function (result) {
                         $("#update").html("<p>" + result + "</p>");
-                        
+
                     },
                     error: function (req, status, error) {
                         $("#update").html("AJAX error");
                     }
                 });
             }
-</script>
+    </script>
 }
 <div id="update"></div>
 
-
-
-
-@* Web chat *@
-
-@*@section AddToHead{
-    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
-}
-<h2>Test</h2>
-
-<h2>Direct Line Bot Example</h2>
-
-
-<div class="row">
-    <div class="col-md-4" style="min-height:500px;">
-        <div id="bot" />
-    </div>
+<div>
+    <a asp-action="Index">Back to List</a>
 </div>
-@section Scripts {
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
-    <script>
-        BotChat.App({
-            directLine: { secret: '0EHMWUP76KI.cwA.Sds.wy7NypTmRGbx3oXxgjUc-4OHWwBikhE0rSUVxjIvkhs' },
-            user: { id: 'userid' },
-            bot: { id: 'botid' },
-            resize: 'detect'
-        }, document.getElementById("bot"));
-    </script>
-}*@

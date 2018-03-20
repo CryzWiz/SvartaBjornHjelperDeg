@@ -1,6 +1,7 @@
 ﻿//using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
 using Bachelor_Gr4_Chatbot_MVC.Extensions;
 using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector.DirectLine;
@@ -11,7 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Web;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
@@ -58,8 +59,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public virtual async Task<IActionResult> Post(string message)
+        public virtual async Task<IActionResult> Post([FromBody][Bind("query")] QnAIndexViewModel Qna)
         {
             // Create the connection using the secret token
             client = new HttpClient();
@@ -85,7 +87,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                     // Set the conversation url
                     string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
                     // Create activity
-                    Activity thisActivity = new Activity { Type = "message", Text = "tester tester", From = new ChannelAccount { Id = currentConversation.ConversationId } };
+                    Activity thisActivity = new Activity { Type = "message", Text = Qna.query, From = new ChannelAccount { Id = currentConversation.ConversationId } };
                     var myContent = JsonConvert.SerializeObject(thisActivity);
                     var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
                     var byteContent = new ByteArrayContent(buffer);
