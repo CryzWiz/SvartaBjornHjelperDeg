@@ -83,6 +83,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
                     string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
+                    await Clients.Group(from).InvokeAsync("pickFromQueue", groupId);
                     await DisplayMessage(groupId, from, message);
 
                     await DisplayQueue();

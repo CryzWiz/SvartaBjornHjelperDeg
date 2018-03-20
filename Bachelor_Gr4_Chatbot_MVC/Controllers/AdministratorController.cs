@@ -151,5 +151,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
+
+
     }
 }
