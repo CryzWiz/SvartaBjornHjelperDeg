@@ -111,6 +111,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                            {
                                chatbotId = c.chatbotId,
                                chatbotName = c.chatbotName,
+                               isActive = c.isActive,
+                               regDate = c.regDate,
+                               lastEdit = c.lastEdit,
                                contentType = c.contentType,
                                base_Url = c.base_Url,
                                tokenUrlExtension = c.tokenUrlExtension,
