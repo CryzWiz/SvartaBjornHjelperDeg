@@ -14,7 +14,7 @@
                     <h2>Chatbots</h2>
 
                     <p>
-                        <a asp-action="RegisterNewChatbot">Create New</a>
+                        <a asp-action="RegisterNewChatbot">Registrer ny chatbot</a>
                     </p>
                     </div>
                 </div>
@@ -29,22 +29,10 @@
                                     @Html.DisplayNameFor(model => model.chatbotName)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.contentType)
+                                    @Html.DisplayNameFor(model => model.regDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.BotSecret)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.base_Url)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.tokenUrlExtension)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.converationUrlExtenison)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.botAutorizeTokenScheme)
+                                    @Html.DisplayNameFor(model => model.lastEdit)
                                 </th>
                                 <th></th>
                             </tr>
@@ -60,23 +48,11 @@
                                         @Html.DisplayFor(modelItem => item.chatbotName)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.contentType)
+                                        @Html.DisplayFor(modelItem => item.regDate)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.BotSecret)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.base_Url)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.tokenUrlExtension)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.converationUrlExtenison)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.botAutorizeTokenScheme)
-                                    </td>
+                                        @Html.DisplayFor(modelItem => item.lastEdit)
+                                    </td>                                    
                                     <td>
                                         @Html.ActionLink("Endre", "EditChatbotDetails", new { id=item.chatbotId }) |
                                         @Html.ActionLink("Detaljer", "ViewChatbotDetails", new { id = item.chatbotId }) |

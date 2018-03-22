@@ -115,9 +115,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                                regDate = c.regDate,
                                lastEdit = c.lastEdit,
                                contentType = c.contentType,
-                               base_Url = c.base_Url,
+                               baseUrl = c.baseUrl,
                                tokenUrlExtension = c.tokenUrlExtension,
-                               converationUrlExtenison = c.converationUrlExtenison,
+                               conversationUrlExtension = c.conversationUrlExtension,
                                botAutorizeTokenScheme = c.botAutorizeTokenScheme,
                                BotSecret = c.BotSecret
                            }).ToListAsync();
@@ -127,6 +127,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         public async Task<bool> RegisterNewChatbot(ChatbotDetails chatbotDetails)
         {
+            chatbotDetails.regDate = DateTime.Now;
+            chatbotDetails.lastEdit = DateTime.Now;
             await db.ChatbotDetails.AddAsync(chatbotDetails);
             if (await db.SaveChangesAsync() < 0) return true;
             else return false;
@@ -137,6 +139,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             var c = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.chatbotId == id));
             return c;
+        }
+
+        public async Task<bool> UpdateChatbotDetails(ChatbotDetails chatbotDetails)
+        {
+            var c = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.chatbotId == chatbotDetails.chatbotId));
+
+            c.chatbotName = chatbotDetails.chatbotName;
+            c.baseUrl = chatbotDetails.baseUrl;
+            c.botAutorizeTokenScheme = chatbotDetails.botAutorizeTokenScheme;
+            c.BotSecret = chatbotDetails.BotSecret;
+            c.contentType = chatbotDetails.contentType;
+            c.conversationUrlExtension = chatbotDetails.conversationUrlExtension;
+            c.isActive = chatbotDetails.isActive;
+            c.tokenUrlExtension = chatbotDetails.tokenUrlExtension;
+            c.lastEdit = DateTime.Now;
+
+
+            await Task.Run(() => db.ChatbotDetails.Update(c));
+
+            if (await db.SaveChangesAsync() > 0) return true;
+            else return false;
         }
     }
 }

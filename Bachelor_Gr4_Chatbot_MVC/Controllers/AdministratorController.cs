@@ -71,16 +71,44 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
-            "base_url","tokenUrlExtension","conversationExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
+            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
         {
-            var u = repository.RegisterNewChatbot(chatbotDetails);
+            if (ModelState.IsValid)
+            {
+                var u = await repository.RegisterNewChatbot(chatbotDetails);
+                TempData["success"] = String.Format("Chatbot {0} ble registrert.", chatbotDetails.chatbotName);
+                return RedirectToAction("Chatbots");
+            }
+
+            TempData["error"] = String.Format("Chatbot {0} ble ikke registrert.", chatbotDetails.chatbotName);
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> EditChatbotDetails(int id)
         {
             var c = await repository.GetChatbotDetails(id);
             return View(c);
+        }
+
+        
+        public async Task<IActionResult> UpdateChatbotDetails([FromForm][Bind("chatbotId", "chatbotName", "contentType", "BotSecret",
+            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme", "isActive")] ChatbotDetails chatbotDetails)
+        {
+            //if (ModelState.IsValid)
+            //{
+                var c = await repository.UpdateChatbotDetails(chatbotDetails);
+                if (c)
+                {
+                    TempData["success"] = String.Format("Chatbot {0} ble oppdatert.", chatbotDetails.chatbotName);
+                    return RedirectToAction("Chatbots");
+                }
+                TempData["error"] = String.Format("Chatbot {0} ble ikke oppdatert.", chatbotDetails.chatbotName);
+                return RedirectToAction("Chatbots");
+            //}
+
+            //TempData["error"] = String.Format("modelstate unvalid for {0}", chatbotDetails.chatbotName);
+            //return RedirectToAction("Chatbots");
         }
 
         public async Task<IActionResult> ViewChatbotDetails(int id)
@@ -98,8 +126,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> ManageUser(string username)
         {
-            ViewData["Message"] = "Manage User Page." + username;
-            // ViewData just used for debugging.. Can be deleted, Not used!
             User u = await repository.GetUser(username);
             return View(u);
         }

@@ -14,5 +14,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<List<ChatbotDetails>> GetAllChatbots();
         Task<bool> RegisterNewChatbot(ChatbotDetails chatbotDetails);
         Task<ChatbotDetails> GetChatbotDetails(int id);
+        Task<bool> UpdateChatbotDetails(ChatbotDetails chatbotDetails);
     }
 }

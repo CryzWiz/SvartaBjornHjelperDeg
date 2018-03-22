@@ -23,9 +23,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         // Microsoft bot details
         public string contentType { get; set; }
         public string BotSecret { get; set; }
-        public string base_Url { get; set; }
+        public string baseUrl { get; set; }
         public string tokenUrlExtension { get; set; }
-        public string converationUrlExtenison { get; set; }
+        public string conversationUrlExtension { get; set; }
         public string botAutorizeTokenScheme { get; set; }
 
         

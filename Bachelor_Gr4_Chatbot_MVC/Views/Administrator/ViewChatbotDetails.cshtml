@@ -13,15 +13,15 @@
         <div class="container-fluid">
             <div class="col-lg-12">
                 <div class="row">
-                    <h2>ViewChatbotDetails</h2>
+                    <h2>Chatbot-detaljer</h2>
                     <hr />
                 </div>
                 <div class="row">
                     <dl class="dl-horizontal">
-                        <dt>
+                        <dt hidden>
                             @Html.DisplayNameFor(model => model.chatbotId)
                         </dt>
-                        <dd>
+                        <dd hidden>
                             @Html.DisplayFor(model => model.chatbotId)
                         </dd>
                         <dt>
@@ -61,10 +61,10 @@
                             @Html.DisplayFor(model => model.BotSecret)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.base_Url)
+                            @Html.DisplayNameFor(model => model.baseUrl)
                         </dt>
                         <dd>
-                            @Html.DisplayFor(model => model.base_Url)
+                            @Html.DisplayFor(model => model.baseUrl)
                         </dd>
                         <dt>
                             @Html.DisplayNameFor(model => model.tokenUrlExtension)
@@ -73,10 +73,10 @@
                             @Html.DisplayFor(model => model.tokenUrlExtension)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.converationUrlExtenison)
+                            @Html.DisplayNameFor(model => model.conversationUrlExtension)
                         </dt>
                         <dd>
-                            @Html.DisplayFor(model => model.converationUrlExtenison)
+                            @Html.DisplayFor(model => model.conversationUrlExtension)
                         </dd>
                         <dt>
                             @Html.DisplayNameFor(model => model.botAutorizeTokenScheme)
@@ -87,8 +87,8 @@
                     </dl>
                 </div>
                 <div>
-                    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-                    <a asp-action="Chatbots">Back to List</a>
+                    @Html.ActionLink("Endre innstillinger", "EditChatbotDetails", new { id = Model.chatbotId }) |
+                    <a asp-action="Chatbots">Tilbake til listen</a>
                 </div>
             </div>
         </div>
