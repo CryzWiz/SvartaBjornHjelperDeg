@@ -102,5 +102,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
             
         }
+
+        public async Task<List<ChatbotDetails>> GetAllChatbots()
+        {
+            //var c = await Task.Run(() => db.ChatbotDetails);
+            var r = await (from c in db.ChatbotDetails
+                           select new ChatbotDetails
+                           {
+                               chatbotId = c.chatbotId,
+                               chatbotName = c.chatbotName,
+                               contentType = c.contentType,
+                               base_Url = c.base_Url,
+                               tokenUrlExtension = c.tokenUrlExtension,
+                               converationUrlExtenison = c.converationUrlExtenison,
+                               botAutorizeTokenScheme = c.botAutorizeTokenScheme,
+                               BotSecret = c.BotSecret
+                           }).ToListAsync();
+
+            return r;
+        }
+
+        public async Task<bool> RegisterNewChatbot(ChatbotDetails chatbotDetails)
+        {
+            await db.ChatbotDetails.AddAsync(chatbotDetails);
+            if (await db.SaveChangesAsync() < 0) return true;
+            else return false;
+
+        }
+
+        public async Task<ChatbotDetails> GetChatbotDetails(int id)
+        {
+            var c = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.chatbotId == id));
+            return c;
+        }
     }
 }

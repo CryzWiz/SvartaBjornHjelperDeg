@@ -18,6 +18,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         public virtual DbSet<Conversation> Conversations { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<OpeningHours> OpeningHours {get; set; }
+        // Chatbotdetails so we can store several chatbots
+        // Just microsoft bots atm
+        public virtual DbSet<ChatbotDetails> ChatbotDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

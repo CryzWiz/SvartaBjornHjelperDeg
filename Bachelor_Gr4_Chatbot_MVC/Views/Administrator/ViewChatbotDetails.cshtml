@@ -1,0 +1,97 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.ChatbotDetails
+
+@{
+    ViewData["Title"] = "ViewChatbotDetails";
+}
+<div id="wrapper">
+
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+            <div class="col-lg-12">
+                <div class="row">
+                    <h2>ViewChatbotDetails</h2>
+                    <hr />
+                </div>
+                <div class="row">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.chatbotId)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.chatbotId)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.chatbotName)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.chatbotName)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.regDate)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.regDate)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.lastEdit)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.lastEdit)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.isActive)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.isActive)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.contentType)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.contentType)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.BotSecret)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.BotSecret)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.base_Url)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.base_Url)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.tokenUrlExtension)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.tokenUrlExtension)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.converationUrlExtenison)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.converationUrlExtenison)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.botAutorizeTokenScheme)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.botAutorizeTokenScheme)
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+                    <a asp-action="Chatbots">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

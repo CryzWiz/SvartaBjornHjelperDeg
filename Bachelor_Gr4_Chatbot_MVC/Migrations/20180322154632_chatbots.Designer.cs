@@ -11,9 +11,10 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180322154632_chatbots")]
+    partial class chatbots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,12 +94,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<string>("contentType");
 
                     b.Property<string>("converationUrlExtenison");
-
-                    b.Property<bool>("isActive");
-
-                    b.Property<DateTime>("lastEdit");
-
-                    b.Property<DateTime>("regDate");
 
                     b.Property<string>("tokenUrlExtension");
 

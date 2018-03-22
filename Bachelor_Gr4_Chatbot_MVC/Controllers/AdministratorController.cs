@@ -57,6 +57,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(u);
         }
 
+        public async Task<IActionResult> Chatbots()
+        {
+            var u = await repository.GetAllChatbots();
+            return View(u);
+        }
+
+        [HttpGet]
+        public IActionResult RegisterNewChatbot()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
+            "base_url","tokenUrlExtension","conversationExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
+        {
+            var u = repository.RegisterNewChatbot(chatbotDetails);
+            return View();
+        }
+
+        public async Task<IActionResult> EditChatbotDetails(int id)
+        {
+            var c = await repository.GetChatbotDetails(id);
+            return View(c);
+        }
+
+        public async Task<IActionResult> ViewChatbotDetails(int id)
+        {
+            var c = await repository.GetChatbotDetails(id);
+            return View(c);
+        }
+
         /// <summary>
         /// Fetch and display data regarding given username
         /// </summary>

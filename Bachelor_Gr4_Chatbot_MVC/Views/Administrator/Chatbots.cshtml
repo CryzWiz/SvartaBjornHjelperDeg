@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Bachelor_Gr4_Chatbot_MVC.Models.ChatbotDetails>
+
+@{
+    ViewData["Title"] = "Chatbots";
+}
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Chatbots</h2>
+
+                    <p>
+                        <a asp-action="RegisterNewChatbot">Create New</a>
+                    </p>
+                    </div>
+                </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th hidden>
+                                    @Html.DisplayNameFor(model => model.chatbotId)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.chatbotName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.contentType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BotSecret)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.base_Url)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.tokenUrlExtension)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.converationUrlExtenison)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.botAutorizeTokenScheme)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+            {
+                                <tr>
+                                    <td hidden>
+                                        @Html.DisplayFor(modelItem => item.chatbotId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.chatbotName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.contentType)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BotSecret)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.base_Url)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tokenUrlExtension)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.converationUrlExtenison)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.botAutorizeTokenScheme)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Endre", "EditChatbotDetails", new { id=item.chatbotId }) |
+                                        @Html.ActionLink("Detaljer", "ViewChatbotDetails", new { id = item.chatbotId }) |
+                                        @Html.ActionLink("Slett", "DeleteChatbot", new { id = item.chatbotId })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+        </div>
+    </div>
+
+@section Scripts{
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}
