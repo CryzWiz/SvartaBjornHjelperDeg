@@ -84,6 +84,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        public async Task<IActionResult> DeleteChatbot(int id)
+        {
+            var c = await repository.GetChatbotDetails(id);
+            var r = await repository.DeleteChatbot(c);
+            if (r)
+            {
+                TempData["success"] = String.Format("Chatbot {0} ble slettet.", c.chatbotName);
+                return RedirectToAction("Chatbots");
+            }
+            TempData["error"] = String.Format("Chatbot {0} ble ikke slettet.", c.chatbotName);
+            return RedirectToAction("Chatbots");
+
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditChatbotDetails(int id)
         {

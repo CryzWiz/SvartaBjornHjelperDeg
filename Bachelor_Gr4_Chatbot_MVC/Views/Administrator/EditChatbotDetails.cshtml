@@ -17,7 +17,17 @@
 
                     <h2>Endre innstillinger for chatbot</h2>
 
-                    <h4>Chatbot-detaljer</h4>
+                    @if (Model.isActive)
+                    {
+                        <p style="color:green;">Denne chatboten er aktiv!</p>
+
+                    }
+                    else
+                    {
+                        <p style="color:red;">Denne chatboten er ikke aktiv!</p>
+
+                    }
+
                     <hr />
                 </div>
                 <div class="row">
@@ -80,9 +90,12 @@
                                 <span asp-validation-for="botAutorizeTokenScheme" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-default" />
+                                <input type="submit" value="Lagre" class="btn btn-success" />
                             </div>
                         </form>
+                    </div>
+                    <div class="col-md-2 col-md-offset-6">
+                        <img src="~/images/bot-help.jpg" style="float:right;max-height:250px;max-width:250px;" />
                     </div>
                 </div>
 
@@ -95,6 +108,8 @@
 </div>
 
 @section Scripts{
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->

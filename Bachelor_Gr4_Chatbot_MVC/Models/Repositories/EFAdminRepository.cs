@@ -129,7 +129,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             chatbotDetails.regDate = DateTime.Now;
             chatbotDetails.lastEdit = DateTime.Now;
-            await db.ChatbotDetails.AddAsync(chatbotDetails);
+            db.ChatbotDetails.Add(chatbotDetails);
             if (await db.SaveChangesAsync() < 0) return true;
             else return false;
 
@@ -139,6 +139,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             var c = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.chatbotId == id));
             return c;
+        }
+
+        public async Task<bool> DeleteChatbot(ChatbotDetails chatbot)
+        {
+            var r = db.Remove(chatbot);
+            if (await db.SaveChangesAsync() > 0) return true;
+            else return false;
         }
 
         public async Task<bool> UpdateChatbotDetails(ChatbotDetails chatbotDetails)
