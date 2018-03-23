@@ -144,6 +144,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(u);
         }
 
+        /// <summary>
+        /// Updata data for given user
+        /// </summary>
+        /// <paramref name="username"/></param>
+        /// <returns>One User</returns>
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ManageUser(User user)
+        {
+            var r = await repository.UpdateUserData(user);
+            if (r)
+            {
+                TempData["success"] = String.Format("Bruker {0} ble oppdatert.", user.Username);
+                return RedirectToAction("Users");
+            }
+            else {
+                TempData["error"] = String.Format("Bruker {0} ble ikke oppdatert.", user.Username);
+                return RedirectToAction("Users");
+            }
+        }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult RegisterNewUser(string returnUrl = null)
