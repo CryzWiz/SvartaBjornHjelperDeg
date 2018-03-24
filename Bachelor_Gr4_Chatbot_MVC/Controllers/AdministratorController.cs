@@ -10,7 +10,8 @@ using Bachelor_Gr4_Chatbot_MVC.Models.AccountViewModels;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModels;
 using Microsoft.AspNetCore.Identity;
 using Bachelor_Gr4_Chatbot_MVC.Services;
-
+using Microsoft.AspNetCore.SignalR;
+using Bachelor_Gr4_Chatbot_MVC.Hubs;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -22,15 +23,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         private IAdminRepository repository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IHubContext<Hub> _chatHub;
 
         public AdministratorController(
             IAdminRepository repository,
             IEmailSender emailSender,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IHubContext<Hub> chatHub)
         {
-            this._userManager = userManager;
-            this._emailSender = emailSender;
+            _userManager = userManager;
+            _emailSender = emailSender;
             this.repository = repository;
+            _chatHub = chatHub;
         }
 
         /// <summary>
@@ -171,6 +175,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return RedirectToAction("Users");
         }
 
+        public async Task<IActionResult> DisplayActiveChatWorkers()
+        {
+            
+        }
+
         // Copied from Auto generated code in AccountController
         private IActionResult RedirectToLocal(string returnUrl)
         {
@@ -183,6 +192,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
+
+        
 
 
     }

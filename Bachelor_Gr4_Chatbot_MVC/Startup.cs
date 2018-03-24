@@ -47,6 +47,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
             // Options
             services.Configure<EmailSenderOptions>(Configuration);
+            services.Configure<RoleOptions>(Configuration);
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();

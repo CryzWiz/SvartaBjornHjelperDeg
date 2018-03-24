@@ -18,7 +18,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             new ConnectionMapping<string>();
 
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
-
+        private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
+        
 
         public override async Task OnConnectedAsync()
         {
@@ -28,6 +29,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              */
             string connectionId = Context.ConnectionId;
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
+
+            if(Context.User.IsInRole())
             _connections.Add(key, connectionId);
 
             // Add to single-user group
@@ -36,6 +39,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayConnectedUsers();
          }
 
+        private async Task SetChatWorkerStatus(string userName, string status)
+        {
+
+        }
+
+        private async Task DisconnectChatWorker(string userName)
+        {
+            
+        }
         
 
         public override async Task OnDisconnectedAsync(Exception ex)
