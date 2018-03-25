@@ -73,11 +73,43 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var r = await (from u in manager.Users
                            select new User
                            {
+                               UserId = u.Id,
                                Email = u.Email,
                                Username = u.UserName,
                                Active = u.IsActive
                            }).ToListAsync();
             return r;
+        }
+
+        /// <summary>
+        /// Fetch all the users in the database and store the information we want to
+        /// display as a User in a List<User>
+        /// </summary>
+        /// <returns>All users</returns>
+        public async Task<bool> UpdateUserData(User user)
+        {
+            var u = await Task.Run(() => manager.Users.FirstOrDefault(X => X.Id == user.UserId));
+            
+
+            IdentityResult r = null;
+
+            // Check if there is a change in the Username
+            if(u.Email != user.Email)
+            {
+                r = await manager.SetEmailAsync(u, user.Email);
+                r = await manager.SetUserNameAsync(u, user.Email);
+
+                // Fetch the user and re-set the email to confirmed
+                // This might be a potential security problem. Should be re-confirmed.
+
+                var dbU = await Task.Run(() => db.Users.FirstOrDefault(X => X.Id == user.UserId));
+                dbU.EmailConfirmed = true;
+                await Task.Run(() => db.Update(dbU));
+                var dbR = db.SaveChangesAsync();
+            }
+
+            if(r.Succeeded) return true;
+            else return false;
         }
 
         /// <summary>
@@ -87,10 +119,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>One User</returns>
         public async Task<User> GetUser(String username)
         {
-            var u = await Task.Run(() => manager.Users.FirstOrDefault(X => X.Email == username));
+            var u = await Task.Run(() => manager.Users.FirstOrDefault(X => X.UserName == username));
             if(u != null)
             {
                 User user = new User();
+                user.UserId = u.Id;
                 user.Active = u.IsActive;
                 user.Email = u.Email;
                 user.Username = u.UserName;
