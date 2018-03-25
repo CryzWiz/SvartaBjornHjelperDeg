@@ -53,6 +53,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
             services.AddTransient<IAdminRepository, EFAdminRepository>();
             services.AddTransient<IChatRepository, EFChatRepository>();
             services.AddTransient<IQnARepository, EFQnARepository>();
+            services.AddTransient<IChatbotRepository, EFChatbotRepository>();
 
             services.AddSignalR();
             services.AddMvc() .AddSessionStateTempDataProvider();

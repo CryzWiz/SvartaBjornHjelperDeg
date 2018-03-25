@@ -9,66 +9,72 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <div class="row">
                 <div class="col-lg-12">
-                    <h2>Chatbots</h2>
-                    
-                    @Html.ActionLink("Registrer ny chatbot", "RegisterNewChatbot", "Administrator", null, new { @class = "btn btn-success btn-large" })
-                    
-                    </div>
-                </div>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th hidden>
-                                    @Html.DisplayNameFor(model => model.chatbotId)
-                                </th>
-                                <th>
-                                    Chatbot
-                                </th>
-                                <th>
-                                    Registrert dato
-                                </th>
-                                <th>
-                                    Sist endret/oppdatert
-                                </th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h2>Chatbots</h2>
+                        </div>
+                        <div class="col-md-2 col-md-offset-2">
+                            <br />
+                            <br />
+                            @Html.ActionLink("Registrer ny chatbot", "RegisterNewChatbot", "Administrator", null, new { @class = "btn btn-success btn-large" })
+                        </div>
+                   </div>
+                    <hr />
+               </div>
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th hidden>
+                                @Html.DisplayNameFor(model => model.chatbotId)
+                            </th>
+                            <th>
+                                Chatbot
+                            </th>
+                            <th>
+                                Registrert dato
+                            </th>
+                            <th>
+                                Sist endret/oppdatert
+                            </th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
             {
-                                <tr>
-                                    <td hidden>
-                                        @Html.DisplayFor(modelItem => item.chatbotId)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.chatbotName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.regDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.lastEdit)
-                                    </td> 
-                                    <td>
-                                        @if (item.isActive)
-                                        {
-                                            <p style="color:green;">Aktiv</p>
+                            <tr>
+                                <td hidden>
+                                    @Html.DisplayFor(modelItem => item.chatbotId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.chatbotName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.regDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.lastEdit)
+                                </td>
+                                <td>
+                                    @if (item.isActive)
+                                    {
+                                        <p style="color:green;">Aktiv</p>
 
-                                        }
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Se detaljer for bot", "ViewChatbotDetails", new { id = item.chatbotId })
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Se detaljer for bot", "ViewChatbotDetails", new { id = item.chatbotId })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
-                </div>
+            </div>
+
         </div>
     </div>
 

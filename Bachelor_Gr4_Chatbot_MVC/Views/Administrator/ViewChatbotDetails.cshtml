@@ -13,20 +13,44 @@
         <div class="container-fluid">
             <div class="col-lg-12">
                 <div class="row">
-                    <h2>Detaljer for @Html.DisplayFor(model => model.chatbotName)</h2>
-                    @if (Model.isActive)
-                     {
-                        <p style="color:green;">Denne chatboten er aktiv!</p>
+                    <div class="col-md-8">
+                        <h2>Detaljer for @Html.DisplayFor(model => model.chatbotName)</h2>
+                        @if (Model.isActive)
+                        {
+                            <p style="color:green;">Denne chatboten er aktiv!</p>
 
-                     }
-                     else
-                     {
-                        <p style="color:red;">Denne chatboten er ikke aktiv!</p>
+                        }
+                        else
+                        {
+                            <p style="color:red;">Denne chatboten er ikke aktiv!</p>
 
-                     }
-                       
-                    <hr />
+                        }
+                    </div>
+                     <div class="col-md-2 col-md-offset-2">
+                         <br />
+                         <br />
+                         @if (!Model.isActive)
+                         {
+                             @*@Html.ActionLink("Aktiver Chatbot", "ActivateBot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success" })*@
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#activateModal" style="margin-top:5px;">
+                                Aktiver Chatbot
+                            </button>
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" style="margin-top:5px;">
+                                Slett Chatbot  
+                            </button>
+
+
+                         }
+                         else
+                         {
+                             <p>For å slette denne chatboten må du først aktivere en annen chatbot.</p>
+
+                         }
+                     </div>  
+                    
                 </div>
+                <hr />
                 <div class="row">
                     <div class="col-md-10">
                         <dl class="dl-horizontal">
@@ -95,13 +119,9 @@
                     </div>
                 </div>
                 <div>
-                    @Html.ActionLink("Endre innstillinger", "EditChatbotDetails", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-warning" }) | 
-                    @Html.ActionLink("Aktiver Chatbot", "ActivateBot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success" }) | 
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
-                        Slett
-                    </button> |
+                    @Html.ActionLink("Endre innstillinger", "EditChatbotDetails", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-warning" }) 
                     @Html.ActionLink("Tilbake til listen", "Chatbots", "Administrator", null, new { @class = "btn btn-info" })
+
                 </div>
 
             </div>
@@ -115,14 +135,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Er du sikker?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h4 class="modal-title" id="deleteModalLabel">
+                    Er du sikker?
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
             </div>
             <div class="modal-body">
                 Om du velger å slette denne chatboten vil all data slettes. Obs - Gjelder kun forbindelsesdata. Samtaledata som er registrert påvirkes ikke.
-                @*@Html.ActionLink("Klikk her for å slette!", "DeleteChatbot", new { id = Model.chatbotId })*@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
@@ -131,9 +152,35 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Activate -->
+<div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="activateModalLabel">
+                    Er du sikker?
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                Om du aktiverer denne chatboten vil alle chat-samtaler bli routet til denne chatboten. Er du sikker på at det er det du ønsker?
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                @Html.ActionLink("Aktiver!", "ActivateBot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success btn-large" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts{
-    <!-- Bootstrap Core JavaScript -->
-    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->

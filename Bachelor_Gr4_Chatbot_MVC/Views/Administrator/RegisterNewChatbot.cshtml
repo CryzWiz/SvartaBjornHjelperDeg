@@ -14,8 +14,6 @@
             <div class="col-lg-12">
                 <div class="row">
                     <h2>Registrer ny chatbot</h2>
-
-                    <h4>ChatbotDetails</h4>
                     <hr />
                 </div>
                 <div class="row">
@@ -23,49 +21,49 @@
                         <form asp-action="RegisterNewChatbot">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
-                                <label asp-for="chatbotName" class="control-label"></label>
+                                <label class="control-label"> Chatbotnavn</label>
                                 <input asp-for="chatbotName" class="form-control" />
                                 <span asp-validation-for="chatbotName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="contentType" class="control-label"></label>
+                                <label class="control-label"> Content type</label>
                                 <input asp-for="contentType" class="form-control" />
                                 <span asp-validation-for="contentType" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="BotSecret" class="control-label"></label>
+                                <label class="control-label">Bot Secret</label>
                                 <input asp-for="BotSecret" class="form-control" />
                                 <span asp-validation-for="BotSecret" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="baseUrl" class="control-label"></label>
+                                <label class="control-label">Url (base url)</label>
                                 <input asp-for="baseUrl" class="form-control" />
                                 <span asp-validation-for="baseUrl" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="tokenUrlExtension" class="control-label"></label>
+                                <label class="control-label">Token url (tillegg til base)</label>
                                 <input asp-for="tokenUrlExtension" class="form-control" />
                                 <span asp-validation-for="tokenUrlExtension" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="conversationUrlExtension" class="control-label"></label>
+                                <label class="control-label">Samtale Url (tillegg til samtaler)</label>
                                 <input asp-for="conversationUrlExtension" class="form-control" />
                                 <span asp-validation-for="conversationUrlExtension" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="botAutorizeTokenScheme" class="control-label"></label>
+                                <label class="control-label">Token Autorization Scheme (token bearer)</label>
                                 <input asp-for="botAutorizeTokenScheme" class="form-control" />
                                 <span asp-validation-for="botAutorizeTokenScheme" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Lagre" class="btn btn-success" />
+                                <input type="submit" value="Lagre" class="btn btn-success" /> 
+                                @Html.ActionLink("Avbryt", "Chatbots", "Administrator", null, new { @class = "btn btn-danger" })
                             </div>
                         </form>
                     </div>
-                </div>
-
-                <div>
-                    <a asp-action="Chatbots">Tilbake til listen</a>
+                    <div class="col-md-2 col-md-offset-6">
+                        <img src="~/images/bot-help.jpg" style="float:right;max-height:250px;max-width:250px;" />
+                    </div>
                 </div>
             </div>
         </div>

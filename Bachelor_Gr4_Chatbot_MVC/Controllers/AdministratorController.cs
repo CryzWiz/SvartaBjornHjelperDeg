@@ -10,7 +10,7 @@ using Bachelor_Gr4_Chatbot_MVC.Models.AccountViewModels;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModels;
 using Microsoft.AspNetCore.Identity;
 using Bachelor_Gr4_Chatbot_MVC.Services;
-
+using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -20,17 +20,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
     public class AdministratorController : Controller
     {
         private IAdminRepository repository;
+        private IChatbotRepository chatbotRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
 
         public AdministratorController(
             IAdminRepository repository,
+            IChatbotRepository chatbotRepository,
             IEmailSender emailSender,
             UserManager<ApplicationUser> userManager)
         {
             this._userManager = userManager;
             this._emailSender = emailSender;
             this.repository = repository;
+            this.chatbotRepository = chatbotRepository;
         }
 
         /// <summary>
@@ -39,9 +42,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// <returns>All users</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            ChatbotDetails c = await chatbotRepository.GetActiveBot();
+            var model = new AdministratorIndexViewModel();
+            model.ChatbotName = c.chatbotName;
+            model.ChatbotId = c.chatbotId;
+            return View(model);
         }
 
         /// <summary>
@@ -56,81 +63,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             var u = await repository.GetAllUsers();
             return View(u);
         }
-
-        public async Task<IActionResult> Chatbots()
-        {
-            var u = await repository.GetAllChatbots();
-            return View(u);
-        }
-
-        [HttpGet]
-        public IActionResult RegisterNewChatbot()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
-            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
-        {
-            if (ModelState.IsValid)
-            {
-                var u = await repository.RegisterNewChatbot(chatbotDetails);
-                TempData["success"] = String.Format("Chatbot {0} ble registrert.", chatbotDetails.chatbotName);
-                return RedirectToAction("Chatbots");
-            }
-
-            TempData["error"] = String.Format("Chatbot {0} ble ikke registrert.", chatbotDetails.chatbotName);
-            return View();
-        }
-
-        public async Task<IActionResult> DeleteChatbot(int id)
-        {
-            var c = await repository.GetChatbotDetails(id);
-            var r = await repository.DeleteChatbot(c);
-            if (r)
-            {
-                TempData["success"] = String.Format("Chatbot {0} ble slettet.", c.chatbotName);
-                return RedirectToAction("Chatbots");
-            }
-            TempData["error"] = String.Format("Chatbot {0} ble ikke slettet.", c.chatbotName);
-            return RedirectToAction("Chatbots");
-
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> EditChatbotDetails(int id)
-        {
-            var c = await repository.GetChatbotDetails(id);
-            return View(c);
-        }
-
         
-        public async Task<IActionResult> UpdateChatbotDetails([FromForm][Bind("chatbotId", "chatbotName", "contentType", "BotSecret",
-            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme", "isActive")] ChatbotDetails chatbotDetails)
-        {
-            //if (ModelState.IsValid)
-            //{
-                var c = await repository.UpdateChatbotDetails(chatbotDetails);
-                if (c)
-                {
-                    TempData["success"] = String.Format("Chatbot {0} ble oppdatert.", chatbotDetails.chatbotName);
-                    return RedirectToAction("Chatbots");
-                }
-                TempData["error"] = String.Format("Chatbot {0} ble ikke oppdatert.", chatbotDetails.chatbotName);
-                return RedirectToAction("Chatbots");
-            //}
-
-            //TempData["error"] = String.Format("modelstate unvalid for {0}", chatbotDetails.chatbotName);
-            //return RedirectToAction("Chatbots");
-        }
-
-        public async Task<IActionResult> ViewChatbotDetails(int id)
-        {
-            var c = await repository.GetChatbotDetails(id);
-            return View(c);
-        }
-
         /// <summary>
         /// Fetch and display data regarding given username
         /// </summary>
@@ -223,6 +156,135 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
+
+
+
+
+
+
+
+
+        /// All code below is for the chatbot
+        /// Maby it should be in its own file?
+        /// Also need some fixer upper regarding sec.
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Chatbots()
+        {
+            var u = await chatbotRepository.GetAllChatbots();
+            return View(u);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult RegisterNewChatbot()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
+            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
+        {
+            if (ModelState.IsValid)
+            {
+                var u = await chatbotRepository.RegisterNewChatbot(chatbotDetails);
+                TempData["success"] = String.Format("Chatbot {0} ble registrert.", chatbotDetails.chatbotName);
+                return RedirectToAction("Chatbots");
+            }
+
+            TempData["error"] = String.Format("Chatbot {0} ble ikke registrert.", chatbotDetails.chatbotName);
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteChatbot(int id)
+        {
+            var c = await chatbotRepository.GetChatbotDetails(id);
+            var r = await chatbotRepository.DeleteChatbot(c);
+            if (r)
+            {
+                TempData["success"] = String.Format("Chatbot {0} ble slettet.", c.chatbotName);
+                return RedirectToAction("Chatbots");
+            }
+            TempData["error"] = String.Format("Chatbot {0} ble ikke slettet.", c.chatbotName);
+            return RedirectToAction("Chatbots");
+
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditChatbotDetails(int id)
+        {
+            var c = await chatbotRepository.GetChatbotDetails(id);
+            return View(c);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateChatbotDetails([FromForm][Bind("chatbotId", "chatbotName", "contentType", "BotSecret",
+            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme", "isActive")] ChatbotDetails chatbotDetails)
+        {
+            //if (ModelState.IsValid)
+            //{
+            var c = await chatbotRepository.UpdateChatbotDetails(chatbotDetails);
+            if (c)
+            {
+                TempData["success"] = String.Format("Chatbot {0} ble oppdatert.", chatbotDetails.chatbotName);
+                return RedirectToAction("Chatbots");
+            }
+            TempData["error"] = String.Format("Chatbot {0} ble ikke oppdatert.", chatbotDetails.chatbotName);
+            return RedirectToAction("Chatbots");
+            //}
+
+            //TempData["error"] = String.Format("modelstate unvalid for {0}", chatbotDetails.chatbotName);
+            //return RedirectToAction("Chatbots");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewChatbotDetails(int id)
+        {
+            var c = await chatbotRepository.GetChatbotDetails(id);
+            return View(c);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateBot(int id)
+        {
+            string[] r;
+
+            var a = await chatbotRepository.CheckIfBotActive(id);
+
+            if (!a)
+            {
+                r = await chatbotRepository.ActivateBot(id);
+                if (r[0].Equals("false"))
+                {
+                    TempData["error"] = String.Format("Chatbot {0} ble ikke aktivert.", r[1]);
+                    return RedirectToAction("Chatbots");
+                }
+                else
+                {
+                    TempData["success"] = String.Format("Chatbot {0} ble aktivert.", r[1]);
+                    return RedirectToAction("Chatbots");
+                }
+            }
+            else
+            {
+                TempData["error"] = String.Format("Chatbot er allerede aktiv.");
+                return RedirectToAction("Chatbots");
+            }
+        }
+
+
+
+
+
 
 
     }

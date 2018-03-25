@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel.AdministratorIndexViewModel
+@{
     ViewData["Title"] = "Dashboard";
 }
 
@@ -282,12 +283,27 @@
                                     <em>27 minutter siden</em>
                                 </span>
                             </a>
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> Manuelle samtaler
-                                <span class="pull-right text-muted small">
-                                    <em>43 minutter siden</em>
-                                </span>
-                            </a>
+                            @if (Model.ChatbotId > 0)
+                            {
+                                <a asp-action="ViewChatbotDetails/@Model.ChatbotId" class="list-group-item">
+                                    <i class='fa fa-tasks fa-fw'></i> @Html.DisplayFor(model => model.ChatbotName)
+                                    <span class='pull-right text-muted small' style="color:green;">
+                                        <em>Aktiv</em>
+                                    </span>
+                                </a>
+
+                            }
+                            else
+                            {
+                                <a asp-action="Chatbots" class="list-group-item">
+                                    <i class='fa fa-tasks fa-fw'></i> Ingen bot
+                                    <span class='pull-right text-muted small' style="color:red;">
+                                        <em>Aktiv</em>
+                                    </span>
+                                </a>
+
+                            }
+
                             <!--
                             <a href="#" class="list-group-item">
                                 <i class="fa fa-upload fa-fw"></i> Server Rebooted
