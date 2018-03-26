@@ -29,8 +29,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              */
             string connectionId = Context.ConnectionId;
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
-
-            if(Context.User.IsInRole())
             _connections.Add(key, connectionId);
 
             // Add to single-user group
@@ -41,7 +39,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private async Task SetChatWorkerStatus(string userName, string status)
         {
-
+            //_chatWorkerStatus.AddOrUpdate(userName, status);
         }
 
         private async Task DisconnectChatWorker(string userName)
