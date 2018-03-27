@@ -175,10 +175,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return RedirectToAction("Users");
         }
 
-        public async Task<IActionResult> DisplayActiveChatWorkers()
+       /* public async Task<IActionResult> DisplayActiveChatWorkers()
         {
-            
-        }
+          
+        }*/
 
         // Copied from Auto generated code in AccountController
         private IActionResult RedirectToLocal(string returnUrl)

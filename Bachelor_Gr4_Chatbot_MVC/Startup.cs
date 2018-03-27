@@ -44,10 +44,14 @@ namespace Bachelor_Gr4_Chatbot_MVC
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+      
+
 
             // Options
             services.Configure<EmailSenderOptions>(Configuration);
             services.Configure<RoleOptions>(Configuration);
+
+
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
@@ -55,8 +59,9 @@ namespace Bachelor_Gr4_Chatbot_MVC
             services.AddTransient<IChatRepository, EFChatRepository>();
             services.AddTransient<IQnARepository, EFQnARepository>();
 
+            services.AddCors();
             services.AddSignalR();
-            services.AddMvc() .AddSessionStateTempDataProvider();
+            services.AddMvc().AddSessionStateTempDataProvider();
             services.AddSession();
         }
 
@@ -79,6 +84,10 @@ namespace Bachelor_Gr4_Chatbot_MVC
             app.UseAuthentication();
 
             app.UseSession();
+
+            app.UseCors(options =>
+                options.WithOrigins("https://allanarnesen.com").AllowAnyMethod()
+            );
 
             app.UseSignalR(routes =>
             {
