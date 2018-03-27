@@ -60,7 +60,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                Firstname = user.FirstName,
+                Lastname = user.LastName
             };
 
             return View(model);

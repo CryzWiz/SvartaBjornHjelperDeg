@@ -1,6 +1,6 @@
 @model TwoFactorAuthenticationViewModel
 @{
-    ViewData["Title"] = "Two-factor authentication";
+    ViewData["Title"] = "To-faktor autentisering";
     ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
 }
 
@@ -10,38 +10,38 @@
     if (Model.RecoveryCodesLeft == 0)
     {
         <div class="alert alert-danger">
-            <strong>You have no recovery codes left.</strong>
-            <p>You must <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+            <strong>Du har ingen gjennopprettingskoder igjen.</strong>
+            <p>Du må <a asp-action="GenerateRecoveryCodes">generere et nytt sett med gjennopprettingskoder</a> før du kan logge inn ved hjelp av en.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft == 1)
     {
         <div class="alert alert-danger">
-            <strong>You have 1 recovery code left.</strong>
-            <p>You can <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <strong>Du har 1 gjennopprettingskode igjen.</strong>
+            <p>Du burde <a asp-action="GenerateRecoveryCodes">generere et nytt sett med gjennopprettingskoder</a>.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft <= 3)
     {
         <div class="alert alert-warning">
-            <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-            <p>You should <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <strong>Du har @Model.RecoveryCodesLeft gjennopprettingskoder igjen.</strong>
+            <p>Du burde <a asp-action="GenerateRecoveryCodes">generere et nytt sett med gjennopprettingskoder</a>.</p>
         </div>
     }
 
-    <a asp-action="Disable2faWarning" class="btn btn-default">Disable 2FA</a>
-    <a asp-action="GenerateRecoveryCodes" class="btn btn-default">Reset recovery codes</a>
+    <a asp-action="Disable2faWarning" class="btn btn-danger">Slå av 2-stegs autentisering</a>
+    <a asp-action="GenerateRecoveryCodes" class="btn btn-warning">Reset gjennopprettings koder</a>
 }
 
 <h5>Authenticator app</h5>
 @if (!Model.HasAuthenticator)
 {
-    <a asp-action="EnableAuthenticator" class="btn btn-default">Add authenticator app</a>
+    <a asp-action="EnableAuthenticator" class="btn btn-success">Legg til 2-stegs autentiserings-app</a>
 }
 else
 {
-    <a asp-action="EnableAuthenticator" class="btn btn-default">Configure authenticator app</a>
-    <a asp-action="ResetAuthenticatorWarning" class="btn btn-default">Reset authenticator key</a>
+    <a asp-action="EnableAuthenticator" class="btn btn-warning">Konfigurer autentiserings-app</a>
+    <a asp-action="ResetAuthenticatorWarning" class="btn btn-warning">Reset autentiserings nøkkel</a>
 }
 
 @section Scripts {
