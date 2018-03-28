@@ -15,19 +15,44 @@
             <div class="col-lg-12">
                 <div class="row">
 
-                    <h2>EditChatbotDetails</h2>
+                    <h2>Endre innstillinger for chatbot</h2>
 
-                    <h4>ChatbotDetails</h4>
+                    @if (Model.isActive)
+                    {
+                        <p style="color:green;">Denne chatboten er aktiv!</p>
+
+                    }
+                    else
+                    {
+                        <p style="color:red;">Denne chatboten er ikke aktiv!</p>
+
+                    }
+
                     <hr />
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <form asp-action="EditChatbotDetails">
+                        <form asp-action="UpdateChatbotDetails">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group" hidden>
                                 <label asp-for="chatbotId" class="control-label"></label>
                                 <input asp-for="chatbotId" class="form-control" />
                                 <span asp-validation-for="chatbotId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="regDate" class="control-label"></label>
+                                <input asp-for="regDate" class="form-control" />
+                                <span asp-validation-for="regDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="lastEdit" class="control-label"></label>
+                                <input asp-for="lastEdit" class="form-control" />
+                                <span asp-validation-for="lastEdit" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="isActive" class="control-label"></label>
+                                <input asp-for="isActive" class="form-control" />
+                                <span asp-validation-for="isActive" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="chatbotName" class="control-label"></label>
@@ -45,9 +70,9 @@
                                 <span asp-validation-for="BotSecret" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="base_Url" class="control-label"></label>
-                                <input asp-for="base_Url" class="form-control" />
-                                <span asp-validation-for="base_Url" class="text-danger"></span>
+                                <label asp-for="baseUrl" class="control-label"></label>
+                                <input asp-for="baseUrl" class="form-control" />
+                                <span asp-validation-for="baseUrl" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="tokenUrlExtension" class="control-label"></label>
@@ -55,9 +80,9 @@
                                 <span asp-validation-for="tokenUrlExtension" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="converationUrlExtenison" class="control-label"></label>
-                                <input asp-for="converationUrlExtenison" class="form-control" />
-                                <span asp-validation-for="converationUrlExtenison" class="text-danger"></span>
+                                <label asp-for="conversationUrlExtension" class="control-label"></label>
+                                <input asp-for="conversationUrlExtension" class="form-control" />
+                                <span asp-validation-for="conversationUrlExtension" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="botAutorizeTokenScheme" class="control-label"></label>
@@ -65,14 +90,18 @@
                                 <span asp-validation-for="botAutorizeTokenScheme" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-default" />
+                                <input type="submit" value="Lagre" class="btn btn-success" /> 
+                                @Html.ActionLink("Avbryt", "Chatbots", "Administrator", null, new { @class = "btn btn-danger" })
                             </div>
                         </form>
+                    </div>
+                    <div class="col-md-2 col-md-offset-6">
+                        <img src="~/images/bot-help.jpg" style="float:right;max-height:250px;max-width:250px;" />
                     </div>
                 </div>
 
                 <div>
-                    <a asp-action="Chatbots">Back to List</a>
+                    <a asp-action="Chatbots">Tilbake til listen</a>
                 </div>
             </div>
         </div>
@@ -80,6 +109,8 @@
 </div>
 
 @section Scripts{
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->

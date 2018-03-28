@@ -13,85 +13,177 @@
         <div class="container-fluid">
             <div class="col-lg-12">
                 <div class="row">
-                    <h2>ViewChatbotDetails</h2>
-                    <hr />
+                    <div class="col-md-8">
+                        <h2>Detaljer for @Html.DisplayFor(model => model.chatbotName)</h2>
+                        @if (Model.isActive)
+                        {
+                            <p style="color:green;">Denne chatboten er aktiv!</p>
+
+                        }
+                        else
+                        {
+                            <p style="color:red;">Denne chatboten er ikke aktiv!</p>
+
+                        }
+                    </div>
+                     <div class="col-md-2 col-md-offset-2">
+                         <br />
+                         <br />
+                         @if (!Model.isActive)
+                         {
+                             @*@Html.ActionLink("Aktiver Chatbot", "ActivateBot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success" })*@
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#activateModal" style="margin-top:5px;">
+                                Aktiver Chatbot
+                            </button>
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" style="margin-top:5px;">
+                                Slett Chatbot  
+                            </button>
+
+
+                         }
+                         else
+                         {
+                             <p>For å slette denne chatboten må du først aktivere en annen chatbot.</p>
+
+                         }
+                     </div>  
+                    
                 </div>
+                <hr />
                 <div class="row">
-                    <dl class="dl-horizontal">
-                        <dt>
-                            @Html.DisplayNameFor(model => model.chatbotId)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.chatbotId)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.chatbotName)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.chatbotName)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.regDate)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.regDate)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.lastEdit)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.lastEdit)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.isActive)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.isActive)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.contentType)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.contentType)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.BotSecret)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.BotSecret)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.base_Url)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.base_Url)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.tokenUrlExtension)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.tokenUrlExtension)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.converationUrlExtenison)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.converationUrlExtenison)
-                        </dd>
-                        <dt>
-                            @Html.DisplayNameFor(model => model.botAutorizeTokenScheme)
-                        </dt>
-                        <dd>
-                            @Html.DisplayFor(model => model.botAutorizeTokenScheme)
-                        </dd>
-                    </dl>
+                    <div class="col-md-10">
+                        <dl class="dl-horizontal">
+                            <dt hidden>
+                                @Html.DisplayNameFor(model => model.chatbotId)
+                            </dt>
+                            <dd hidden>
+                                @Html.DisplayFor(model => model.chatbotId)
+                            </dd>
+                            <dt>
+                                Registrert
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.regDate)
+                            </dd>
+                            <dt>
+                                Sist endret/oppdatert
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.lastEdit)
+                            </dd>
+                        </dl>
+
+                        <h4>API detaljer</h4>
+                        <dl class="dl-horizontal">
+                            <dt>
+                                Content-Type
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.contentType)
+                            </dd>
+                            <dt>
+                                Bot Secret
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.BotSecret)
+                            </dd>
+                            <dt>
+                                Token Authorize Scheme
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.botAutorizeTokenScheme)
+                            </dd>
+                            <dt>
+                                Base Url
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.baseUrl)
+                            </dd>
+                            <dt>
+                                Token Url
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.tokenUrlExtension)
+                            </dd>
+                            <dt>
+                                Chat Url
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.conversationUrlExtension)
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="~/images/bot-help.jpg" style="float:right;max-height:250px;max-width:250px;" />
+                    </div>
                 </div>
                 <div>
-                    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-                    <a asp-action="Chatbots">Back to List</a>
+                    @Html.ActionLink("Endre innstillinger", "EditChatbotDetails", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-warning" }) 
+                    @Html.ActionLink("Tilbake til listen", "Chatbots", "Administrator", null, new { @class = "btn btn-info" })
+
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteModalLabel">
+                    Er du sikker?
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                Om du velger å slette denne chatboten vil all data slettes. Obs - Gjelder kun forbindelsesdata. Samtaledata som er registrert påvirkes ikke.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                @Html.ActionLink("Slett!", "DeleteChatbot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success btn-large" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Activate -->
+<div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="activateModalLabel">
+                    Er du sikker?
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                Om du aktiverer denne chatboten vil alle chat-samtaler bli routet til denne chatboten. Er du sikker på at det er det du ønsker?
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                @Html.ActionLink("Aktiver!", "ActivateBot", "Administrator", new { id = Model.chatbotId }, new { @class = "btn btn-success btn-large" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}
