@@ -89,10 +89,11 @@ namespace Bachelor_Gr4_Chatbot_MVC
                 options.WithOrigins("https://allanarnesen.com").AllowAnyMethod()
             );
 
-            app.UseSignalR(routes =>
+            /*app.UseSignalR(routes =>
             {
                 routes.MapHub<Hubs.ChatHub>("chathub");
-            });
+            });*/
+            
 
 
             app.UseMvc(routes =>
