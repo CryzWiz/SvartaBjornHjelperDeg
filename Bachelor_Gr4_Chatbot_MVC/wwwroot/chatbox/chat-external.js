@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 displaySentMessage(message);
             });
 
+            connection.on('setConversationId', function (conversationId) {
+                alert("TEST: ConversationId er: " + conversationId);
+            });
+
 
 
 
@@ -177,8 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     connection.invoke('joinQueue');
                 });
 
-
-
+                
 
 
             })

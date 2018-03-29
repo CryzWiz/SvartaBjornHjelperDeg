@@ -11,5 +11,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task SaveOpeningHours(OpeningHours openingHours);
         Task SaveOpeningHours(IEnumerable<OpeningHours> openingHours);
         Task<IEnumerable<ChatOpeningHoursViewModel>> GetAllOpeningHours();
+
+        Task<int> AddConversationAsync(Conversation conversation);
     }
 }

@@ -47,5 +47,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             await _db.AddRangeAsync(openingHours);
             await _db.SaveChangesAsync();
         }
+
+        public async Task<int> AddConversationAsync(Conversation conversation)
+        {
+            await _db.AddAsync(conversation);
+            await _db.SaveChangesAsync();
+            return conversation.ConversationId;
+        }
     }
 }

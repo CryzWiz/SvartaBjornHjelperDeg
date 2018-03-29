@@ -37,10 +37,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
         private IChatRepository _repository;
+        private IChatBot _chatBot;
 
         public ChatHub(IChatRepository repository)
+            //, IChatBot chatBot)
         {
             _repository = repository;
+           // _chatBot = chatBot;
         }
 
         public override async Task OnConnectedAsync()
@@ -52,6 +55,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string connectionId = Context.ConnectionId;
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
             _connections.Add(key, connectionId);
+
+            // TODO: 
             if (key.Equals(connectionId))
             {
                 ChatHubHandler.ConnectedUsers.Add(key);
@@ -60,12 +65,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 ChatHubHandler.ConnectedWorkers.Add(key);
             }
-            
+
+
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
+
+            int conversationId = await ConnectWithChatBot(key);
+            await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
+
             await DisplayConnectedUsers();
          }
+
+        public async Task<int> ConnectWithChatBot(string userGroup)
+        {
+            //string conversationToken = await _chatBotController.GetConversationTokenAsString();
+            string conversationToken = "test";
+
+            // Create conversation 
+            Conversation conversation = new Conversation
+            {
+                ConversationToken = conversationToken,
+                UserGroup1 = userGroup,
+                IsChatBot = true,
+                StartTime = DateTime.Now
+            };
+
+            // Save conversation
+            int conversationId = await _repository.AddConversationAsync(conversation);
+            return conversationId;
+        }
+
+       
 
         private async Task SetChatWorkerStatus(string userName, string status)
         {
