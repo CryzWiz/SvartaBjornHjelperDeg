@@ -16,10 +16,62 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
 {
     public class QnAChatBot : IChatBot
     {
-        public string GetConversationTokenAsString()
+        private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
+        private HttpResponseMessage response;
+
+        private static string contentType = "application/json";
+        private static string BotSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0";
+
+        private static string directLineAddress_V3 = "https://directline.botframework.com";
+        private static string tokenAddress_V3 = "/v3/directline/tokens/generate";
+        private static string botAutorizeTokenScheme_V3 = "Bearer";
+        private static string directLineConversation_V3 = "/v3/directline/conversations/";
+
+        private static string DiretlineUrl = @"https://chatbotsvartabjorn.azurewebsites.net/api/messages";
+
+        private static string botId = "Chatbot_SvartaBjorn_Azure";
+
+        public ActivitySet activitySet;
+
+        private IChatbotRepository _chatBotRepository;
+        
+
+        public QnAChatBot(IChatbotRepository chatBotRepository, IConfiguration configuration)
         {
-            return "Testing i ChatBot";
+            _chatBotRepository = chatBotRepository;
+            appCredentials = new Microsoft.Bot.Connector.MicrosoftAppCredentials(configuration);
         }
+
+
+
+        /// <summary>
+        /// Make a connection to the chatbot and get a token that a user can use to have a conversation with the bot
+        /// </summary>
+        /// <returns>(String)Securitytoken to be used in conversations with the chatbot</returns>
+        public async Task<String> GetConversationTokenAsString()
+        {
+            Models.ChatbotDetails activeBot = await _chatBotRepository.GetActiveBot();   // fetch the active bot
+
+            // Create the connection using the secret token
+            HttpClient client = new HttpClient();   // new httpclient
+            client.BaseAddress = new Uri(activeBot.baseUrl);    // set base url
+            client.DefaultRequestHeaders.Accept.Clear();    // clear headers
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contentType
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, activeBot.BotSecret);  // make connection
+            // Fetch a new token for just this chat
+            response = await client.PostAsync(activeBot.tokenUrlExtension, null);   // make connection and await response
+            if (response.IsSuccessStatusCode) // Yey -> We got a connection and a reply
+            {
+                Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;  // read response as a conversation
+                return conversationinfo.Token;  // return the new security token
+            }
+            else
+            {
+                return null;    // else we return null
+            }
+        }
+
+
         /*private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
         private HttpResponseMessage response;
 

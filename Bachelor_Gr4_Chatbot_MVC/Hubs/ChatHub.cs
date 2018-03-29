@@ -82,7 +82,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             //string conversationToken = await _chatBotController.GetConversationTokenAsString();
 
             string conversationToken = "FEIL TOKEN";
-            conversationToken = _chatBot.GetConversationTokenAsString();
+            conversationToken = await _chatBot.GetConversationTokenAsString();
 
             // Create conversation 
             Conversation conversation = new Conversation
