@@ -39,11 +39,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private IChatRepository _repository;
         private IChatBot _chatBot;
 
-        public ChatHub(IChatRepository repository)
-            //, IChatBot chatBot)
+        public ChatHub(IChatRepository repository
+            , IChatBot chatBot)
         {
             _repository = repository;
-           // _chatBot = chatBot;
+            _chatBot = chatBot;
         }
 
         public override async Task OnConnectedAsync()
@@ -80,7 +80,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task<int> ConnectWithChatBot(string userGroup)
         {
             //string conversationToken = await _chatBotController.GetConversationTokenAsString();
-            string conversationToken = "test";
+
+            string conversationToken = "FEIL TOKEN";
+            conversationToken = _chatBot.GetConversationTokenAsString();
 
             // Create conversation 
             Conversation conversation = new Conversation

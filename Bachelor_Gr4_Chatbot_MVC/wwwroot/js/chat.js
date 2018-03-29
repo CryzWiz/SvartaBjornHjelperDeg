@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var groupId = "";
 
 
+
     // Get the user name and store it to prepend to messages.
     var name = 'Guest';
     // Set initial focus to message input box.

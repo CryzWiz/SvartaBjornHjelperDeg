@@ -85,7 +85,7 @@ function displayReceivedMessage(message) {
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
-    var talkWithChatBot = true;
+    var conversationId = "test";
 
     // Get the user name and store it to prepend to messages.
     var name = 'Guest';
@@ -139,8 +139,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 displaySentMessage(message);
             });
 
-            connection.on('setConversationId', function (conversationId) {
-                alert("TEST: ConversationId er: " + conversationId);
+            connection.on('setConversationId', function (id) {
+                conversationId = id;
             });
 
 
