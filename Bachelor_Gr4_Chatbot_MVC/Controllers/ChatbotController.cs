@@ -53,6 +53,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         {
             appCredentials = new Microsoft.Bot.Connector.MicrosoftAppCredentials(configuration);
         }
+
         [HttpGet]
         public IActionResult Test()
         {
