@@ -13,5 +13,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<IEnumerable<ChatOpeningHoursViewModel>> GetAllOpeningHours();
 
         Task<int> AddConversationAsync(Conversation conversation);
+        Task<string> GetName(string name);
+        Task AddMessageAsync(Message message);
     }
 }

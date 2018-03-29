@@ -54,5 +54,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             await _db.SaveChangesAsync();
             return conversation.ConversationId;
         }
+
+        public async Task<string> GetName(string name)
+        {
+            ApplicationUser user =  await _db.Users.FindAsync(name);
+            return user.FirstName + " " + user.LastName;
+        }
+
+        public async Task AddMessageAsync(Message message)
+        {
+            await _db.AddAsync(message);
+            await _db.SaveChangesAsync();
+        }
     }
 }

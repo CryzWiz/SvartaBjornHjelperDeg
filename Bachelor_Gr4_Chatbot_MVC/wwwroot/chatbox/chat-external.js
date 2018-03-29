@@ -85,7 +85,7 @@ function displayReceivedMessage(message) {
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
-    var conversationId = "test";
+    var conversationId = null;
 
     // Get the user name and store it to prepend to messages.
     var name = 'Guest';
@@ -159,17 +159,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Send message
                 $("#sendmessage").click(function (event) {
-                    // TODO: Bytt ut kode her
-                    //connection.invoke('send', messageInput.value);
-                    if (talkWithChatBot) {
-                        connection.invoke('sendToGroup', groupId, messageInput.value);
-                        //connection.invoke('sendToGroup2', groupId, talkWithChatBot, messageInput.value);
-                    } else {
-                        connection.invoke('sendToGroup', groupId, messageInput.value);
-                    }
-
-
-
+                    connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+                    
                     // Clear text box and reset focus for next comment.
                     messageInput.value = '';
                     messageInput.focus();
