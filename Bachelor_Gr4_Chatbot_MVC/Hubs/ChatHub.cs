@@ -36,9 +36,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
-        private EFChatRepository _repository;
+        private IChatRepository _repository;
 
-        public ChatHub(EFChatRepository repository)
+        public ChatHub(IChatRepository repository)
         {
             _repository = repository;
         }
@@ -205,8 +205,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
-            message = rep.TestDependency(); // TODO: SLETTES
-            groupName = from;
             /*Message msg = new Message
             {
                 From = from,
