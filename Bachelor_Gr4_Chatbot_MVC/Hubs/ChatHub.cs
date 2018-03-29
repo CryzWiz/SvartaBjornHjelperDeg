@@ -1,4 +1,5 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Models;
+using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
@@ -28,6 +29,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
 
+        private EFChatRepository _repository;
+
+        public ChatHub(EFChatRepository repository)
+        {
+            _repository = repository;
+        }
 
         public override async Task OnConnectedAsync()
         {
@@ -104,6 +111,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 {
                     // TODO: Skal ikke hardkodes men hentes fra databasen
                     string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+                    //var r = await _repository.PostQuery("hva er du");
+                    //string message = r;
                     string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
                     string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
