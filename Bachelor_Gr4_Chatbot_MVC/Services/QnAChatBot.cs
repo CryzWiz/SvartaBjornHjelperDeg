@@ -71,7 +71,52 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
             }
         }
 
-
+        /// <summary>
+        /// Start a new conversation by contacting the chatbot, exchange tokens, change token, start the conversation for the user
+        /// </summary>
+        /// <returns>(Conversation)The started conversation details</returns>
+        public async Task<Conversation> StartAndGetNewConversation()
+        {
+            Models.ChatbotDetails activeBot = await _chatBotRepository.GetActiveBot();   // fetch the active bot
+            if (activeBot != null)
+            {
+                // Create the connection using the secret token
+                HttpClient client = new HttpClient();   // httpclient
+                client.BaseAddress = new Uri(activeBot.baseUrl);    // set base url
+                client.DefaultRequestHeaders.Accept.Clear();    // clear all header
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contentType
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, activeBot.BotSecret);  // set secyrity headers
+                // Fetch a new token for just this chat
+                response = await client.PostAsync(activeBot.tokenUrlExtension, null);   // make token exchange and await response
+                if (response.IsSuccessStatusCode) // Yey -> We got a connection and a reply
+                {
+                    Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;  // read response as a conversation
+                    // Clear the headers and set the new token
+                    client.DefaultRequestHeaders.Accept.Clear();    // clear the headers
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contenttype
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, conversationinfo.Token);   // set the new secyrity token
+                    // Start the conversation
+                    response = await client.PostAsync(activeBot.conversationUrlExtension, null); // make connection and get response
+                    if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
+                    {
+                        Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;   // read response as a Conversation
+                        return currentConversation;     // return conversation
+                    }
+                    else
+                    {
+                        return null;    // could not make a connection
+                    }
+                }
+                else
+                {
+                    return null;    // Could not make a connection
+                }
+            }
+            else
+            {
+                return null;    // we dont have a active bot
+            }
+        }
         /*private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
         private HttpResponseMessage response;
 

@@ -39,8 +39,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private IChatRepository _repository;
         private IChatBot _chatBot;
 
-        public ChatHub(IChatRepository repository
-            , IChatBot chatBot)
+        public ChatHub(IChatRepository repository, IChatBot chatBot)
         {
             _repository = repository;
             _chatBot = chatBot;
@@ -92,6 +91,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Save conversation
             int conversationId = await _repository.AddConversationAsync(conversation);
             return conversationId;
+        }
+
+        public async Task StartConversationWithChatBot()
+        {
+
         }
 
        
