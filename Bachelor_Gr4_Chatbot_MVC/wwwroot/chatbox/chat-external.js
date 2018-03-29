@@ -157,7 +157,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // TODO: Bytt ut kode her
                 //connection.invoke('send', messageInput.value);
                 if (talkWithChatBot) {
-                    connection.invoke('sendToGroup2', groupId, talkWithChatBot, messageInput.value);
+                    connection.invoke('sendToGroup', groupId, messageInput.value);
+                    //connection.invoke('sendToGroup2', groupId, talkWithChatBot, messageInput.value);
                 } else {
                     connection.invoke('sendToGroup', groupId, messageInput.value);
                 }

@@ -54,11 +54,15 @@ namespace Bachelor_Gr4_Chatbot_MVC
 
 
             // Add application services.
+     
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IChatBot, ChatBot>();
             services.AddTransient<IAdminRepository, EFAdminRepository>();
             services.AddTransient<IChatRepository, EFChatRepository>();
             services.AddTransient<IQnARepository, EFQnARepository>();
             services.AddTransient<IChatbotRepository, EFChatbotRepository>();
+
+
 
             services.AddCors();
             services.AddSignalR();

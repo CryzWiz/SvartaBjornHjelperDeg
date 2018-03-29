@@ -1,6 +1,8 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Controllers;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
+using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
+using Bachelor_Gr4_Chatbot_MVC.Services;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System;
@@ -27,8 +29,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private const string _chatBotAddress = "api/ChatbotController";
         private const string _contentTypeJson = "application/json";
+
+  
+        IChatBot rep;
         
-        
+        public ChatHub(IChatBot chatBot)
+        {
+            rep = chatBot;
+        }
 
         public override async Task OnConnectedAsync()
         {
@@ -40,6 +48,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
             _connections.Add(key, connectionId);
 
+            //string conversationToken = await _chatBot.GetConversationTokenAsString();
+
+            
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
@@ -82,6 +93,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 IsChatBot = false,
                 StartTime = DateTime.Now
             };*/
+
 
             _queue.Enqueue(Context.ConnectionId);
             int placeInQueue = _queue.Count();
@@ -171,7 +183,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <param name="message">Message content</param>
         public async Task SendToGroup(string groupName, string message)
         {
+
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+
+            message = rep.TestDependency(); // TODO: SLETTES
+            groupName = from;
             /*Message msg = new Message
             {
                 From = from,
@@ -181,12 +197,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 Content = message
             };*/
 
-            
+
             await DisplayMessage(groupName, from, message);
 
         }
 
-        public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
+        /*public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
         {
             if(talkWithChatBot)
             {
@@ -223,7 +239,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
             await SendToGroup(groupName, message);
 
-        }
+        }*/
         public async Task DisplayMessage(string groupTo, string groupFrom, string message)
         {
             await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
