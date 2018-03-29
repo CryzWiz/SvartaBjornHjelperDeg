@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Hubs\IChatHub.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Views\Chat\chatbox.html">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

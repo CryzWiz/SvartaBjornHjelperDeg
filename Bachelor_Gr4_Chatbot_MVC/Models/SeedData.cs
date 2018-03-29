@@ -38,6 +38,11 @@ public class SeedData
         {
             await CreateOpeningHours(context);
         }
+
+        if (!context.ChatbotDetails.Any())
+        {
+            await AddChatbot(context);
+        }
     }
 
     /// <summary>
@@ -138,6 +143,26 @@ public class SeedData
         }
 
         await context.AddRangeAsync(hours);
+        await context.SaveChangesAsync();
+    }
+
+    private static async Task AddChatbot(ApplicationDbContext context)
+    {
+        var chatbot = new ChatbotDetails
+        {
+            regDate = DateTime.Now,
+            lastEdit = DateTime.Now,
+            chatbotName = "Svarta Bjørn",
+            isActive = true,
+            contentType = "application/json",
+            baseUrl = "https://directline.botframework.com",
+            tokenUrlExtension = "/v3/directline/tokens/generate",
+            conversationUrlExtension = "/v3/directline/conversations/",
+            botAutorizeTokenScheme = "Bearer",
+            BotSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0"
+
+        };
+        await context.AddAsync(chatbot);
         await context.SaveChangesAsync();
     }
 
