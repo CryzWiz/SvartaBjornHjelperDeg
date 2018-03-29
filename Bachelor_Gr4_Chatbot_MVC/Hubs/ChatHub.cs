@@ -16,6 +16,15 @@ using System.Threading.Tasks;
 namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 {
 
+    public static class ChatHubHandler
+    {
+        public static HashSet<string> ConnectedUsers = new HashSet<string>();
+        public static HashSet<string> ConnectedWorkers = new HashSet<string>();
+        public static int inQue = 0;
+    }
+
+
+
     /// Referanser: 
     /// https://code.msdn.microsoft.com/ASPNET-CORE-20-uses-7a771742
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
@@ -27,15 +36,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
-        private const string _chatBotAddress = "api/ChatbotController";
-        private const string _contentTypeJson = "application/json";
+        private EFChatRepository _repository;
 
-  
-        IChatBot rep;
-        
-        public ChatHub(IChatBot chatBot)
+        public ChatHub(EFChatRepository repository)
         {
-            rep = chatBot;
+            _repository = repository;
         }
 
         public override async Task OnConnectedAsync()
@@ -47,9 +52,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string connectionId = Context.ConnectionId;
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
             _connections.Add(key, connectionId);
-
-            //string conversationToken = await _chatBot.GetConversationTokenAsString();
-
+            if (key.Equals(connectionId))
+            {
+                ChatHubHandler.ConnectedUsers.Add(key);
+            }
+            else
+            {
+                ChatHubHandler.ConnectedWorkers.Add(key);
+            }
             
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
@@ -77,7 +87,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string connectionId = Context.ConnectionId;
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
             _connections.Remove(key, Context.ConnectionId);
-
+            if (key.Equals(connectionId))
+            {
+                ChatHubHandler.ConnectedUsers.Remove(key);
+            }
+            else
+            {
+                ChatHubHandler.ConnectedWorkers.Remove(key);
+            }
             // TODO: Gjør endringer her!
             await DisplayConnectedUsers(); 
             await DisplayQueue();
@@ -97,7 +114,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             _queue.Enqueue(Context.ConnectionId);
             int placeInQueue = _queue.Count();
-
+            ChatHubHandler.inQue += 1;
             await DisplayQueue();
             await Clients.Client(Context.ConnectionId).InvokeAsync("displayQueueNumber", placeInQueue);
         }
@@ -111,12 +128,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 {
                     // TODO: Skal ikke hardkodes men hentes fra databasen
                     string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
+                    //var r = await _repository.PostQuery("hva er du");
+                    //string message = r;
                     string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
                     string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
                     await Clients.Group(from).InvokeAsync("pickFromQueue", groupId);
                     await DisplayMessage(groupId, from, message);
-
+                    ChatHubHandler.inQue -= 1;
                     await DisplayQueue();
                 } else
                 {

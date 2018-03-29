@@ -25,8 +25,8 @@
                                 <i class="fa fa-comments fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">26</div>
-                                <div>Nye spørsmål registrert!</div>
+                                <div class="huge">@Html.DisplayFor(model => model.ChatQue)</div>
+                                <div>personer i kø!</div>
                             </div>
                         </div>
                     </div>
@@ -266,21 +266,21 @@
                     <div class="panel-body">
                         <div class="list-group">
                             <a href="#" class="list-group-item">
-                                <i class="fa fa-comment fa-fw"></i> Nye Spørsmål Registrert
+                                <i class="fa fa-comment fa-fw"></i> Chat brukere
                                 <span class="pull-right text-muted small">
-                                    <em>4 minutter siden</em>
+                                    <em>@Html.DisplayFor(model => model.ChatUsers)</em>
                                 </span>
                             </a>
                             <a href="#" class="list-group-item">
-                                <i class="fa fa-twitter fa-fw"></i> 3 Nye Følgere
+                                <i class="fa fa-twitter fa-fw"></i> Chat arbeidere
                                 <span class="pull-right text-muted small">
-                                    <em>12 minutter siden</em>
+                                    <em>@Html.DisplayFor(model => model.ChatWorkers)</em>
                                 </span>
                             </a>
                             <a href="#" class="list-group-item">
-                                <i class="fa fa-envelope fa-fw"></i> Tilbakemeldinger
+                                <i class="fa fa-envelope fa-fw"></i> Chat Kø
                                 <span class="pull-right text-muted small">
-                                    <em>27 minutter siden</em>
+                                    <em>@Html.DisplayFor(model => model.ChatQue)</em>
                                 </span>
                             </a>
                             @if (Model.ChatbotId > 0)
@@ -296,9 +296,9 @@
                             else
                             {
                                 <a asp-action="Chatbots" class="list-group-item">
-                                    <i class='fa fa-tasks fa-fw'></i> Ingen bot
+                                    <i class='fa fa-tasks fa-fw'></i> Ingen bot aktiv
                                     <span class='pull-right text-muted small' style="color:red;">
-                                        <em>Aktiv</em>
+                                        <em>Registrer bot</em>
                                     </span>
                                 </a>
 

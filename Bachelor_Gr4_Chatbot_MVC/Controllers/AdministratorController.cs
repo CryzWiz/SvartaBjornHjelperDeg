@@ -13,6 +13,7 @@ using Bachelor_Gr4_Chatbot_MVC.Services;
 using Microsoft.AspNetCore.SignalR;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
+using Bachelor_Gr4_Chatbot_MVC.Hubs;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -51,8 +52,21 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         {
             ChatbotDetails c = await chatbotRepository.GetActiveBot();
             var model = new AdministratorIndexViewModel();
-            model.ChatbotName = c.chatbotName;
-            model.ChatbotId = c.chatbotId;
+            if(c != null)
+            {
+                model.ChatbotName = c.chatbotName;
+                model.ChatbotId = c.chatbotId;
+            }
+            else
+            {
+                model.ChatbotId = 0;
+            }
+
+            // Fetch chathub data
+            model.ChatWorkers = ChatHubHandler.ConnectedWorkers.Count;
+            model.ChatQue = ChatHubHandler.inQue;
+            model.ChatUsers = ChatHubHandler.ConnectedUsers.Count;
+
             return View(model);
         }
 

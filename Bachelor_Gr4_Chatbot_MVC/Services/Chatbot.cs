@@ -1,28 +1,20 @@
-﻿//using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
-using Bachelor_Gr4_Chatbot_MVC.Extensions;
-using Bachelor_Gr4_Chatbot_MVC.Models.BotModels;
-using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
+﻿using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
-namespace Bachelor_Gr4_Chatbot_MVC.Controllers
+namespace Bachelor_Gr4_Chatbot_MVC.Services
 {
-    [Produces("application/json")]
-    //[Route("api/[controller]")]
-    [Route("api/ChatBot")]
-    public class ChatbotController : Controller
+    public class Chatbot
     {
-        private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
+
         private HttpResponseMessage response;
 
         private static string contentType = "application/json";
@@ -40,25 +32,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public ActivitySet activitySet;
         private IChatbotRepository chatbotRepository;
 
-        public ChatbotController(IChatbotRepository chatbotRepository)
+        public Chatbot(IChatbotRepository chatbotRepository)
         {
             this.chatbotRepository = chatbotRepository;
-        }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChatbotController"/> class.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        public ChatbotController(IConfiguration configuration)
-        {
-            appCredentials = new Microsoft.Bot.Connector.MicrosoftAppCredentials(configuration);
-        }
-
-        [HttpGet]
-        public IActionResult Test()
-        {
-            return View();
         }
 
         /// <summary>
@@ -95,7 +71,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<Conversation> StartAndGetNewConversation()
         {
             Models.ChatbotDetails activeBot = await chatbotRepository.GetActiveBot();   // fetch the active bot
-            if(activeBot != null)
+            if (activeBot != null)
             {
                 // Create the connection using the secret token
                 HttpClient client = new HttpClient();   // httpclient
@@ -144,7 +120,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<Conversation> GetActiveConversation(string token)
         {
             Models.ChatbotDetails activeBot = await chatbotRepository.GetActiveBot();   // Fetch the active bot
-            if(activeBot != null)
+            if (activeBot != null)
             {
                 // Create the connection using the given token
                 HttpClient client = new HttpClient();   // create httpclient
@@ -238,8 +214,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
 
-        [HttpPost]
-        public virtual async Task<IActionResult> Post([FromBody][Bind("query")] QnAIndexViewModel Qna)
+        public virtual async Task<string> Post([FromBody][Bind("query")] QnAIndexViewModel Qna)
         {
             // Create the connection using the secret token
             HttpClient client = new HttpClient();
@@ -287,13 +262,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 responseString = a.Text;
             }
             // Send the entire activityset in return for now. 
-            return Json(responseString);
-        }
-
-        public async Task<string> TestMessage(QnAIndexViewModel vm)
-        {
-            await Task.Delay(1000);
-            return vm.query;
+            return responseString;
         }
     }
 }
