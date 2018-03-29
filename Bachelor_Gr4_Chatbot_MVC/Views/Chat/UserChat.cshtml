@@ -30,16 +30,15 @@ Tom side, viser chat fra brukers side.
             </div>
             <div class="chatbox__body" id="chatbox__body">
 
-                <div class="text-center" id="welcome">
+                <!--<div class="text-center" id="welcome">
                     <h3>Velkommen til Narvik Kommunes chat!</h3>
                     <p><b>Chatens åpningstider: </b></p>
                     <p>Mandag - Fredag: 08:30 - 16:00 </p>
                     <button id="startChat" class="btn btn-primary">Start chat</button>
-                </div>
+                </div>-->
 
                 <div class="chat-message-sender">
-
-                    <p>Hei, og velkommen til Narvik Kommunes websider. Er det noe jeg kan hjelpe deg med?</p>
+                    <p>Hei, jeg er chat-boten Svarta Bjørn, jeg er her for å hjelpe deg finne svar på det du lurer på. Er det noe jeg kan hjelpe deg med?</p>
                 </div>
             </div>
 
@@ -49,7 +48,6 @@ Tom side, viser chat fra brukers side.
                     <div class="form-inline">
                         <input type="text" id="message" placeholder="Din kommentar ...">
                         <input type="button" id="sendmessage" value="send" />
-                        <input type="hidden" id="displayname" />
                     </div>
                 </div>
             </div>
@@ -64,27 +62,16 @@ Tom side, viser chat fra brukers side.
         <!--Add script to update the page and send messages.-->
         <!--<script src="~/scripts/popupChat.js"></script>-->
         
-       <!-- <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>-->
+       <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>
 
           
         <!--<script src="Scripts/jquery-1.10.2.min.js"></script>
         <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
-        <script src="signalr/hubs"></script>-->
+        <script src="~/signalr/hubs"></script>-->
+        <script src="~/signalr/hubs"></script>
+        <script src="~/chatbox/chat-external.js"></script>       
 
-        <!--<script src="~/chatbox/chat-external.js"></script>       -->
 
-
-        <script src="~/Scripts/jquery-1.6.4.min.js"></script>
-        <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
-        <script src="~/chathub/hubs"></script>
-
-        <script type="text/javascript">
-            var chatHubProxy = $.connection.chatHub;
-            alert("testAlert");
-            $.connection.hub.start()
-                .done(function () { console.log('Now connected, connection ID=' + $.connection.hub.id); alert("connected")})
-                .fail(function () { console.log('Could not Connect!'); alert("could not connect")});
-        </script>
 
 
     }

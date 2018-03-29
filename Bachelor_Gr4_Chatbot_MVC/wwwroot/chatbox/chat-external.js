@@ -50,21 +50,6 @@ function startConnection(url, configureConnection) {
     }(signalR.TransportType.WebSockets);
 }
 
-function test() {
-    alert("Testing, testing...");
-}
-
-
-
-
-/*
-$('#connectionListTable tbody').click(function (event) {
-    var row = $(this).find("tr");
-    var value = row.find("td:nth-child(2)").html();
-    alert(value);
-});
-*/
-
 function displaySentMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
@@ -96,50 +81,11 @@ function displayReceivedMessage(message) {
 }
 
 
-// -------------- List of all connections ------------------
-function updateConnectionList(connections) {
-    var str = "";
-    $.each(connections, function (index, key) {
-        str += "<tr>";
-        str += "<td>" + (index + 1) + "</td>";
-        str += "<td>" + key + "</td>"; // TODO: Endres
-        str += "<td>test</td><td>test</td>"; // TODO: Endres
-        str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
-        str += "</tr>";
-    });
-    $("#connectionList").html(str);
-}
 
-function displayQueue(connections) {
-    var str = "";
-    $.each(connections, function (index, key) {
-        str += "<tr>";
-        str += "<td>" + (index + 1) + "</td>";
-        str += "<td>" + key + "</td>"; // TODO: Endres
-        str += "<td>test</td><td>test</td>"; // TODO: Endres
-        str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
-        str += "</tr>";
-    });
-    $("#queueList").html(str);
-}
-
-function addToQueue(connection) {
-    var str = "";
-    str += "<tr>";
-    str += "<td>" + test + "</td>";
-    str += "<td>" + key + "</td>"; // TODO: Endres
-    str += "<td>test</td><td>test</td>"; // TODO: Endres
-    str += "<td><button class='btn btn-default' name='joinGroup' value='" + key + "' >Åpne chat</button></td>";
-    str += "</tr>";
-    $("#queueList").append(str);
-}
-
-// 
 document.addEventListener('DOMContentLoaded', function () {
-    $("#popup_chatbox_placeholder").load("~/chatbox/chatbox.html");
-
     var messageInput = document.getElementById('message');
     var groupId = "";
+    var talkWithChatBot = true;
 
     // Get the user name and store it to prepend to messages.
     var name = 'Guest';
@@ -210,7 +156,13 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#sendmessage").click(function (event) {
                 // TODO: Bytt ut kode her
                 //connection.invoke('send', messageInput.value);
-                connection.invoke('sendToGroup', groupId, messageInput.value);
+                if (talkWithChatBot) {
+                    connection.invoke('sendToGroup2', groupId, talkWithChatBot, messageInput.value);
+                } else {
+                    connection.invoke('sendToGroup', groupId, messageInput.value);
+                }
+
+
 
                 // Clear text box and reset focus for next comment.
                 messageInput.value = '';

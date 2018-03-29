@@ -1,9 +1,14 @@
-﻿using Bachelor_Gr4_Chatbot_MVC.Models;
+﻿using Bachelor_Gr4_Chatbot_MVC.Controllers;
+using Bachelor_Gr4_Chatbot_MVC.Models;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Hubs
@@ -19,6 +24,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
+
+        private const string _chatBotAddress = "api/ChatbotController";
+        private const string _contentTypeJson = "application/json";
+        
         
 
         public override async Task OnConnectedAsync()
@@ -163,24 +172,62 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task SendToGroup(string groupName, string message)
         {
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-            Message msg = new Message
+            /*Message msg = new Message
             {
                 From = from,
                 To = groupName,
                 DisplayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Guest"),
                 DateTime = DateTime.Now,
                 Content = message
-            };
+            };*/
 
             
             await DisplayMessage(groupName, from, message);
+
+        }
+
+        public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
+        {
+            if(talkWithChatBot)
+            {
+                QnAIndexViewModel vm = new QnAIndexViewModel
+                {
+                    query = message
+                };
+                // TODO: ChathubController settings
+                string baseAdress = "https://localhost:44365/";
+                string requestUri = "api/ChatBot";
+
+                // Call ChathubController
+                using (HttpClient client = new HttpClient()) {
+                    client.BaseAddress = new Uri(baseAdress);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue(_contentTypeJson));
+
+                    var contentAsJson = JsonConvert.SerializeObject(vm);
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(contentAsJson);
+                    var byteContent = new ByteArrayContent(buffer);
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue(_contentTypeJson);
+
+                    HttpResponseMessage response = await client.Post(requestUri, byteContent);
+
+                    if(response.IsSuccessStatusCode)
+                    {
+                        await SendToGroup(groupName, response.ToString());
+                    }
+                    await SendToGroup(groupName, response.StatusCode.ToString());
+
+                }
+
+            }
+            await SendToGroup(groupName, message);
 
         }
         public async Task DisplayMessage(string groupTo, string groupFrom, string message)
         {
             await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
             await Clients.Group(groupFrom).InvokeAsync("sendMessage", message);
-            
         }
     }
 }

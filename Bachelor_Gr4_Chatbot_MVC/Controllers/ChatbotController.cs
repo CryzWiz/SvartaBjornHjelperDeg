@@ -17,7 +17,8 @@ using System.Web;
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/ChatBot")]
     public class ChatbotController : Controller
     {
         private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
@@ -102,6 +103,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
             // Send the entire activityset in return for now. 
             return Json(responseString);
+        }
+
+        public async Task<string> TestMessage(QnAIndexViewModel vm)
+        {
+            await Task.Delay(1000);
+            return vm.query;
         }
     }
 }

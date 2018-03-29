@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-Bachelor_Gr4_Chatbot_MVC-D673FEC9-4E01-4AFA-A8F3-0F9A68509FBA</UserSecretsId>
+    <StartupObject>Bachelor_Gr4_Chatbot_MVC.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
