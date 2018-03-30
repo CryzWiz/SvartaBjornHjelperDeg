@@ -144,6 +144,7 @@ function addToQueue(connection) {
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
+    var conversationId = "test";
 
 
 
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#sendmessage").click(function (event) {
                 // TODO: Bytt ut kode her
                 //connection.invoke('send', messageInput.value);
-                connection.invoke('sendToGroup', groupId, messageInput.value);
+                connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
 
                 // Clear text box and reset focus for next comment.
                 messageInput.value = '';

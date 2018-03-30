@@ -69,8 +69,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
-            int conversationId = await ConnectWithChatBot(key);
-            await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
+            //int conversationId = await ConnectWithChatBot(key);
+            
+            //await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
 
             await DisplayConnectedUsers();
          }
@@ -238,8 +239,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
-            if (Int32.TryParse(conversationId, out int id))
-            {
+            //if (Int32.TryParse(conversationId, out int id))
+            //{
                 // Get DisplayName
                 string displayName = "Gjest";
                 if(Context.User.Identity.IsAuthenticated)
@@ -251,31 +252,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 Message msg = new Message
                 {
-                    ConversationId = id,
+                    //ConversationId = id,
                     From = from,
                     To = groupName,
                     DisplayName = displayName,
                     DateTime = DateTime.Now,
                     Content = message
                 };
-                try
+                /*try
                 {
-                    await _repository.AddMessageAsync(msg);
+                    await _repository.AddMessageAsync(msg);*/
                     await DisplayMessage2(msg);
-                } catch(Exception exception)
+                /*} catch(Exception exception)
                 {
                     await Clients.Group(from).InvokeAsync("sendMessage", "Sending av melding feilet.");
-                }
-
-
-
-            } else
+                }*/
+                
+            /*} else
             {
                 await Clients.Group(from).InvokeAsync("sendMessage", "Sending av melding feilet, du er ikke koblet på noen chat");
-            }
-
+            }*/
             
-
         }
 
         /*public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
@@ -324,7 +321,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task DisplayMessage2(Message message)
         {
-            await Clients.Group(message.To).InvokeAsync("message", message);
+            //await Clients.Group(message.To).InvokeAsync("message", message);
             await Clients.Group(message.To).InvokeAsync("receiveMessage", message.From, message.Content);
             await Clients.Group(message.From).InvokeAsync("sendMessage", message.Content);
         }
