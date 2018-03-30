@@ -95,7 +95,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task StartConversationWithChatBot()
         {
-
+            Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
+            string test = "test";
         }
 
        

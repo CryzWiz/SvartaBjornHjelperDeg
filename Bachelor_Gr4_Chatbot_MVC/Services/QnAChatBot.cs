@@ -16,30 +16,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
 {
     public class QnAChatBot : IChatBot
     {
-        private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
-        private HttpResponseMessage response;
-
-        private static string contentType = "application/json";
-        private static string BotSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0";
-
-        private static string directLineAddress_V3 = "https://directline.botframework.com";
-        private static string tokenAddress_V3 = "/v3/directline/tokens/generate";
-        private static string botAutorizeTokenScheme_V3 = "Bearer";
-        private static string directLineConversation_V3 = "/v3/directline/conversations/";
-
-        private static string DiretlineUrl = @"https://chatbotsvartabjorn.azurewebsites.net/api/messages";
-
-        private static string botId = "Chatbot_SvartaBjorn_Azure";
-
-        public ActivitySet activitySet;
-
+        private HttpResponseMessage response; // Bør ligge i de klassene de brukes
+        public ActivitySet activitySet; // Bør ligge i de klassene de brukes
         private IChatbotRepository _chatBotRepository;
         
 
-        public QnAChatBot(IChatbotRepository chatBotRepository, IConfiguration configuration)
+        public QnAChatBot(IChatbotRepository chatBotRepository)
         {
             _chatBotRepository = chatBotRepository;
-            appCredentials = new Microsoft.Bot.Connector.MicrosoftAppCredentials(configuration);
         }
 
 

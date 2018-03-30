@@ -17,7 +17,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
         /* Task<HttpClient> GetHttpClient(string token);
         // Task<IActionResult> Post([Bind(new[] { "query" }), System.Web.Http.FromBody] QnAIndexViewModel Qna);
          Task<string> PostCommentByToken(string token, string comment);
-         
+         Task<Conversation> StartAndGetNewConversation();
 
          string TestDependency();*/
     }
