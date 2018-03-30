@@ -28,12 +28,14 @@
     border-color: #1f2836;
 }
 
-.chatbox__title,
+.chatbox_title_connected,
+.chatbox_title_unconnected,
 .chatbox__body {
     border-bottom: none;
 }
 
-.chatbox__title {
+.chatbox_title_connected, 
+.chatbox_title_unconnected {
     min-height: 50px;
     padding-right: 10px;
     /*background-color: #1f2836;*/
@@ -48,18 +50,19 @@
     align-items: center;
 }
 
-.chatbox__title h5 {
+.chatbox_title_connected h5,
+.chatbox_title_unconnected h5 {
     height: 50px;
     margin: 0 0 0 15px;
     line-height: 50px;
     position: relative;
     padding-left: 20px;
-
     -webkit-flex-grow: 1;
     flex-grow: 1;
 }
 
-.chatbox__title h5 a {
+.chatbox_title_connected h5 a,
+.chatbox_title_unconnected h5 a {
     color: #fff;
     max-width: 195px;
     display: inline-block;
@@ -69,7 +72,7 @@
     text-overflow: ellipsis;
 }
 
-.chatbox__title h5:before {
+.chatbox_title_connected h5:before {
     content: '';
     display: block;
     position: absolute;
@@ -78,6 +81,21 @@
     width: 12px;
     height: 12px;
     background: #4CAF50;
+    border-radius: 6px;
+
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.chatbox_title_unconnected h5:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background: red;
     border-radius: 6px;
 
     -webkit-transform: translateY(-50%);
@@ -185,8 +203,6 @@
 }
 
 .chatbox__message {
-    padding: 15px;
-    min-height: 50px;
     outline: 0;
     resize: none;
     border: none;
@@ -194,6 +210,7 @@
     border: 1px solid #ddd;
     border-bottom: none;
     background-color: #fefefe;
+    min-width:70%;
 }
 
 .chatbox--empty {
@@ -209,7 +226,9 @@
 }
 
 .chatbox--empty .chatbox__body,
-.chatbox--empty .chatbox__message {
+.chatbox--empty .chatbox__message,
+.chatbox--empty .chatbox__button
+{
     display: none;
 }
 

@@ -1,9 +1,9 @@
 ﻿(function ($) {
     $(document).ready(function () {
-        var $chatbox = $('.chatbox'),
-            $chatboxTitle = $('.chatbox__title'),
-            $chatboxTitleClose = $('.chatbox__title__close');
-
+        var $chatbox = $('#chatbox'),
+            $chatboxTitle = $('#chatbox__title'),
+            $chatboxTitleClose = $('#chatbox__title__close'),
+            $chatboxCredentials = $('#chatbox__credentials');
         $chatboxTitle.on('click', function () {
             $chatbox.toggleClass('chatbox--tray');
         });
@@ -13,13 +13,17 @@
         });
         $chatbox.on('transitionend', function () {
             if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
-
         });
-
-        //$chatboxCredentials.on('submit', function(e) {
-        //    e.preventDefault();
-        //    $chatbox.removeClass('chatbox--empty');
-        //});
+        $chatboxCredentials.on('click', function (e) {
+            e.preventDefault();
+            $chatbox.removeClass('chatbox--empty');
+            // This classchange should be done when the connection is established
+            // so we can give a errormessage and keep the red light if the connection fails
+            // Just placed here for now.
+            $chatboxTitle.removeClass('chatbox_title_unconnected');
+            $chatboxTitle.addClass('chatbox_title_connected');
+            
+        });
     });
 })(jQuery);
 
@@ -60,8 +64,8 @@ function displaySentMessage(message) {
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
-    liElement.className += " chatbox__body__message--left";
-    //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    liElement.className += " chatbox__body__message--right";
+    liElement.innerHTML += '<img src="../images/user.png"/>';
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
@@ -74,13 +78,11 @@ function displayReceivedMessage(message) {
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
-    //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
@@ -156,22 +158,33 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(function (connection) {
                 console.log('connection started'); // TODO:
+                document.querySelector('#message').addEventListener('keypress', function (e) {
+                    var key = e.which || e.keyCode;
+                    if (key === 13) { // 13 is enter
+
+                        if (messageInput.value.length > 0) { // If there is any input
+                            connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+                            displaySentMessage(messageInput.value);
+                            messageInput.value = '';
+                            messageInput.focus();
+                            event.preventDefault();
+                        } 
+                    }
+                });
 
                 // Send message
                 $("#sendmessage").click(function (event) {
-                    connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
-                    
-                    // Clear text box and reset focus for next comment.
-                    messageInput.value = '';
-                    messageInput.focus();
-                    event.preventDefault();
+
+                    if (messageInput.value.length > 0) { // if there is any input
+                        connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+                        displaySentMessage(messageInput.value);
+                        messageInput.value = '';
+                        messageInput.focus();
+                        event.preventDefault();
+                    }
                 });
 
-                // Start chat by joining queue
-                $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
-                    connection.invoke('joinQueue');
-                });
-
+                connection.invoke('joinQueue');
                 
 
 
