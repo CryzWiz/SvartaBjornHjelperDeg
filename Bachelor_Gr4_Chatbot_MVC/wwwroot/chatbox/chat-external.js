@@ -27,6 +27,17 @@
     });
 })(jQuery);
 
+function sessionId() {
+    //https://blogs.msmvps.com/ricardoperes/2015/10/29/persisting-signalr-connections-across-page-reloads/
+    var sessionId = window.sessionStorage.sessionId;
+
+    if (!sessionId) {
+        sessionId = window.sessionStorage.sessionId = Date.Now();
+    }
+
+    return sessionId;
+}
+
 // Starts a SignalR connection with transport fallback - if the connection cannot be started using
 // the webSockets transport the function will fallback to the serverSentEvents transport and
 // if this does not work it will try longPolling. If the connection cannot be started using
@@ -92,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set initial focus to message input box.
     messageInput.focus();
 
-    $("#connectToSignalR").click(function () {
+    //$("#connectToSignalR").click(function () {
         // Start the connection.
         startConnection('/chathub', function (connection) {
             // Create a function that the hub can call to broadcast messages.
@@ -156,34 +167,38 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(function (connection) {
                 console.log('connection started'); // TODO:
+
+                function sendMessage() {
+                    if (messageInput.value.length > 0) { // if there is any input
+                        connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+                        //displaySentMessage(messageInput.value);
+                        messageInput.value = '';
+                        messageInput.focus();
+                        event.preventDefault();
+                    }
+                }
+
                 document.querySelector('#message').addEventListener('keypress', function (e) {
                     var key = e.which || e.keyCode;
                     if (key === 13) { // 13 is enter
-
-                        if (messageInput.value.length > 0) { // If there is any input
-                            connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
-                            displaySentMessage(messageInput.value);
-                            messageInput.value = '';
-                            messageInput.focus();
-                            event.preventDefault();
-                        } 
+                        sendMessage();
                     }
                 });
 
                 // Send message
                 $("#sendmessage").click(function (event) {
-
-                    if (messageInput.value.length > 0) { // if there is any input
-                        connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
-                        displaySentMessage(messageInput.value);
-                        messageInput.value = '';
-                        messageInput.focus();
-                        event.preventDefault();
-                    }
+                    sendMessage();
+                });
+                
+                // Start chat by joining queue
+                $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
+                    connection.invoke('joinQueue');
                 });
 
-                
-                //connection.invoke('joinQueue');
+                // Start chat-bot
+                $("#chatbox_placeholder").on('click', "button[id='startChatBot']", function (event) {
+                    connection.invoke('startConversationWithChatBot');
+                });
                 
 
 
@@ -191,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.error(error.message);
             });
-    });
+    //});
 
     
 });

@@ -56,6 +56,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
             _connections.Add(key, connectionId);
 
+            //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
+
             // TODO: 
             if (key.Equals(connectionId))
             {
@@ -69,8 +71,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
-            int conversationId = await ConnectWithChatBot(key);
-            await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
+
 
             await DisplayConnectedUsers();
          }
@@ -79,6 +80,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             string conversationToken = await _chatBot.GetConversationTokenAsString();
 
+                        //int conversationId = await ConnectWithChatBot(key);
+            //await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
             // Create conversation 
             Conversation conversation = new Conversation
             {
@@ -95,8 +98,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task StartConversationWithChatBot()
         {
+            string connectionId = Context.ConnectionId;
+            string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
+            int conversationId = await ConnectWithChatBot(key);
             Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
-            string test = "test";
+            
         }
 
        

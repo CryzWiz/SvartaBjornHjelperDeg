@@ -67,11 +67,12 @@ $('#connectionListTable tbody').click(function (event) {
 });
 */
 
+/*
 function displaySentMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
     str += "<p>" + message + "</p>";
-    str += "</div>";*/
+    str += "</div>";
     // TODO: Html encode message.
     var encodedMsg = message;
     // Add the sent message to the page.
@@ -83,7 +84,25 @@ function displaySentMessage(message) {
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }
+*/
+function displayReceivedMessage(message) {
+    /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
+    str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
+    str += "<p>" + message + "</p>";
+    str += "</div>";*/
+    // TODO: Html encode message.
+    var encodedMsg = message;
+    // Add the sent message to the page.
+    var liElement = document.createElement('div');
+    liElement.className += "chatbox__body__message";
+    liElement.className += " chatbox__body__message--right";
+    liElement.innerHTML += '<img src="../images/user.png"/>';
+    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    document.getElementById('chatbox__body').appendChild(liElement);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+}
 
+/*
 function displayReceivedMessage(message) {
     // TODO: Html encode message.
     var encodedMsg = message;
@@ -92,6 +111,20 @@ function displayReceivedMessage(message) {
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
     //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    document.getElementById('chatbox__body').appendChild(liElement);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+}
+*/
+
+function displaySentMessage(message) {
+    // TODO: Html encode message.
+    var encodedMsg = message;
+    // Add the sent message to the page.
+    var liElement = document.createElement('div');
+    liElement.className += "chatbox__body__message";
+    liElement.className += " chatbox__body__message--left";
+    liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
