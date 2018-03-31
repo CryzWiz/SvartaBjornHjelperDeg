@@ -171,6 +171,7 @@
     background-color: #fff;
     -webkit-box-shadow: 1px 1px rgba(100, 100, 100, 0.1);
     box-shadow: 1px 1px rgba(100, 100, 100, 0.1);
+    word-wrap: break-word;
 }
 
 .chatbox__body__message img {
@@ -186,6 +187,7 @@
     margin-left: 15px;
     padding-left: 30px;
     text-align: left;
+    word-wrap: break-word;
 }
 
 .chatbox__body__message--left img {
@@ -196,6 +198,7 @@
     margin-right: 15px;
     padding-right: 30px;
     text-align: right;
+    word-wrap: break-word;
 }
 
 .chatbox__body__message--right img {
