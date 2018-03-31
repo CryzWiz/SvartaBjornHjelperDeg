@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = null;
-
+    var chatBotToken = "";
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -152,6 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             connection.on('setConversationId', function (id) {
                 conversationId = id;
+            });
+
+            connection.on('setChatBotToken', function (token) {
+                chatBotToken = token;
+            });
+
+            connection.on('errorMessage', function (message) {
+                displayReceivedMessage(message);
             });
 
 

@@ -76,36 +76,62 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayConnectedUsers();
          }
 
-        public async Task<int> ConnectWithChatBot(string userGroup)
+        public async Task<Conversation> ConnectWithChatBot(string userGroup)
         {
-            string conversationToken = await _chatBot.GetConversationTokenAsString();
+            try
+            {
+                string conversationToken = await _chatBot.GetConversationTokenAsString();
+                // Create conversation 
+                Conversation conversation = new Conversation
+                {
+                    ConversationToken = conversationToken,
+                    UserGroup1 = userGroup,
+                    IsChatBot = true,
+                    StartTime = DateTime.Now
+                };
 
+                // Save conversation
+                int conversationId = await _repository.AddConversationAsync(conversation);
+
+                conversation.ConversationId = conversationId;
+                return conversation;
+            } catch(Exception exception)
+            {
+                return null;
+            }
+
+            
+            
                         //int conversationId = await ConnectWithChatBot(key);
             //await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
-            // Create conversation 
-            Conversation conversation = new Conversation
-            {
-                ConversationToken = conversationToken,
-                UserGroup1 = userGroup,
-                IsChatBot = true,
-                StartTime = DateTime.Now
-            };
 
-            // Save conversation
-            int conversationId = await _repository.AddConversationAsync(conversation);
-            return conversationId;
         }
 
         public async Task StartConversationWithChatBot()
         {
             string connectionId = Context.ConnectionId;
-            string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
-            int conversationId = await ConnectWithChatBot(key);
-            Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
-            
+            string userGroup = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
+            Conversation conversation = await ConnectWithChatBot(userGroup);
+
+            if(conversation == null)
+            {
+                await DisplayErrorMessageInChat(userGroup, "Klarer ikke opprette tilkobling til ChatBot." +
+                    "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>");
+                return;
+            }
+            await SetChatBotToken(userGroup, conversation.ConversationToken);
+            //Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
+
+
+
+            // TODO: SLETTES:
+            //await Clients.Group(userGroup).InvokeAsync("getConversation", JSON.Parse(conversation));
         }
 
-       
+       public async Task DisplayErrorMessageInChat(string userGroup, string message)
+        {
+            await Clients.Group(userGroup).InvokeAsync("errorMessage", message);
+        }
 
         private async Task SetChatWorkerStatus(string userName, string status)
         {
@@ -140,8 +166,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayQueue();
         }
 
-        
+        public string GetStandardChatBotHello()
+        {
+            // TODO: Denne skal hentes fra et annet sted, kun testkode
+            return "Hei, mitt navn er Svarta Bjørn, hva kan jeg hjelpe deg med?";
+        }
 
+        public async Task SetChatBotToken(string userGroup, string token)
+        {
+            await Clients.Group(userGroup).InvokeAsync("setChatBotToken", token);
+        }
+             
         public async Task JoinQueue()
         {
             /* Create conversation

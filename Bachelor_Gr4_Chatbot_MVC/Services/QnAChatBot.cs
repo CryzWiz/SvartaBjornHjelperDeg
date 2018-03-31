@@ -19,7 +19,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
         private HttpResponseMessage response; // Bør ligge i de klassene de brukes
         public ActivitySet activitySet; // Bør ligge i de klassene de brukes
         private IChatbotRepository _chatBotRepository;
-        
+
+        // TODO: Dette skulle vel kanskje hentes fra repository???
+        private static string directLineConversation_V3 = "/v3/directline/conversations/";
+
 
         public QnAChatBot(IChatbotRepository chatBotRepository)
         {
@@ -99,6 +102,107 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
             else
             {
                 return null;    // we dont have a active bot
+            }
+        }
+
+        /// <summary>
+        /// Using the token for a specific discusion, make a post
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="comment"></param>
+        /// <returns>(string)The response from the chatbot</returns>
+        public async Task<String> PostCommentByToken(string token, string comment)
+        {
+            // Get HttpClient
+            HttpClient httpClient = await GetHttpClient(token);
+            // Get active conversation
+            Conversation conversationinfo = await GetActiveConversation(token);
+            // Set the conversation url
+            string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
+            // Create activity
+            Activity thisActivity = new Activity { Type = "message", Text = comment, From = new ChannelAccount { Id = "idToGoHere" } };
+            var myContent = JsonConvert.SerializeObject(thisActivity);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            // Post the activity
+            response = await httpClient.PostAsync(conversationUrl, byteContent);
+
+            if (response.IsSuccessStatusCode) // Yey -> It was posted
+            {
+                // Fetch messages
+                response = await httpClient.GetAsync(conversationUrl);
+                // set ActivitySet from the response
+                activitySet = response.Content.ReadAsAsync(typeof(ActivitySet)).Result as ActivitySet;
+                string responseString = null;
+                // For each activity in activitySet, get comment.
+                foreach (Activity a in activitySet.Activities)
+                {
+                    responseString = a.Text;
+                }
+                // return the last comment in activitySet
+                return responseString;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Create and return a HttpClient with the correct token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>(HttpClient)HttpClient with the correct security token</returns>
+        public async Task<HttpClient> GetHttpClient(string token)
+        {
+            Models.ChatbotDetails activeBot = await _chatBotRepository.GetActiveBot();   // Fetch the active bot
+            if (activeBot != null)
+            {
+                // Create the connection using the given token
+                HttpClient client = new HttpClient();   // create httpclient
+                client.BaseAddress = new Uri(activeBot.baseUrl);    // set base url address
+                client.DefaultRequestHeaders.Accept.Clear();    // clear all headers
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contenttype
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, token); // set security bearer and token
+                return client;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Takes the token for a specific chat-channel and get the conversation-details
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>(Conversation)Conversation for the user whom the token belongs to</returns>
+        public async Task<Conversation> GetActiveConversation(string token)
+        {
+            Models.ChatbotDetails activeBot = await _chatBotRepository.GetActiveBot();   // Fetch the active bot
+            if (activeBot != null)
+            {
+                // Create the connection using the given token
+                HttpClient client = new HttpClient();   // create httpclient
+                client.BaseAddress = new Uri(activeBot.baseUrl);    // set base url address
+                client.DefaultRequestHeaders.Accept.Clear();    // clear all headers
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contenttype
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, token); // set security bearer and token
+                response = await client.PostAsync(activeBot.tokenUrlExtension, null);   // make connection and get reponse
+                if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
+                {
+                    Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;   // read response as a Conversation
+                    return currentConversation; // return the conversation
+                }
+                else
+                {
+                    return null; // else we return null
+                }
+            }
+            else
+            {
+                return null;    // we dont have any active bots
             }
         }
         /*private readonly Microsoft.Bot.Connector.MicrosoftAppCredentials appCredentials;
