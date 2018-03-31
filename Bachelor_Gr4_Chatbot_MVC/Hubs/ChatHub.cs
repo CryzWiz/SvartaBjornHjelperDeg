@@ -9,6 +9,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             new ConnectionMapping<string>();
 
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
-        private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
+        //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
         private IChatRepository _repository;
         private IChatBot _chatBot;
@@ -65,13 +66,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 ChatHubHandler.ConnectedWorkers.Add(key);
             }
 
-
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
-            //int conversationId = await ConnectWithChatBot(key);
-            
-            //await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
+            int conversationId = await ConnectWithChatBot(key);
+            await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
 
             await DisplayConnectedUsers();
          }

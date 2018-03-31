@@ -89,8 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var groupId = "";
     var conversationId = null;
 
-    // Get the user name and store it to prepend to messages.
-    var name = 'Guest';
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -184,7 +182,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                connection.invoke('joinQueue');
+                
+                //connection.invoke('joinQueue');
                 
 
 
