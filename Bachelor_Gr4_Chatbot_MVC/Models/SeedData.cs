@@ -148,12 +148,12 @@ public class SeedData
 
     private static async Task AddChatbot(ApplicationDbContext context)
     {
-        var chatbot = new ChatbotDetails
+        var chatbot1 = new ChatbotDetails
         {
             regDate = DateTime.Now,
             lastEdit = DateTime.Now,
-            chatbotName = "Svarta Bjørn",
-            isActive = true,
+            chatbotName = "Svarta Bjørn 1",
+            isActive = false,
             contentType = "application/json",
             baseUrl = "https://directline.botframework.com",
             tokenUrlExtension = "/v3/directline/tokens/generate",
@@ -162,7 +162,24 @@ public class SeedData
             BotSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0"
 
         };
-        await context.AddAsync(chatbot);
+        await context.AddAsync(chatbot1);
+        await context.SaveChangesAsync();
+
+        var chatbot2 = new ChatbotDetails
+        {
+            regDate = DateTime.Now,
+            lastEdit = DateTime.Now,
+            chatbotName = "Svarta Bjørn 2",
+            isActive = true,
+            contentType = "application/json",
+            baseUrl = "https://directline.botframework.com",
+            tokenUrlExtension = "/v3/directline/tokens/generate",
+            conversationUrlExtension = "/v3/directline/conversations/",
+            botAutorizeTokenScheme = "Bearer",
+            BotSecret = "U3uIHr5dEVY.cwA.PbQ.IUlQuQsWrZHAg2wX4qM3wDa6i7W8buvXaGiSgFIAkRg"
+
+        };
+        await context.AddAsync(chatbot2);
         await context.SaveChangesAsync();
     }
 

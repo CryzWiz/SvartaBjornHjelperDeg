@@ -25,7 +25,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         private HttpResponseMessage response;
 
         private static string contentType = "application/json";
-        private static string BotSecret = "SGOlKUQmphg.cwA.0ho.CYEuXR9VGPjZ19d7n7zKKjSYpVamhVYgh7qEdE_gxn0";
+        private static string BotSecret = "U3uIHr5dEVY.cwA.PbQ.IUlQuQsWrZHAg2wX4qM3wDa6i7W8buvXaGiSgFIAkRg";
 
         private static string directLineAddress_V3 = "https://directline.botframework.com";
         private static string tokenAddress_V3 = "/v3/directline/tokens/generate";
