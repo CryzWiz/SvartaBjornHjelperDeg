@@ -146,6 +146,7 @@ function updateConnectionList(connections) {
     $("#connectionList").html(str);
 }
 
+/*
 function displayQueue(connections) {
     var str = "";
     $.each(connections, function (index, key) {
@@ -160,7 +161,7 @@ function displayQueue(connections) {
         str += "</tr>";
     });
     $("#queueList").html(str);
-}
+}*/
  /*
 function addToQueue(connection) {
     var str = "";
@@ -178,7 +179,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = "";
-
+    var queueCounter = document.getElementById('inQueue');
+    queueCounter.Value = 0;
 
 
     // Get the user name and store it to prepend to messages.
@@ -234,12 +236,16 @@ document.addEventListener('DOMContentLoaded', function () {
             updateConnectionList(connections);
         });
 
-        connection.on('displayQueue', function (connections) {
-            displayQueue(connections);
+        connection.on('displayQueueCount', function (count) {
+            
         });
 
         connection.on('addToQueue', function (connection) {
             addToQueue(connection);
+        });
+
+        connection.on('errorMessage', function (message) {
+            displayReceivedMessage(message);
         });
 
         connection.on('receiveMessage', function (groupFrom, message) {
