@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
-        connection.on('pickFromQueue', function (chatGroupId) {
-            groupId = chatGroupId;
+        connection.on('setGroupId', function (id) {
+            groupId = id;
         });
 
         connection.on('displayConnections', function (connections) {
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         connection.on('receiveMessage', function (groupFrom, message) {
-            groupId = groupFrom;
+            //groupId = groupFrom;
             displayReceivedMessage(message);
         });
 

@@ -55,10 +55,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return conversation.ConversationId;
         }
 
-        public async Task<string> GetName(string name)
+        public async Task<string> GetName(string userId)
         {
-            ApplicationUser user =  await _db.Users.FindAsync(name);
-            return user.FirstName + " " + user.LastName;
+            ApplicationUser user =  await _db.Users.Where(x => x.UserName == userId).FirstOrDefaultAsync();
+            return user.FirstName;
         }
 
         public async Task AddMessageAsync(Message message)

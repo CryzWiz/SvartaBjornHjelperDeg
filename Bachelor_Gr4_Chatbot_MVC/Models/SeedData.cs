@@ -71,6 +71,8 @@ public class SeedData
         {
             UserName = "admin@nk.no",
             Email = "admin@nk.no",
+            FirstName = "Admin",
+            LastName = "1",
             IsActive = true,
             EmailConfirmed = true
         };

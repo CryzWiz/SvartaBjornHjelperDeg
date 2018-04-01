@@ -34,7 +34,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+        //private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+
+        private static ConcurrentQueue<int> _queue2 = new ConcurrentQueue<int>();
+        private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
+
         //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
         private IChatRepository _repository;
@@ -114,7 +118,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string displayName = "Gjest";
             if (Context.User.Identity.IsAuthenticated)
             {
-                displayName = await _repository.GetName(Context.User.Identity.Name);
+                try
+                {
+                    displayName = await _repository.GetName(Context.User.Identity.Name);
+                } catch(Exception e) {
+                    displayName = "Chat-medarbeider";
+                }
             }
             return displayName;
         }
@@ -158,10 +167,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>");
         }
 
-        private async Task SetConversationId(string userGroup, int? conversationId)
-        {
-            await Clients.Group(userGroup).InvokeAsync("setConversationId", conversationId);
-        }
+
 
         private async Task DisplayErrorMessageInChat(string userGroup, string message)
         {
@@ -174,6 +180,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>");
         }
 
+        /*
         private async Task SetChatWorkerStatus(string userName, string status)
         {
             //_chatWorkerStatus.AddOrUpdate(userName, status);
@@ -183,7 +190,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             
         }
-        
+        */
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
@@ -213,68 +220,71 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return "Hei, mitt navn er Svarta Bjørn, hva kan jeg hjelpe deg med?";
         }
 
-        public async Task SetChatBotToken(string userGroup, string token)
-        {
-            await Clients.Group(userGroup).InvokeAsync("setChatBotToken", token);
-        }
+
              
         public async Task JoinQueue()
         {
-            /* Create conversation
+            string userGroup = GetConnectionKey();
+            //Create conversation
             Conversation conversation = new Conversation
             {
                 IsChatBot = false,
-                StartTime = DateTime.Now
-            };*/
+                StartTime = DateTime.Now,
+                UserGroup1 = userGroup
+            };
 
+            try
+            {
+                int conversationId = await _repository.AddConversationAsync(conversation);
+                //_queue.Enqueue(userGroup);
+                _queue2.Enqueue(conversationId);
+                _inQueue.TryAdd(userGroup, conversationId);
 
-            _queue.Enqueue(Context.ConnectionId);
-            int placeInQueue = _queue.Count();
-            ChatHubHandler.inQue += 1;
-            await DisplayQueue();
-            await Clients.Client(Context.ConnectionId).InvokeAsync("displayQueueNumber", placeInQueue);
+                ChatHubHandler.inQue += 1; // TODO: ChatHubHandler -------------------------------------
+
+                await DisplayQueue();
+
+                int placeInQueue = _inQueue.Count();
+                await Clients.Group(userGroup).InvokeAsync("displayQueueNumber", placeInQueue);
+                await SetConversationId(userGroup, conversationId);
+            } catch (Exception exception)
+            {
+                await DisplayErrorMessageInChat(userGroup, "Feil under tilkobling av chat. "); // TODO: Error messages...
+            }
         }
 
         public async Task PickFromQueue()
         {
+            string chatWorkerId = GetConnectionKey();
             // Be sure queue is not empty
             if(!_queue.IsEmpty)
             {
-                if(_queue.TryDequeue(out string groupId))
+                if(_queue.TryDequeue(out string userId))
                 {
-                    // TODO: Skal ikke hardkodes men hentes fra databasen
-                    string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
-                    //var r = await _repository.PostQuery("hva er du");
-                    //string message = r;
+                    string displayName = await GetDisplayName();
                     string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
-                    string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
-                    await Clients.Group(from).InvokeAsync("pickFromQueue", groupId);
-                    await DisplayMessage(groupId, from, message);
-                    ChatHubHandler.inQue -= 1;
+                    // Set groupId for chatworker and user
+                    await SetGroupId(chatWorkerId, userId);
+                    await SetGroupId(userId, chatWorkerId);
+
+                    await DisplayMessage(userId, chatWorkerId, message);
                     await DisplayQueue();
+                    ChatHubHandler.inQue -= 1;
+                    
                 } else
                 {
-                    // TODO: SLETTES
-                    string message = String.Format("TryDeque failed");
-                    string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-
-                    await DisplayMessage(from, from, message);
+                    await DisplayErrorMessageInChat(chatWorkerId, "Feil under henting fra kø. ");
                 }
             } else
             {
-                // Queue is empty
-                // TODO: SLETTES
-                string message = String.Format("Køen er tom");
-                string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-
-                await DisplayMessage(from, from, message);
+                await DisplayErrorMessageInChat(chatWorkerId, "Køen er tom.");
             }            
         }
 
-        public IEnumerable<string> GetQueue()
+        public IEnumerable<int> GetQueue()
         {
-            return _queue.ToArray();
+            return _queue2.ToArray();
         }
 
         /// <summary>
@@ -289,7 +299,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
-        public async Task JoinChat(string groupName) {
+        /*public async Task JoinChat(string groupName) {
             // TODO: Skal ikke hardkodes men hentes fra databasen: Denne meldingen hører hjemme i pickfromque, ikke joinchat
             string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
             string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
@@ -299,17 +309,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 Content = "test",
                 From = "fra meg"
-            };*/
+            };
             string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
 
             await DisplayMessage(groupName, from, message);
-        }
+        }*/
 
-        public async Task DisplayQueue()
-        {
-            IEnumerable<string> queue = GetQueue();
-            await Clients.All.InvokeAsync("displayQueue", queue);
-        }
+
 
         /// <summary>
         /// Send a message to a specified single-user group.
@@ -318,12 +324,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <param name="message">Message content</param>
         public async Task SendToGroup(string groupName, string message, string conversationId)
         {
-            string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
+            string from = GetConnectionKey();
 
             //if (Int32.TryParse(conversationId, out int id))
             //{
-                // Get DisplayName
-                string displayName = "Gjest";
+            // Get DisplayName
+            string displayName = "Gjest";
                 if(Context.User.Identity.IsAuthenticated)
                 {
                     displayName = await _repository.GetName(Context.User.Identity.Name);
@@ -446,6 +452,24 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             //await Clients.Group(message.To).InvokeAsync("message", message);
             await Clients.Group(message.To).InvokeAsync("receiveMessage", message.From, message.Content);
             await Clients.Group(message.From).InvokeAsync("sendMessage", message.Content);
+        }
+        public async Task DisplayQueue()
+        {
+            IEnumerable<int> queue = GetQueue();
+            await Clients.All.InvokeAsync("displayQueue", queue);
+        }
+        public async Task SetChatBotToken(string userGroup, string token)
+        {
+            await Clients.Group(userGroup).InvokeAsync("setChatBotToken", token);
+        }
+        private async Task SetConversationId(string userGroup, int? conversationId)
+        {
+            await Clients.Group(userGroup).InvokeAsync("setConversationId", conversationId);
+        }
+
+        private async Task SetGroupId(string toUser, string groupId)
+        {
+            await Clients.Group(toUser).InvokeAsync("setGroupId", groupId);
         }
     }
 }
