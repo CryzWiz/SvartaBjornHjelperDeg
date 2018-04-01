@@ -34,10 +34,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        //private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
-
-        private static ConcurrentQueue<int> _queue2 = new ConcurrentQueue<int>();
-        private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
+        private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
 
         //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
@@ -236,15 +233,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             try
             {
                 int conversationId = await _repository.AddConversationAsync(conversation);
-                //_queue.Enqueue(userGroup);
-                _queue2.Enqueue(conversationId);
-                _inQueue.TryAdd(userGroup, conversationId);
+                _queue.Enqueue(userGroup);
 
                 ChatHubHandler.inQue += 1; // TODO: ChatHubHandler -------------------------------------
 
                 await DisplayQueue();
 
-                int placeInQueue = _inQueue.Count();
+                int placeInQueue = _queue.Count();
                 await Clients.Group(userGroup).InvokeAsync("displayQueueNumber", placeInQueue);
                 await SetConversationId(userGroup, conversationId);
             } catch (Exception exception)
@@ -282,9 +277,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }            
         }
 
-        public IEnumerable<int> GetQueue()
+        public IEnumerable<string> GetQueue()
         {
-            return _queue2.ToArray();
+            return _queue.ToArray();
         }
 
         /// <summary>
@@ -455,7 +450,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
         public async Task DisplayQueue()
         {
-            IEnumerable<int> queue = GetQueue();
+            IEnumerable<string> queue = GetQueue();
             await Clients.All.InvokeAsync("displayQueue", queue);
         }
         public async Task SetChatBotToken(string userGroup, string token)
