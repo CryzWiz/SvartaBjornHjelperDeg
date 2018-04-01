@@ -36,6 +36,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
 
+        private static ConcurrentQueue<int> _queue2 = new ConcurrentQueue<int>();
+        private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
+
         //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
         private IChatRepository _repository;
@@ -43,6 +46,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private const string ChatBot = "ChatBot";
 
         private const string EndConversation = "avslutt";
+
+
 
         public ChatHub(IChatRepository repository, IChatBot chatBot)
         {
@@ -248,6 +253,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
 
+        private void RemoveFromInQueue(string groupId)
+        {
+
+            _inQueue.Remove(groupId, out int value);
+        }
+
+        private int Dequeue()
+        {
+            if (!_queue2.IsEmpty)
+            {
+                if(_queue2.TryDequeue(out int conversationId))
+                {
+                    //string groupId = _queue2.FirstOrDefault(x => ).Key;
+    
+                    //if(_inQueue.Contains(x => x.Value == conversationId))
+                }
+
+            }
+            return 1;
+        }
+
         public async Task PickFromQueue()
         {
             string chatWorkerId = GetConnectionKey();
@@ -256,6 +282,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 if(_queue.TryDequeue(out string userId))
                 {
+                    
                     string displayName = await GetDisplayName();
                     string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
 
