@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bachelor_Gr4_Chatbot_MVC", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatbot", "Chatbot_SvartaBjorn_Azure-src\Chatbot.csproj", "{9C7E3A46-B60F-4052-9A21-DC8D1A942216}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.SimpleEchoBot", "..\..\..\Desktop\SvartaBjorn\Microsoft.Bot.Sample.SimpleEchoBot.csproj", "{4F22C9E4-2920-42D0-B749-902FE6968DA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.SimpleEchoBot", "SvartaBjorn\Microsoft.Bot.Sample.SimpleEchoBot.csproj", "{4F22C9E4-2920-42D0-B749-902FE6968DA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
