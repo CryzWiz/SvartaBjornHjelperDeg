@@ -364,11 +364,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 try
                 {
-                    // TODO: -------------------------- TESTKODE SOM MÅ FIKSES!!!
-                    //string response = await _chatBot.PostCommentByToken(conversationToken, message);
-                    string response = "TESTKODE: Dette er responsen fra chatbot. Midlertidig kode, får feil i PostCommentByToken";
-
-
+                   
+                    string response = await _chatBot.PostCommentByToken(conversationToken, message);
 
                     Message responseMsg = new Message
                     {
