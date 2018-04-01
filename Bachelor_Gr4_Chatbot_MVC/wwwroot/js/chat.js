@@ -177,7 +177,7 @@ function addToQueue(connection) {
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
-    var conversationId = "test";
+    var conversationId = "";
 
 
 
@@ -226,6 +226,10 @@ document.addEventListener('DOMContentLoaded', function () {
             groupId = id;
         });
 
+        connection.on('setConversationId', function (id) {
+            conversationId = id;
+        });
+
         connection.on('displayConnections', function (connections) {
             updateConnectionList(connections);
         });
@@ -266,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 event.preventDefault();
             });
 
-            // Join Chat-Group
+            // Join Chat-Group 
+            /*
             $("#connectionList").on('click', "button[name='joinChat']", function (event) {
                 groupId = $(this).val();
                 connection.invoke('joinChat', groupId);
@@ -274,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#queueList").on('click', "button[name='joinChat']", function (event) {
                 groupId = $(this).val();
                 connection.invoke('joinChat', groupId);
-            });
+            });*/
 
             // Pick from queue
             $("#pickFromQueue").click(function (event) {

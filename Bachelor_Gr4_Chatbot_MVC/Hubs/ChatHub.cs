@@ -265,8 +265,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                     await DisplayMessage(userId, chatWorkerId, message);
                     await DisplayQueue();
-                    ChatHubHandler.inQue -= 1;
-                    
+                    ChatHubHandler.inQue -= 1;// TODO: ChatHubHandler -------------------------------------
+
                 } else
                 {
                     await DisplayErrorMessageInChat(chatWorkerId, "Feil under henting fra kø. ");
@@ -321,15 +321,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             string from = GetConnectionKey();
 
-            //if (Int32.TryParse(conversationId, out int id))
-            //{
-            // Get DisplayName
-            string displayName = "Gjest";
-                if(Context.User.Identity.IsAuthenticated)
-                {
-                    displayName = await _repository.GetName(Context.User.Identity.Name);
-                }
-                
+            /*if (Int32.TryParse(conversationId, out int id))
+            {*/
+
+                string displayName = await GetDisplayName();
+
                 Message msg = new Message
                 {
                     //ConversationId = id,
@@ -337,22 +333,24 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     To = groupName,
                     DisplayName = displayName,
                     DateTime = DateTime.Now,
-                    Content = message
+                    Content = message,
+                    IsChatBot = false
                 };
-                /*try
+                await DisplayMessage2(msg);
+
+                try
                 {
-                    await _repository.AddMessageAsync(msg);*/
-                    await DisplayMessage2(msg);
-                /*} catch(Exception exception)
+                    await _repository.AddMessageAsync(msg);
+                    
+                } catch (Exception e)
                 {
-                    await Clients.Group(from).InvokeAsync("sendMessage", "Sending av melding feilet.");
-                }*/
+                    // TODO
+                }
                 
             /*} else
             {
-                await Clients.Group(from).InvokeAsync("sendMessage", "Sending av melding feilet, du er ikke koblet på noen chat");
-            }*/
-            
+                await DisplayErrorMessageInChat(from, "Sending av melding feilet, du er ikke koblet på noen chat");
+            }*/            
         }
 
         public async Task SendToChatBot(string conversationId, string conversationToken, string message)
