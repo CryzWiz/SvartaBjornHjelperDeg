@@ -17,5 +17,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task AddMessageAsync(Message message);
         Task AddMessagesAsync(IEnumerable<Message> messages);
         Task<Conversation> GetConversationByIdAsync(int conversationId);
+        Task UpdateConversationAsync(Conversation conversation);
     }
 }

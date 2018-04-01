@@ -104,6 +104,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set initial focus to message input box.
     messageInput.focus();
 
+    function resetChatBotVariables() {
+        chatIsWithBot = false;
+        conversationId = null;
+        chatBotToken = "";
+    }
+
+
     //$("#connectToSignalR").click(function () {
         // Start the connection.
         startConnection('/chathub', function (connection) {
@@ -164,6 +171,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayReceivedMessage(message);
             });
 
+            connection.on('endBotConversation', function () {
+                resetChatBotVariables();
+            });
 
 
 
@@ -189,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         messageInput.value = '';
                         messageInput.focus();
                         event.preventDefault();
-
                     }
                 }
 
@@ -207,6 +216,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Start chat by joining queue
                 $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
+                    if (chatIsWithBot) {
+                        connection.invoke('endConversationWithChatBot', conversationId)
+                        resetChatBotVariables();
+                    }
                     connection.invoke('joinQueue');
                 });
 
@@ -214,9 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 $("#chatbox_placeholder").on('click', "button[id='startChatBot']", function (event) {
                     connection.invoke('startConversationWithChatBot');
                 });
-                
-
-
             })
             .catch(error => {
                 console.error(error.message);

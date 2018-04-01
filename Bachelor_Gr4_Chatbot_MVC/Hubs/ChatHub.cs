@@ -41,6 +41,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private IChatBot _chatBot;
         private const string ChatBot = "ChatBot";
 
+        private const string EndConversation = "avslutt";
+
         public ChatHub(IChatRepository repository, IChatBot chatBot)
         {
             _repository = repository;
@@ -72,9 +74,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
-
-
             await DisplayConnectedUsers();
+            await DisplayQueue();
          }
 
         public async Task<Conversation> ConnectWithChatBot(string userGroup)
@@ -100,12 +101,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 return null;
             }
-
-            
-            
-                        //int conversationId = await ConnectWithChatBot(key);
-            //SetConversationId(...)
-
         }
 
         private string GetConnectionKey()
@@ -137,12 +132,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
             await SetChatBotToken(userGroup, conversation.ConversationToken);
             await SetConversationId(userGroup, conversation.ConversationId);
+            // TODO: GetStandardChatBotHello should be changed
             await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
-            //Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
-
         }
 
-        private async Task SetConversationId(string userGroup, int conversationId)
+        public async Task EndConversationWithChatBot(int conversationId)
+        {
+            try
+            {
+                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+                conversation.EndTime = DateTime.Now;
+                // TODO: Determine result of conversation...
+                await _repository.UpdateConversationAsync(conversation);
+
+                // TODO: Trengs det "stenges" noe i ChatBot??
+            }
+            catch (Exception exception)
+            {
+                // TODO
+            }
+            string userGroup = GetConnectionKey();
+            await Clients.Group(userGroup).InvokeAsync("endBotConversation");
+            await DisplayMessage(userGroup, ChatBot, "Samtale med ChatBot avsluttet. " +
+                "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>" +
+                "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>");
+        }
+
+        private async Task SetConversationId(string userGroup, int? conversationId)
         {
             await Clients.Group(userGroup).InvokeAsync("setConversationId", conversationId);
         }
@@ -313,8 +329,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     displayName = await _repository.GetName(Context.User.Identity.Name);
                 }
                 
-
-
                 Message msg = new Message
                 {
                     //ConversationId = id,
@@ -348,45 +362,52 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             if(Int32.TryParse(conversationId, out int id))
             {
-                Message msg = new Message
+                if (message.ToLower().Contains(EndConversation))
                 {
-                    ConversationId = id,
-                    To = ChatBot,
-                    From = from,
-                    DisplayName = await GetDisplayName(),
-                    Content = message,
-                    IsChatBot = false,
-                    IsChatWorker = false,
-                    DateTime = DateTime.Now
-                };
-
-                messages.Add(msg);
-
-                try
+                    await EndConversationWithChatBot(id);
+                }
+                else
                 {
-                   
-                    string response = await _chatBot.PostCommentByToken(conversationToken, message);
-
-                    Message responseMsg = new Message
+                    Message msg = new Message
                     {
                         ConversationId = id,
-                        From = ChatBot,
-                        DisplayName = "ChatBot",
-                        Content = response,
-                        IsChatBot = true,
+                        To = ChatBot,
+                        From = from,
+                        DisplayName = await GetDisplayName(),
+                        Content = message,
+                        IsChatBot = false,
                         IsChatWorker = false,
                         DateTime = DateTime.Now
                     };
 
-                    messages.Add(responseMsg);
+                    messages.Add(msg);
 
-                    // Display response message
-                    await DisplayMessage(from, ChatBot, response);
-                    // TODO: LAgre meldinger!!!
+                    try
+                    {
 
-                } catch(Exception exception)
-                {
-                    await DisplayChatBotConnectionError(from);
+                        string response = await _chatBot.PostCommentByToken(conversationToken, message);
+
+                        Message responseMsg = new Message
+                        {
+                            ConversationId = id,
+                            From = ChatBot,
+                            DisplayName = "ChatBot",
+                            Content = response,
+                            IsChatBot = true,
+                            IsChatWorker = false,
+                            DateTime = DateTime.Now
+                        };
+
+                        messages.Add(responseMsg);
+
+                        // Display response message
+                        await DisplayMessage(from, ChatBot, response);
+
+                    }
+                    catch (Exception exception)
+                    {
+                        await DisplayChatBotConnectionError(from);
+                    }
                 }
             } else
             {
@@ -403,44 +424,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
 
-        /*public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
-        {
-            if(talkWithChatBot)
-            {
-                QnAIndexViewModel vm = new QnAIndexViewModel
-                {
-                    query = message
-                };
-                // TODO: ChathubController settings
-                string baseAdress = "https://localhost:44365/";
-                string requestUri = "api/ChatBot";
-
-                // Call ChathubController
-                using (HttpClient client = new HttpClient()) {
-                    client.BaseAddress = new Uri(baseAdress);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue(_contentTypeJson));
-
-                    var contentAsJson = JsonConvert.SerializeObject(vm);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(contentAsJson);
-                    var byteContent = new ByteArrayContent(buffer);
-                    byteContent.Headers.ContentType = new MediaTypeHeaderValue(_contentTypeJson);
-
-                    HttpResponseMessage response = await client.Post(requestUri, byteContent);
-
-                    if(response.IsSuccessStatusCode)
-                    {
-                        await SendToGroup(groupName, response.ToString());
-                    }
-                    await SendToGroup(groupName, response.StatusCode.ToString());
-
-                }
-
-            }
-            await SendToGroup(groupName, message);
-
-        }*/
         public async Task DisplayMessage(string groupTo, string groupFrom, string message)
         {
             if(!groupFrom.Equals(ChatBot))
