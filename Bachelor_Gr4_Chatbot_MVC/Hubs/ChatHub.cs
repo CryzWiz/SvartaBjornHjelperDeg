@@ -39,6 +39,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private IChatRepository _repository;
         private IChatBot _chatBot;
+        private const string ChatBot = "ChatBot";
 
         public ChatHub(IChatRepository repository, IChatBot chatBot)
         {
@@ -103,8 +104,24 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
             
                         //int conversationId = await ConnectWithChatBot(key);
-            //await Clients.Group(key).InvokeAsync("setConversationId", conversationId);
+            //SetConversationId(...)
 
+        }
+
+        private string GetConnectionKey()
+        {
+            string connectionId = Context.ConnectionId;
+            return (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
+        }
+
+        private async Task<string> GetDisplayName()
+        {
+            string displayName = "Gjest";
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                displayName = await _repository.GetName(Context.User.Identity.Name);
+            }
+            return displayName;
         }
 
         public async Task StartConversationWithChatBot()
@@ -115,22 +132,30 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             if(conversation == null)
             {
-                await DisplayErrorMessageInChat(userGroup, "Klarer ikke opprette tilkobling til ChatBot." +
-                    "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>");
+                await DisplayChatBotConnectionError(userGroup);
                 return;
             }
             await SetChatBotToken(userGroup, conversation.ConversationToken);
+            await SetConversationId(userGroup, conversation.ConversationId);
+            await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
             //Microsoft.Bot.Connector.DirectLine.Conversation conversation = await _chatBot.StartAndGetNewConversation();
 
-
-
-            // TODO: SLETTES:
-            //await Clients.Group(userGroup).InvokeAsync("getConversation", JSON.Parse(conversation));
         }
 
-       public async Task DisplayErrorMessageInChat(string userGroup, string message)
+        private async Task SetConversationId(string userGroup, int conversationId)
+        {
+            await Clients.Group(userGroup).InvokeAsync("setConversationId", conversationId);
+        }
+
+        private async Task DisplayErrorMessageInChat(string userGroup, string message)
         {
             await Clients.Group(userGroup).InvokeAsync("errorMessage", message);
+        }
+
+        private async Task DisplayChatBotConnectionError(string userGroup)
+        {
+            await DisplayErrorMessageInChat(userGroup, "Klarer ikke opprette tilkobling til ChatBot." +
+                "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>");
         }
 
         private async Task SetChatWorkerStatus(string userName, string status)
@@ -315,6 +340,72 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
         }
 
+        public async Task SendToChatBot(string conversationId, string conversationToken, string message)
+        {
+            List<Message> messages = new List<Message>();
+            string from = GetConnectionKey();
+            await DisplayMessage(ChatBot, from, message);
+
+            if(Int32.TryParse(conversationId, out int id))
+            {
+                Message msg = new Message
+                {
+                    ConversationId = id,
+                    To = ChatBot,
+                    From = from,
+                    DisplayName = await GetDisplayName(),
+                    Content = message,
+                    IsChatBot = false,
+                    IsChatWorker = false,
+                    DateTime = DateTime.Now
+                };
+
+                messages.Add(msg);
+
+                try
+                {
+                    // TODO: -------------------------- TESTKODE SOM MÅ FIKSES!!!
+                    //string response = await _chatBot.PostCommentByToken(conversationToken, message);
+                    string response = "TESTKODE: Dette er responsen fra chatbot. Midlertidig kode, får feil i PostCommentByToken";
+
+
+
+                    Message responseMsg = new Message
+                    {
+                        ConversationId = id,
+                        From = ChatBot,
+                        DisplayName = "ChatBot",
+                        Content = response,
+                        IsChatBot = true,
+                        IsChatWorker = false,
+                        DateTime = DateTime.Now
+                    };
+
+                    messages.Add(responseMsg);
+
+                    // Display response message
+                    await DisplayMessage(from, ChatBot, response);
+                    // TODO: LAgre meldinger!!!
+
+                } catch(Exception exception)
+                {
+                    await DisplayChatBotConnectionError(from);
+                }
+            } else
+            {
+                await DisplayChatBotConnectionError(from);
+            }
+
+            try
+            {
+                await _repository.AddMessagesAsync(messages);
+            } catch (Exception exception)
+            {
+                // ChatBot should continue to work even if messages does not get stored to db. 
+                // So do nothing here.
+            }
+        }
+
         /*public async Task SendToGroup2(string groupName, bool talkWithChatBot, string message)
         {
             if(talkWithChatBot)
@@ -355,8 +446,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }*/
         public async Task DisplayMessage(string groupTo, string groupFrom, string message)
         {
-            await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
-            await Clients.Group(groupFrom).InvokeAsync("sendMessage", message);
+            if(!groupFrom.Equals(ChatBot))
+            {
+                await Clients.Group(groupFrom).InvokeAsync("sendMessage", message);
+            }
+
+            if(!groupTo.Equals(ChatBot))
+            {
+                await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
+            }
+
+
+
+
         }
 
         public async Task DisplayMessage2(Message message)

@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var groupId = "";
     var conversationId = null;
     var chatBotToken = "";
+    var chatIsWithBot = false;
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -156,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             connection.on('setChatBotToken', function (token) {
                 chatBotToken = token;
+                chatIsWithBot = true;
             });
 
             connection.on('errorMessage', function (message) {
@@ -178,11 +180,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 function sendMessage() {
                     if (messageInput.value.length > 0) { // if there is any input
-                        connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
-                        //displaySentMessage(messageInput.value);
+                        if (chatIsWithBot) {
+                            connection.invoke('sendToChatBot', conversationId, chatBotToken, messageInput.value);
+                        } else {
+                            connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+                            //displaySentMessage(messageInput.value);
+                        }
                         messageInput.value = '';
                         messageInput.focus();
                         event.preventDefault();
+
                     }
                 }
 

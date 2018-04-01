@@ -14,6 +14,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
         //Task<Conversation> GetActiveConversation(string token);
         Task<string> GetConversationTokenAsString();
         Task<Conversation> StartAndGetNewConversation();
+        Task<string> PostCommentByToken(string token, string comment);
         /* Task<HttpClient> GetHttpClient(string token);
         // Task<IActionResult> Post([Bind(new[] { "query" }), System.Web.Http.FromBody] QnAIndexViewModel Qna);
          Task<string> PostCommentByToken(string token, string comment);
