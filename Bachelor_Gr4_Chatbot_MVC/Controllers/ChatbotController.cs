@@ -141,7 +141,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();    // clear all headers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(activeBot.contentType));    // set contenttype
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(activeBot.botAutorizeTokenScheme, token); // set security bearer and token
-                response = await client.PostAsync(activeBot.tokenUrlExtension, null);   // make connection and get reponse
+                response = await client.PostAsync(activeBot.conversationUrlExtension, null);   // make connection and get reponse
                 if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
                 {
                     Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;   // read response as a Conversation
@@ -230,52 +230,55 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Post([FromBody][Bind("query")] QnAIndexViewModel Qna)
         {
-            // Create the connection using the secret token
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(directLineAddress_V3);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, BotSecret);
-            // Fetch a new token for just this chat
-            response = await client.PostAsync(tokenAddress_V3, null);
-            if (response.IsSuccessStatusCode) // Yey -> We got a connection and a reply
-            {
-                Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-                // Clear the headers and set the new token
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, conversationinfo.Token);
-                // Start the conversation
-                response = await client.PostAsync(directLineConversation_V3, null);
+            //// Create the connection using the secret token
+            //HttpClient client = new HttpClient();
+            //client.BaseAddress = new Uri(directLineAddress_V3);
+            //client.DefaultRequestHeaders.Accept.Clear();
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, BotSecret);
+            //// Fetch a new token for just this chat
+            //response = await client.PostAsync(tokenAddress_V3, null);
+            //if (response.IsSuccessStatusCode) // Yey -> We got a connection and a reply
+            //{
+            //    Conversation conversationinfo = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+            //    // Clear the headers and set the new token
+            //    client.DefaultRequestHeaders.Accept.Clear();
+            //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+            //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(botAutorizeTokenScheme_V3, conversationinfo.Token);
+            //    // Start the conversation
+            //    response = await client.PostAsync(directLineConversation_V3, null);
 
-                if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
-                {
-                    Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
-                    // Set the conversation url
-                    string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
-                    // Create activity
-                    Activity thisActivity = new Activity { Type = "message", Text = Qna.query, From = new ChannelAccount { Id = currentConversation.ConversationId } };
-                    var myContent = JsonConvert.SerializeObject(thisActivity);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
-                    var byteContent = new ByteArrayContent(buffer);
-                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    // Post the activity
-                    response = await client.PostAsync(conversationUrl, byteContent);
+            //    if (response.IsSuccessStatusCode) // Yey -> we managed to change the token and initiate the chat
+            //    {
+            //        Conversation currentConversation = response.Content.ReadAsAsync(typeof(Conversation)).Result as Conversation;
+            //        // Set the conversation url
+            //        string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
+            //        // Create activity
+            //        Activity thisActivity = new Activity { Type = "message", Text = Qna.query, From = new ChannelAccount { Id = currentConversation.ConversationId } };
+            //        var myContent = JsonConvert.SerializeObject(thisActivity);
+            //        var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+            //        var byteContent = new ByteArrayContent(buffer);
+            //        byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            //        // Post the activity
+            //        response = await client.PostAsync(conversationUrl, byteContent);
 
-                    if (response.IsSuccessStatusCode) // Yey -> It was posted
-                    {
-                        // Fetch messages
-                        response = await client.GetAsync(conversationUrl);
-                        activitySet = response.Content.ReadAsAsync(typeof(ActivitySet)).Result as ActivitySet;
-                    }
-                }
-            }
-            string responseString = null;
-            foreach (Activity a in activitySet.Activities)
-            {
-                responseString = a.Text;
-            }
-            // Send the entire activityset in return for now. 
+            //        if (response.IsSuccessStatusCode) // Yey -> It was posted
+            //        {
+            //            // Fetch messages
+            //            response = await client.GetAsync(conversationUrl);
+            //            activitySet = response.Content.ReadAsAsync(typeof(ActivitySet)).Result as ActivitySet;
+            //        }
+            //    }
+            //}
+            //string responseString = null;
+            //foreach (Activity a in activitySet.Activities)
+            //{
+            //    responseString = a.Text;
+            //}
+            //// Send the entire activityset in return for now. 
+            var token = await GetConversationTokenAsString();
+            var responseString = await PostCommentByToken(token, Qna.query);
+
             return Json(responseString);
         }
     }
