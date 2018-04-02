@@ -15,5 +15,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<bool> CheckIfBotActive(int id);
         Task<string[]> ActivateBot(int id);
         Task<ChatbotDetails> GetActiveBot();
+        Task<List<ChatbotTypes>> GetAllTypes();
     }
 }

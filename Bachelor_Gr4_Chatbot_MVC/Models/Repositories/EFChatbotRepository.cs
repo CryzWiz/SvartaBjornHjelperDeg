@@ -65,6 +65,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return c;
         }
 
+        public async Task<List<ChatbotTypes>> GetAllTypes()
+        {
+            List<ChatbotTypes> s = await db.ChatbotTypes.ToListAsync();
+            return s;
+        }
+
         public async Task<bool> DeleteChatbot(ChatbotDetails chatbot)
         {
             var r = db.Remove(chatbot);

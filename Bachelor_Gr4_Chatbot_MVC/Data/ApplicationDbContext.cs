@@ -21,6 +21,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         // Chatbotdetails so we can store several chatbots
         // Just microsoft bots atm
         public virtual DbSet<ChatbotDetails> ChatbotDetails { get; set; }
+        public virtual DbSet<ChatbotTypes> ChatbotTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

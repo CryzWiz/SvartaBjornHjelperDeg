@@ -238,9 +238,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public IActionResult RegisterNewChatbot()
+        public async Task<IActionResult> RegisterNewChatbot()
         {
-            return View();
+            var c = new ChatbotDetails();
+            List<ChatbotTypes> types = await chatbotRepository.GetAllTypes();
+            c.chatbotTypes = types;
+            return View(c);
         }
 
         [HttpPost]

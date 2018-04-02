@@ -39,6 +39,11 @@ public class SeedData
             await CreateOpeningHours(context);
         }
 
+        if (!context.ChatbotTypes.Any())
+        {
+            await AddChatbotTypes(context);
+        }
+
         if (!context.ChatbotDetails.Any())
         {
             await AddChatbot(context);
@@ -147,7 +152,26 @@ public class SeedData
         await context.AddRangeAsync(hours);
         await context.SaveChangesAsync();
     }
+    private static async Task AddChatbotTypes(ApplicationDbContext context)
+    {
+        var chatbotType = new ChatbotTypes
+        {
+            Type = "Microsoft Bot Framework",
+            TypeId = 1
+        };
 
+        await context.AddAsync(chatbotType);
+        await context.SaveChangesAsync();
+
+        var chatbotType2 = new ChatbotTypes
+        {
+            Type = "QnA Maker",
+            TypeId = 2
+        };
+
+        await context.AddAsync(chatbotType2);
+        await context.SaveChangesAsync();
+    }
     private static async Task AddChatbot(ApplicationDbContext context)
     {
         var chatbot1 = new ChatbotDetails
@@ -155,6 +179,7 @@ public class SeedData
             regDate = DateTime.Now,
             lastEdit = DateTime.Now,
             chatbotName = "Svarta Bjørn 1",
+            TypeId = 2,
             isActive = false,
             contentType = "application/json",
             baseUrl = "https://directline.botframework.com",
@@ -173,6 +198,7 @@ public class SeedData
             regDate = DateTime.Now,
             lastEdit = DateTime.Now,
             chatbotName = "Svarta Bjørn 2",
+            TypeId = 2,
             isActive = true,
             contentType = "application/json",
             baseUrl = "https://directline.botframework.com",
