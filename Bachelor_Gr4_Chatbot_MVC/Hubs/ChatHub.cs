@@ -31,12 +31,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
     public class ChatHub : Hub
     {
+
+        // Keep track of all SignalR Connection made towards the hub
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-       // private static ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+        // Keep track of all Chat-workers connected to the hub
+        public readonly static ConnectionMapping<string> _chatWorkers = new ConnectionMapping<string>();
 
-        private static ConcurrentQueue<int> _queue2 = new ConcurrentQueue<int>();
+        // Keep track of all users in queue to chat with a chat-worker
+        private static ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
 
         //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
@@ -75,6 +79,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 ChatHubHandler.ConnectedWorkers.Add(key);
             }
+
+            // Add Chat-workers to list
+            //if(Context.User.Identity.Name.)
 
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
@@ -255,7 +262,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 int conversationId = await _repository.AddConversationAsync(conversation);
                 //_queue.Enqueue(userGroup);
-                _queue2.Enqueue(conversationId);
+                _queue.Enqueue(conversationId);
 
                 ChatHubHandler.inQue += 1; // TODO: ChatHubHandler -------------------------------------
                 
@@ -291,9 +298,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private int? Dequeue()
         {
-            while (!_queue2.IsEmpty)
+            while (!_queue.IsEmpty)
             {
-                if(_queue2.TryDequeue(out int conversationId))
+                if(_queue.TryDequeue(out int conversationId))
                 {
                     if(_inQueue.Values.Contains(conversationId))
                     {
@@ -368,7 +375,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public IEnumerable<int> GetQueue()
         {
-            return _queue2.ToArray();
+            return _queue.ToArray();
         }
 
         /// <summary>
