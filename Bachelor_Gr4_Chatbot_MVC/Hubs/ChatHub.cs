@@ -46,8 +46,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private const string ChatBot = "ChatBot";
 
         private const string EndConversation = "avslutt";
-
-
+        
 
         public ChatHub(IChatRepository repository, IChatBot chatBot)
         {
@@ -176,13 +175,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 // TODO
             }
             string userGroup = GetConnectionKey();
-            await Clients.Group(userGroup).InvokeAsync("endBotConversation");
-            await DisplayMessage(userGroup, ChatBot, "Samtale med ChatBot avsluttet. " +
-                "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>" +
-                "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>");
+            await Clients.Group(userGroup).InvokeAsync("endBotConversation", "Samtale med ChatBot avsluttet.", conversationId);
         }
-
-
 
         private async Task DisplayErrorMessageInChat(string userGroup, string message)
         {
@@ -238,6 +232,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return "Hei, mitt navn er Svarta Bjørn, hva kan jeg hjelpe deg med?";
         }
 
+        public async Task RegisterConversationResult(int conversationId, bool result)
+        {
+            Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+            conversation.Result = result;
+            await _repository.UpdateConversationAsync(conversation);
+        }
 
              
         public async Task JoinQueue()
