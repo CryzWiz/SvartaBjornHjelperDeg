@@ -3,7 +3,8 @@
         var $chatbox = $('#chatbox'),
             $chatboxTitle = $('#chatbox__title'),
             $chatboxTitleClose = $('#chatbox__title__close'),
-            $chatboxCredentials = $('#chatbox__credentials');
+            $chatboxCredentials = $('#chatbox__credentials'),
+            $chatlight = $('#chatbox__light');
         $chatboxTitle.on('click', function () {
             $chatbox.toggleClass('chatbox--tray');
         });
@@ -80,6 +81,7 @@ function displaySentMessage(message) {
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
 }
 
 function displayReceivedMessage(message) {
@@ -93,7 +95,39 @@ function displayReceivedMessage(message) {
     liElement.innerHTML += '<p>' + encodedMsg + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+    // dummy element
+    var dummyEl = document.getElementById('message');
+    // check for focus
+    var isFocused = (document.activeElement === dummyEl);
+    if (isFocused === false) {
+        addBlink();
+    }
+    else {
+        removeBlink();
+    }
+    
 }
+function addBlink() {
+    var element = document.getElementById("chatbox__light");
+    element.classList.add("chatbox__blink");
+    element.innerHTML = '';
+    var a = document.createElement('a');
+    a.setAttribute('href', '#');
+    a.innerHTML = 'Ny beskjed mottat';
+    element.appendChild(a);
+}
+
+function removeBlink() {
+    var element = document.getElementById("chatbox__light");
+    element.classList.remove("chatbox__blink");
+    element.innerHTML = '';
+    var a = document.createElement('a');
+    a.setAttribute('href', '#');
+    a.innerHTML = 'Svarta Bjørn';
+    element.appendChild(a);
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');

@@ -26,6 +26,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public string baseUrl { get; set; }
         public string tokenUrlExtension { get; set; }
         public string conversationUrlExtension { get; set; }
+        public string conversationUrlExtensionEnding { get; set; }
         public string botAutorizeTokenScheme { get; set; }
 
         

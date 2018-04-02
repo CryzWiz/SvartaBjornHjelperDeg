@@ -70,6 +70,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult MorrisCharts()
+        {
+
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult FlotCharts()
+        {
+
+            return View();
+        }
+
         /// <summary>
         /// Fetch all the users and display them to the user(admin)
         /// </summary>
@@ -229,8 +245,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
-            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
+        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "BotSecret")] ChatbotDetails chatbotDetails)
         {
             if (ModelState.IsValid)
             {

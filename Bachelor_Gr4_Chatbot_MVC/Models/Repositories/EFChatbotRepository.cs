@@ -44,8 +44,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         public async Task<bool> RegisterNewChatbot(ChatbotDetails chatbotDetails)
         {
+            chatbotDetails.contentType = "application/json";
+            chatbotDetails.baseUrl = "https://directline.botframework.com";
+            chatbotDetails.conversationUrlExtension = "/v3/directline/conversations/";
+            chatbotDetails.conversationUrlExtensionEnding = "/activities";
+            chatbotDetails.tokenUrlExtension = "/v3/directline/tokens/generate";
+            chatbotDetails.botAutorizeTokenScheme = "Bearer";
             chatbotDetails.regDate = DateTime.Now;
             chatbotDetails.lastEdit = DateTime.Now;
+            chatbotDetails.isActive = false;
             db.ChatbotDetails.Add(chatbotDetails);
             if (await db.SaveChangesAsync() < 0) return true;
             else return false;
@@ -70,13 +77,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var c = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.chatbotId == chatbotDetails.chatbotId));
 
             c.chatbotName = chatbotDetails.chatbotName;
-            c.baseUrl = chatbotDetails.baseUrl;
-            c.botAutorizeTokenScheme = chatbotDetails.botAutorizeTokenScheme;
+            //c.baseUrl = chatbotDetails.baseUrl;
+            //c.botAutorizeTokenScheme = chatbotDetails.botAutorizeTokenScheme;
             c.BotSecret = chatbotDetails.BotSecret;
-            c.contentType = chatbotDetails.contentType;
-            c.conversationUrlExtension = chatbotDetails.conversationUrlExtension;
-            c.isActive = chatbotDetails.isActive;
-            c.tokenUrlExtension = chatbotDetails.tokenUrlExtension;
+            //c.contentType = chatbotDetails.contentType;
+            //c.conversationUrlExtension = chatbotDetails.conversationUrlExtension;
+            //c.conversationUrlExtensionEnding = chatbotDetails.conversationUrlExtensionEnding;
+            //c.isActive = chatbotDetails.isActive;
+            //c.tokenUrlExtension = chatbotDetails.tokenUrlExtension;
             c.lastEdit = DateTime.Now;
 
 

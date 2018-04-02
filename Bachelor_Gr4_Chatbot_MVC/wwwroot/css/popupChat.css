@@ -102,8 +102,25 @@
     transform: translateY(-50%);
 }
 
-.chatbox__title__tray,
-.chatbox__title__close {
+.chatbox__blink {
+    -webkit-animation-name: blink;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
+    -webkit-animation-duration: 1s;
+}
+
+@-webkit-keyframes blink {
+    from {
+        opacity: 1.0;
+    }
+
+    to {
+        opacity: 0.0;
+    }
+}
+
+
+.chatbox__title__tray, .chatbox__title__close {
     width: 24px;
     height: 24px;
     outline: 0;
@@ -180,7 +197,7 @@
     border-radius: 4px;
     border: 2px solid #fcfcfc;
     position: absolute;
-    top: 15px;
+    top: 10px;
 }
 
 .chatbox__body__message--left p {

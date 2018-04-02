@@ -250,10 +250,10 @@
                     <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Statistikker<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="#">Flot Charts</a>
+                            <a asp-area="" asp-controller="Administrator" asp-action="FlotCharts">FlotCharts</a>
                         </li>
                         <li>
-                            <a href="#">Morris.js Charts</a>
+                            <a asp-area="" asp-controller="Administrator" asp-action="MorrisCharts">MorrisCharts</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
@@ -318,6 +318,9 @@
                     <ul class="nav nav-second-level">
                         <li>
                             <a asp-area="" asp-controller="Administrator" asp-action="Chatbots">Vis chatbots</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Administrator" asp-action="RegisterNewChatbot">Registrer ny chatbot</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
