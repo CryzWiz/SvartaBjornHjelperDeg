@@ -146,6 +146,10 @@ function updateConnectionList(connections) {
     $("#connectionList").html(str);
 }
 
+function displayQueueCounter(count) {
+    var str = "<h3>Antall brukere i kø: " + count + "</h3>";
+    $("#inQueue").html(str);
+}
 /*
 function displayQueue(connections) {
     var str = "";
@@ -161,8 +165,8 @@ function displayQueue(connections) {
         str += "</tr>";
     });
     $("#queueList").html(str);
-}*/
- /*
+}
+ 
 function addToQueue(connection) {
     var str = "";
     str += "<tr>";
@@ -179,9 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = "";
-    var queueCounter = document.getElementById('inQueue');
-    queueCounter.Value = 0;
-
 
     // Get the user name and store it to prepend to messages.
     var name = 'Guest';
@@ -237,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         connection.on('displayQueueCount', function (count) {
-            
+            displayQueueCounter(count);
         });
 
         connection.on('addToQueue', function (connection) {
@@ -266,8 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Send message
             $("#sendmessage").click(function (event) {
-                // TODO: Bytt ut kode her
-                //connection.invoke('send', messageInput.value);
                 connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
 
                 // Clear text box and reset focus for next comment.
@@ -291,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#pickFromQueue").click(function (event) {
                 connection.invoke('pickFromQueue');
             });
-
+            connection.invoke('displayQueueCount');
         })
         .catch(error => {
             console.error(error.message);

@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // TODO: for 
-            connection.on('displayQueueNumber', function (queNumber) {
+            connection.on('displayPlaceInQueue', function (queNumber) {
                 displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
             });
 
