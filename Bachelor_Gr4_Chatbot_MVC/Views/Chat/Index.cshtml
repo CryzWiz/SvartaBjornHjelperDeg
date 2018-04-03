@@ -6,11 +6,61 @@
     <link href="~/css/popupChat.css" rel="stylesheet" type="text/css" />
 }
 
-<h2>Liste over alle brukere koblet til huben</h2>
+<h2>Chat</h2>
 
+<div class="col-sm-3" role="navigation">
+    <!-- Login/out -->
+    <ul class="nav">
+        <li>
+            <div class="container">
+                <button class="btn btn-primary" id="chatLogin">Logg inn</button>
+            </div>
+        </li>
+        <!-- Queue -->
+        <li>
+            
 
+        </li>
+        <li>
+            <div class="container">
+                <button class="btn btn-primary" id="pickFromQueue">Velg samtale fra køen</button>
+                <p class="text-primary"id="inQueue">Antall brukere i kø: </p>
+                <p class="text-primary" id="waitTime">Ventetid: </p>
+            </div>
+        </li>
+    </ul>
+</div>
 
+<div class="col-sm-9">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Aktiv chat</h3>
+        </div>
+        <div class="panel-body" id="chatbox__body">
+            Du er ikke påkoblet noen chat. 
+        </div>
+        <div class="panel-footer">
+            <div class="form-group row">
+                <!--<div class="input-group">
+                    <input class="form-control input-sm" type="text" id="message" placeholder="Skriv melding...">
+                    <input class="btn btn-primary btn-sm" type="button" id="sendmessage" value="Send" />
+                    <input type="hidden" id="displayname" />
 
+                </div>-->
+                <div class="input-group">
+                    <input id="message" type="text" class="form-control" placeholder="Skriv melding.." aria-label="Skriv melding">
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="sendmessage">Send</button>
+                    </div>
+                </div>
+                <button class="btn btn-default btn-block" id="endConversation">Forlat samtale</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
 <div class="container">
     <table class="table" id="connectionListTable">
         <thead>
@@ -29,7 +79,7 @@
 
     </table>
 </div>
-
+-->
 <!--<h2>Kø (Liste over brukere som venter på svar fra Chat-medarbeider)</h2>
 <div class="container">
     <table class="table" id="queueTable">
@@ -46,7 +96,7 @@
         <tbody id="queueList"></tbody>
 
     </table>
-</div>-->
+</div>
 
 
 <div class="container">
@@ -64,7 +114,7 @@
 
 
 
-<!-- PopUp chatbox -->
+<!-- PopUp chatbox 
 <div class="chatbox chatbox--tray">
     <div class="chatbox__title" id="chatbox__title">
         <h5><a href="#">Chat</a></h5>
@@ -108,18 +158,10 @@
         <button type="submit" class="btn btn-success btn-block">Enter Chat</button>
     </form>
     -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-inline">
-                <input type="text" id="message" placeholder="Din kommentar ...">
-                <input type="button" id="sendmessage" value="send" />
-                <input type="hidden" id="displayname" />
-            </div>
-        </div>
-    </div>
 
 
-</div>
+
+
 
 
 

@@ -147,7 +147,7 @@ function updateConnectionList(connections) {
 }
 
 function displayQueueCounter(count) {
-    var str = "<h3>Antall brukere i kø: " + count + "</h3>";
+    var str = "Antall brukere i kø: " + count;
     $("#inQueue").html(str);
 }
 /*

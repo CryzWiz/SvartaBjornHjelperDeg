@@ -43,6 +43,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             // Slettes: 
 
             return View();
+         
         }
 
         public IActionResult UserChat()
