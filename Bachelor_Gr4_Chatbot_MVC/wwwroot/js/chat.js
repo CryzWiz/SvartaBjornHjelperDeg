@@ -264,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
         .then(function (connection) {
             console.log('connection started'); // TODO:
+            connection.invoke('displayQueueCount');
 
             // Send message
             $("#sendmessage").click(function (event) {
@@ -290,7 +291,12 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#pickFromQueue").click(function (event) {
                 connection.invoke('pickFromQueue');
             });
-            connection.invoke('displayQueueCount');
+
+            // Pick from queue
+            $("#endConversation").click(function (event) {
+                connection.invoke('pickFromQueue');
+            });
+
         })
         .catch(error => {
             console.error(error.message);

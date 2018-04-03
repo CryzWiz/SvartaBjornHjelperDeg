@@ -32,14 +32,21 @@
 </div>
 
 <div class="col-sm-9">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Aktiv chat</h3>
-        </div>
-        <div class="panel-body" id="chatbox__body">
-            Du er ikke påkoblet noen chat. 
-        </div>
-        <div class="panel-footer">
+
+        <div class="panel panel-primary" style="display: flex; flex-direction: column;">
+            <div class="panel-heading clearfix">
+                <h3 class="panel-title pull-left">Aktiv chat</h3>
+                <div class="btn-group pull-right">
+                    <button id="endConversation" class="btn btn-default btn-sm">Avslutt samtale</button>
+                </div>
+            </div>
+
+           <div class="panel-body" id="chatbox__body" style="min-height: 300px; max-height: 500px;overflow-y: scroll;">
+
+                Du er ikke påkoblet noen chat.
+            </div>
+    <div class="panel-footer">
+        <div class="container-fluid">
             <div class="form-group row">
                 <!--<div class="input-group">
                     <input class="form-control input-sm" type="text" id="message" placeholder="Skriv melding...">
@@ -53,11 +60,15 @@
                         <button class="btn btn-primary" type="button" id="sendmessage">Send</button>
                     </div>
                 </div>
-                <button class="btn btn-default btn-block" id="endConversation">Forlat samtale</button>
-                
+
+            </div>
+            @*<div class="row">
+                    <button class="btn btn-default btn-block" id="endConversation">Forlat samtale</button>
+                </div>*@
+                </div>
             </div>
         </div>
-    </div>
+
 </div>
 
 <!--

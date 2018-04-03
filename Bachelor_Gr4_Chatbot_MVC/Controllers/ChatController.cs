@@ -87,6 +87,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        public async Task EndConversation()
+        {
+
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> RegisterOpeningHours(ChatOpeningHoursRegisterViewModel model)
