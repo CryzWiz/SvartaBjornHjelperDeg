@@ -183,9 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = "";
-
-    // Get the user name and store it to prepend to messages.
-    var name = 'Guest';
+    var chatBoxBody = document.getElementById('chatbox__body');
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -258,6 +256,12 @@ document.addEventListener('DOMContentLoaded', function () {
             displaySentMessage(message);
         });
 
+        connection.on('conversationEnded', function (message, id) {
+            var groupId = "";
+            var conversationId = "";
+            $("#chatbox__body").html("Du er ikke påkoblet noen chat.");
+        });
+
 
  
 
@@ -289,12 +293,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Pick from queue
             $("#pickFromQueue").click(function (event) {
+                $("#chatbox__body").html("");
                 connection.invoke('pickFromQueue');
             });
 
             // Pick from queue
             $("#endConversation").click(function (event) {
-                connection.invoke('pickFromQueue');
+                connection.invoke('endConversation', conversationId, groupId);
             });
 
         })

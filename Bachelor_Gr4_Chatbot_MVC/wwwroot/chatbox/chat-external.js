@@ -196,7 +196,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 resetChatBotVariables();
                 conversationIdForResult = id;
                 displayConversationEnded(message);
+            });
 
+            connection.on('conversationEnded', function (message, id) {
+                resetChatBotVariables();
+                conversationIdForResult = id;
+                displayConversationEnded(message);
             });
 
 

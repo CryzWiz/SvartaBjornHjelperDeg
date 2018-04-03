@@ -49,7 +49,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private IChatBot _chatBot;
         private const string ChatBot = "ChatBot";
 
-        private const string EndConversation = "avslutt";
+        private const string Exit = "avslutt";
         
 
         public ChatHub(IChatRepository repository, IChatBot chatBot)
@@ -170,11 +170,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             try
             {
-                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
-                conversation.EndTime = DateTime.Now;
-                // TODO: Determine result of conversation...
-                await _repository.UpdateConversationAsync(conversation);
-
+                await SaveConversationWithResultSetToTrue(conversationId);
                 // TODO: Trengs det "stenges" noe i ChatBot??
             }
             catch (Exception exception)
@@ -183,6 +179,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
             string userGroup = GetConnectionKey();
             await Clients.Group(userGroup).InvokeAsync("endBotConversation", "Samtale med ChatBot avsluttet.", conversationId);
+        }
+
+        public async Task EndConversation(int conversationId, string groupTo)
+        {
+            Conversation conversation = null;
+            try
+            {
+                conversation = await SaveConversationWithResultSetToTrue(conversationId);
+            } catch (Exception e)
+            {
+                // TODO
+            }
+            string user = GetConnectionKey();
+            string displayName = await GetDisplayName();
+            string message = displayName + " forlot samtalen. ";
+            await Clients.Group(conversation.UserGroup1).InvokeAsync("conversationEnded", message, conversationId);
+            await Clients.Group(conversation.UserGroup2).InvokeAsync("conversationEnded", message, conversationId);
+        }
+
+        public async Task<Conversation> SaveConversationWithResultSetToTrue(int conversationId)
+        {
+            try
+            {
+                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+                conversation.EndTime = DateTime.Now;
+                conversation.Result = true; // Standard result set to true, but user can modify
+                await _repository.UpdateConversationAsync(conversation);
+                return conversation;
+            } catch(Exception e)
+            {
+                throw;
+            }
         }
 
         private async Task DisplayErrorMessageInChat(string userGroup, string message)
@@ -288,7 +316,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             string msg = message.ToLower();
 
-            if(msg.Equals(EndConversation))
+            if(msg.Equals(Exit))
             {
                 await EndConversationWithChatBot(conversationId);
                 return true;
