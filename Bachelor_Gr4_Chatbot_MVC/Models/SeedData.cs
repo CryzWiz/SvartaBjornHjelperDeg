@@ -232,11 +232,7 @@ public class SeedData
             regDate = DateTime.Now,
             lastEdit = DateTime.Now,
             isActive = true,
-            subscriptionKey = "7d26f05ae72842478df8fdca921de66d",
-            knowledgeBaseID = "025fd52b-e8d7-43aa-a10f-e8f9bde3e369",
-            requestUrl = "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/",
-            askQuestionUrl = "generateAnswer",
-            trainknowledgeBaseUrl = "train",
+            subscriptionKey = "7d26f05ae72842478df8fdca921de66d"
 
         };
 
@@ -248,7 +244,6 @@ public class SeedData
     {
         var qna = new QnAKnowledgeBase
         {
-            QnAKnowledgeBaseId = 1,
             QnABotId = 1,
             QnAKnowledgeName = "Svarta Bjørn Base",
             RegDate = DateTime.Now,

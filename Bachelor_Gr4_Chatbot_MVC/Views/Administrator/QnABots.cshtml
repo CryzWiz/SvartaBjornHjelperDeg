@@ -15,20 +15,22 @@
             <div class="container-fluid">
                 <div class="col-lg-12">
                     <div class="row">
+                        <div class="col-md-8">
 
-                        <h2>QnABots</h2>
+                            <h2>QnABots</h2>
+                        </div>
+                        <div class="col-md-2 col-md-offset-2">
+                            <br />
+                            <br />
+                            @Html.ActionLink("Registrer ny QnAbot", "RegisterNewQnaBotAsync", "Administrator", null, new { @class = "btn btn-success btn-large" })
+                        </div>
                     </div>
+                    <hr />
                     <div class="row">
                         <div class="col-md-12">
-                            <p>
-                                <a asp-action="Create">Create New</a>
-                            </p>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.QnAId)
-                                        </th>
                                         <th>
                                             @Html.DisplayNameFor(model => model.chatbotName)
                                         </th>
@@ -41,18 +43,12 @@
                                         <th>
                                             @Html.DisplayNameFor(model => model.subscriptionKey)
                                         </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.knowledgeBaseID)
-                                        </th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model) {
                                         <tr>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.QnAId)
-                                            </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.chatbotName)
                                             </td>
@@ -66,12 +62,7 @@
                                                 @Html.DisplayFor(modelItem => item.subscriptionKey)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.knowledgeBaseID)
-                                            </td>
-                                            <td>
-                                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                                @Html.ActionLink("Detaljer", "QnABotDetails", new { id = item.QnAId })
                                             </td>
                                         </tr>
 }

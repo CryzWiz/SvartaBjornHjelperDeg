@@ -22,6 +22,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         // QnA methods
         Task<List<QnABaseClass>> GetAllQnABots();
-
+        Task<QnADetails> GetQnABotDetails(int id);
+        Task<string[]> RegisterNewQnABotAsync(QnABaseClass qnabot);
     }
 }

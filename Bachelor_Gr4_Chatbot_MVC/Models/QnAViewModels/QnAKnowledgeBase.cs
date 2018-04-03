@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
 {
     public class QnAKnowledgeBase
     {
+        [Key]
         public int QnAKnowledgeBaseId { get; set; }
         public int QnABotId { get; set; }
         public string QnAKnowledgeName { get; set; }
@@ -26,11 +28,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
         public string RequestUrl {
             get
             {
-                return RequestUrl;
-            }
-            set
-            {
-                RequestUrl = "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases";
+                //RequestUrl = "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases";
+                return "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases";
             }
 
         }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -353,7 +354,48 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> QnABotDetails(int id)
+        {
+            var q = await chatbotRepository.GetQnABotDetails(id);
+            return View(q);
+        }
 
+        [HttpGet]
+        public IActionResult RegisterNewQnaBotAsync()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterNewQnABotAsync([FromForm][Bind("chatbotName", "subscriptionKey", "knowledgeBaseID")] QnABaseClass qnabot)
+        {
+            var r = await chatbotRepository.RegisterNewQnABotAsync(qnabot);
+            if (r[0].Equals("success")) {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if(r[0].Equals("success") & r[2].Equals("success"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert med ny kunnskapsbase.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if (r[0].Equals("success") & r[2].Equals("error"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert uten ny kunnskapsbase.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if(r[0].Equals("error"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble ikke registrert.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else
+            {
+                TempData[r[0]] = String.Format("Noe gikk galt", r[1]);
+                return RedirectToAction("QnABots");
+            }
+        }
 
     }
 }

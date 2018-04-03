@@ -163,5 +163,97 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var q = await db.QnABaseClass.ToListAsync();
             return q;
         }
+
+        public async Task<QnADetails> GetQnABotDetails(int id)
+        {
+            var qna = await Task.Run(() => db.QnABaseClass.FirstOrDefault(x => x.QnAId == id));
+            var bases = await db.QnAKnowledgeBase.Where(x => x.QnABotId == id).ToListAsync();
+
+            var r = new QnADetails
+            {
+                QnAId = qna.QnAId,
+                ChatbotName = qna.chatbotName,
+                RegDate = qna.regDate,
+                LastEdit = qna.lastEdit,
+                IsActive = qna.isActive,
+                SubscriptionKey = qna.subscriptionKey,
+                KnowledgeBases = bases
+            };
+
+            return r;
+        }
+
+        public async Task<QnABaseClass> GetQnABotByNameAsync(string name)
+        {
+            var qna = await Task.Run(() => db.QnABaseClass.FirstOrDefault(x => x.chatbotName == name));
+            return qna;
+        }
+
+        public async Task<string[]> RegisterNewQnABotAsync(QnABaseClass qnabot)
+        {
+            string[] r = new string[3];
+            var qna = new QnABaseClass
+            {
+                chatbotName = qnabot.chatbotName,
+                regDate = DateTime.Now,
+                lastEdit = DateTime.Now,
+                isActive = false,
+                subscriptionKey = qnabot.subscriptionKey,
+                knowledgeBaseID = qnabot.knowledgeBaseID
+            };
+            await db.QnABaseClass.AddAsync(qna);
+            if(await db.SaveChangesAsync() > 0)
+            {
+                r[0] = "success";
+                r[1] = qna.chatbotName;
+            }
+            else
+            {
+                r[0] = "error";
+                r[1] = qna.chatbotName;
+            }
+
+            var q = await GetQnABotByNameAsync(qna.chatbotName);
+            if(qna.knowledgeBaseID != null)
+            {
+                var klb = new QnAKnowledgeBase
+                {
+                    KnowledgeBaseID = q.knowledgeBaseID,
+                    QnABotId = q.QnAId,
+                    RegDate = DateTime.Now,
+                    LastEdit = DateTime.Now,
+                    IsActive = false,
+                    QnAKnowledgeName = "navn mangler"
+
+                };
+
+                if(await RegisterNewQnAKnowledgeBaseAsync(klb))
+                {
+                    r[2] = "success";
+                    return r;
+                }
+                else
+                {
+                    r[2] = "error";
+                    return r;
+                }
+            }
+            else
+            {
+                r[2] = "error";
+                return r;
+            }
+        }
+
+        private async Task<bool> RegisterNewQnAKnowledgeBaseAsync(QnAKnowledgeBase klb)
+        {
+            
+            await db.QnAKnowledgeBase.AddAsync(klb);
+            var r = await db.SaveChangesAsync();
+            if(r < 0)
+                return true;
+            else
+                return false;
+        }
     }
 }

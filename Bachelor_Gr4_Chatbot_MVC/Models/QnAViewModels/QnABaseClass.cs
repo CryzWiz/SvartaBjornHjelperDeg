@@ -24,16 +24,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
 
 
         public string knowledgeBaseID { get; set; }
-        // https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/
-        public string requestUrl { get; set; }
-        // requestUrl + /{knowledgeBaseID}/generateAnswer
-        public string askQuestionUrl { get; set; }
-        // requestUrl + /{knowledgeBaseID}/train
-        public string trainknowledgeBaseUrl { get; set; }
-        // requestUrl + /{knowledgeBaseID}
-        public string publishKnowledgeBaseUrl { get; set; }
-        // requestUrl + /{knowledgeBaseID}
-        public string updateKnowledgeBaseUrl { get; set; }
-        //public string contentType { get; set; }
+
     }
 }
