@@ -346,7 +346,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
 
 
-
+        [HttpGet]
+        public async Task<IActionResult> QnABots()
+        {
+            var q = await chatbotRepository.GetAllQnABots();
+            return View(q);
+        }
 
 
 

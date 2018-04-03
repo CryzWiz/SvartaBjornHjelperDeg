@@ -1,5 +1,6 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
 using Bachelor_Gr4_Chatbot_MVC.Models;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,16 @@ public class SeedData
         if (!context.ChatbotDetails.Any())
         {
             await AddChatbot(context);
+        }
+        
+        if (!context.QnABaseClass.Any())
+        {
+            await AddQnA(context);
+        }
+
+        if (!context.QnAKnowledgeBase.Any())
+        {
+            await AddKnowledgeBase(context);
         }
     }
 
@@ -213,6 +224,44 @@ public class SeedData
         await context.SaveChangesAsync();
     }
 
+    private static async Task AddQnA(ApplicationDbContext context)
+    {
+        var qna = new QnABaseClass
+        {
+            chatbotName = "Svarta Bjørn QnA",
+            regDate = DateTime.Now,
+            lastEdit = DateTime.Now,
+            isActive = true,
+            subscriptionKey = "7d26f05ae72842478df8fdca921de66d",
+            knowledgeBaseID = "025fd52b-e8d7-43aa-a10f-e8f9bde3e369",
+            requestUrl = "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/",
+            askQuestionUrl = "generateAnswer",
+            trainknowledgeBaseUrl = "train",
+
+        };
+
+        await context.AddAsync(qna);
+        await context.SaveChangesAsync();
+    }
+
+    private static async Task AddKnowledgeBase(ApplicationDbContext context)
+    {
+        var qna = new QnAKnowledgeBase
+        {
+            QnAKnowledgeBaseId = 1,
+            QnABotId = 1,
+            QnAKnowledgeName = "Svarta Bjørn Base",
+            RegDate = DateTime.Now,
+            LastEdit = DateTime.Now,
+            IsActive = true,
+            //SubscriptionKey = "7d26f05ae72842478df8fdca921de66d",
+            KnowledgeBaseID = "025fd52b-e8d7-43aa-a10f-e8f9bde3e369"
+
+        };
+
+        await context.AddAsync(qna);
+        await context.SaveChangesAsync();
+    }
 
 
 }

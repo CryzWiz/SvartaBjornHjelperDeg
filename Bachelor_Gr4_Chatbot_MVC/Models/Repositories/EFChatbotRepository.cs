@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 {
@@ -19,6 +20,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             this.db = db;
             manager = userManager;
         }
+
+        /// <summary>
+        /// Microsoft Bot Framework methods are gathered below
+        /// </summary>
+        
+
 
         public async Task<List<ChatbotDetails>> GetAllChatbots()
         {
@@ -141,6 +148,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             var isActive = await Task.Run(() => db.ChatbotDetails.FirstOrDefault(X => X.isActive == true));
             return isActive;
+        }
+
+
+
+        /// <summary>
+        /// QnA methods are gathered below
+        /// </summary>
+ 
+
+
+        public async Task<List<QnABaseClass>> GetAllQnABots()
+        {
+            var q = await db.QnABaseClass.ToListAsync();
+            return q;
         }
     }
 }
