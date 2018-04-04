@@ -184,6 +184,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var groupId = "";
     var conversationId = "";
     var chatBoxBody = document.getElementById('chatbox__body');
+    var loggedIn = false;
+    var status = 1;
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -297,11 +299,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 connection.invoke('pickFromQueue');
             });
 
-            // Pick from queue
+            // End conversation
             $("#endConversation").click(function (event) {
                 connection.invoke('endConversation', conversationId, groupId);
             });
-
+            
+            // Chat login
+            $("#chatLogin").click(function (event) {
+                loggedIn = true;
+                connection.invoke('logIn')
+            });
         })
         .catch(error => {
             console.error(error.message);

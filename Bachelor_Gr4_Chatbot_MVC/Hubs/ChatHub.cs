@@ -3,7 +3,9 @@ using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Bachelor_Gr4_Chatbot_MVC.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -13,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 {
@@ -31,31 +34,50 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
     public class ChatHub : Hub
     {
+        private readonly IChatRepository _repository;
+        private readonly IChatBot _chatBot;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleOptions _roleOptions;
 
-        // Keep track of all SignalR Connection made towards the hub
+        // Chat keyword constants
+        private const string Exit = "avslutt";
+
+        // ChatBot user constant
+        private const string ChatBot = "ChatBot";
+
+        // Keep track of all SignalR Connections made towards the hub
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        // Keep track of all Chat-workers connected to the hub
-        public readonly static ConnectionMapping<string> _chatWorkers = new ConnectionMapping<string>();
+        // ChatWorkers status
+        public enum LogInStatus
+        {
+            Available,
+            Gone,
+            Disconnected
+        };
+
+        // Keep track of all Chat-employees connected to the hub
+        // ConcurrentDictionary<UserGroup, Status>
+        //public readonly static ConnectionMapping<string> _chatWorkers = new ConnectionMapping<string>();
+        private static ConcurrentDictionary<string, int> _chatEmployeeStatus = new ConcurrentDictionary<string, int>();
 
         // Keep track of all users in queue to chat with a chat-worker
         private static ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
 
-        //private static ConcurrentDictionary<string, string> _chatWorkerStatus = new ConcurrentDictionary<string, string>();
 
-        private IChatRepository _repository;
-        private IChatBot _chatBot;
-        private const string ChatBot = "ChatBot";
 
-        private const string Exit = "avslutt";
-        
-
-        public ChatHub(IChatRepository repository, IChatBot chatBot)
+       
+        public ChatHub(IChatRepository repository, 
+            IChatBot chatBot, 
+            UserManager<ApplicationUser> userManager,
+            IOptions<RoleOptions> roleOptions)
         {
             _repository = repository;
             _chatBot = chatBot;
+            _userManager = userManager;
+            _roleOptions = roleOptions.Value;
         }
 
         public override async Task OnConnectedAsync()
@@ -65,10 +87,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              * for keeping track of all active connections. 
              */
             string connectionId = Context.ConnectionId;
-            string key = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name: connectionId);
+            string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
             //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
+            await AddEmployeeToWorkGroupsBasedOnRole();
+
 
             // TODO: 
             if (key.Equals(connectionId))
@@ -89,6 +113,35 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await DisplayConnectedUsers();
            // await DisplayQueueCount();
         }
+
+        public async Task AddEmployeeToWorkGroupsBasedOnRole()
+        {
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                try
+                {
+                    ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
+
+                    // Chat employee groups
+                    if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
+                    {
+                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
+                    }
+
+                    // Administrator groups
+                    if (await _userManager.IsInRoleAsync(user, _roleOptions.AdminRole))
+                    {
+                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
+                    }
+                }
+                catch (Exception e)
+                {
+ 
+                }
+
+            }
+        }
+
 
         public async Task<Conversation> ConnectWithChatBot(string userGroup)
         {
@@ -590,5 +643,25 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             await Clients.Group(toUser).InvokeAsync("setGroupId", groupId);
         }
+
+        private async Task LogIn()
+        {
+
+        }
+
+        /*
+        // This method is copied from: 
+        // https://stackoverflow.com/questions/5177755/how-to-get-get-a-c-sharp-enumeration-in-javascript
+        private void ExportEnum<T>()
+        {
+            var type = typeof(T);
+            var values = Enum.GetValues(type).Cast<T>();
+            var dictionary = values.ToDictionary(x => x.ToString(), x => Convert.ToInt32(x));
+            var json = new JavaScriptSerializer().Serialize(dictionary);
+            var script = string.Format("{0}={1};", type.Name, json);
+            //System.Web.UI.ScriptManager.RegistertStartupScripts(this, GetType(), "")
+
+        }
+        */
     }
 }
