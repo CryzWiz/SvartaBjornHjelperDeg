@@ -146,6 +146,10 @@ function updateConnectionList(connections) {
     $("#connectionList").html(str);
 }
 
+function displayQueueCounter(count) {
+    var str = "Antall brukere i kø: " + count;
+    $("#inQueue").html(str);
+}
 /*
 function displayQueue(connections) {
     var str = "";
@@ -161,8 +165,8 @@ function displayQueue(connections) {
         str += "</tr>";
     });
     $("#queueList").html(str);
-}*/
- /*
+}
+ 
 function addToQueue(connection) {
     var str = "";
     str += "<tr>";
@@ -179,12 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = "";
-    var queueCounter = document.getElementById('inQueue');
-    queueCounter.Value = 0;
-
-
-    // Get the user name and store it to prepend to messages.
-    var name = 'Guest';
+    var chatBoxBody = document.getElementById('chatbox__body');
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -237,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         connection.on('displayQueueCount', function (count) {
-            
+            displayQueueCounter(count);
         });
 
         connection.on('addToQueue', function (connection) {
@@ -257,17 +256,22 @@ document.addEventListener('DOMContentLoaded', function () {
             displaySentMessage(message);
         });
 
+        connection.on('conversationEnded', function (message, id) {
+            var groupId = "";
+            var conversationId = "";
+            $("#chatbox__body").html("Du er ikke påkoblet noen chat.");
+        });
+
 
  
 
     })
         .then(function (connection) {
             console.log('connection started'); // TODO:
+            connection.invoke('displayQueueCount');
 
             // Send message
             $("#sendmessage").click(function (event) {
-                // TODO: Bytt ut kode her
-                //connection.invoke('send', messageInput.value);
                 connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
 
                 // Clear text box and reset focus for next comment.
@@ -289,7 +293,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Pick from queue
             $("#pickFromQueue").click(function (event) {
+                $("#chatbox__body").html("");
                 connection.invoke('pickFromQueue');
+            });
+
+            // Pick from queue
+            $("#endConversation").click(function (event) {
+                connection.invoke('endConversation', conversationId, groupId);
             });
 
         })

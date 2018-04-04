@@ -43,6 +43,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             // Slettes: 
 
             return View();
+         
         }
 
         public IActionResult UserChat()
@@ -84,6 +85,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 OpenTo = new TimeSpan(16,00,00)
             };
             return View(model);
+        }
+
+        public async Task EndConversation()
+        {
+
         }
 
         [Authorize]

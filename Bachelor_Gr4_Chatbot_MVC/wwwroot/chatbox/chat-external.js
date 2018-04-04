@@ -129,12 +129,29 @@ function removeBlink() {
 }
 
 
+function displayConversationEnded(startMessage) {
+    var str = startMessage; 
+    str += "Fikk du svar på det du lurte på? ";
+    str += "<div class='btn-group' aria-label='Fikk du svar?'>";
+    str += "<button type='button' class='btn btn-primary' id='resultYes'>Ja</button>";
+    str += "<button type='button' class='btn btn-primary' id='resultNo'>Nei</button>";
+    str += "</div>";
+
+
+    str += "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>";
+    str += "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>";
+
+
+    displayReceivedMessage(str);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = null;
     var chatBotToken = "";
     var chatIsWithBot = false;
+    var conversationIdForResult = null;
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -209,15 +226,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayReceivedMessage(message);
             });
 
-            connection.on('endBotConversation', function () {
+            connection.on('endBotConversation', function (message, id) {
                 resetChatBotVariables();
+                conversationIdForResult = id;
+                displayConversationEnded(message);
+            });
+
+            connection.on('conversationEnded', function (message, id) {
+                resetChatBotVariables();
+                conversationIdForResult = id;
+                displayConversationEnded(message);
             });
 
 
 
 
             // TODO: for 
-            connection.on('displayQueueNumber', function (queNumber) {
+            connection.on('displayPlaceInQueue', function (queNumber) {
                 displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
             });
 
@@ -265,6 +290,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 $("#chatbox_placeholder").on('click', "button[id='startChatBot']", function (event) {
                     connection.invoke('startConversationWithChatBot');
                 });
+
+                // Store conversation result
+                $("#chatbox_placeholder").on('click', "button[id='resultYes']", function (event) {
+                    connection.invoke('registerConversationResult', conversationIdForResult, true);
+                    displayReceivedMessage("Takk for din tilbakemelding!");
+                });
+                $("#chatbox_placeholder").on('click', "button[id='resultNo']", function (event) {
+                    connection.invoke('registerConversationResult', conversationIdForResult, false);
+                    displayReceivedMessage("Takk for din tilbakemelding!");
+                });
+
             })
             .catch(error => {
                 console.error(error.message);

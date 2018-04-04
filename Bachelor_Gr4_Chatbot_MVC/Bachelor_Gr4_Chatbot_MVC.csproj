@@ -10,12 +10,6 @@
     <Compile Remove="Hubs\IChatHub.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Views\Chat\chatbox.html">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.3.1" />
