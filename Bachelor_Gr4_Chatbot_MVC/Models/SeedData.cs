@@ -12,15 +12,13 @@ using System.Threading.Tasks;
 /// </summary>
 public class SeedData
 {
-    private const string AdminRole = "Admin";
-    private const string ChatEmployeeRole = "ChatEmployee";
-
     /// <summary>
     /// Initialize seeding of the database
     /// </summary>
     /// <param name="context"></param>
     /// <param name="userManager"></param>
     /// <param name="roleManager"></param>
+    /// <param name="roleOptions"></param>
     /// <returns></returns>
     public static async Task InitializeAsync(ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager, 
