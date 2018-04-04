@@ -1,6 +1,7 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,14 @@ public class SeedData
     /// <param name="userManager"></param>
     /// <param name="roleManager"></param>
     /// <returns></returns>
-    public static async Task InitializeAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public static async Task InitializeAsync(ApplicationDbContext context, 
+        UserManager<ApplicationUser> userManager, 
+        RoleManager<IdentityRole> roleManager, 
+        IOptions<RoleOptions> roleOptions)
     {
         if (!context.Roles.Any())
         {
-            await CreateRolesAsync(context, roleManager);
+            await CreateRolesAsync(context, roleManager, roleOptions.Value);
         }
 
         if(!context.Users.Any())
@@ -51,10 +55,10 @@ public class SeedData
     /// <param name="context"></param>
     /// <param name="roleManager"></param>
     /// <returns></returns>
-    private static async Task CreateRolesAsync(ApplicationDbContext context, RoleManager<IdentityRole> roleManager)
+    private static async Task CreateRolesAsync(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, RoleOptions roleOptions)
     {
-        await roleManager.CreateAsync(new IdentityRole(AdminRole));
-        await roleManager.CreateAsync(new IdentityRole(ChatEmployeeRole));
+        await roleManager.CreateAsync(new IdentityRole(roleOptions.AdminRole));
+        await roleManager.CreateAsync(new IdentityRole(roleOptions.ChatEmployeeRole));
         await context.SaveChangesAsync();
     }
 

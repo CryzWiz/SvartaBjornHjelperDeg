@@ -11,6 +11,7 @@ using Bachelor_Gr4_Chatbot_MVC.Data;
 using Microsoft.AspNetCore.Identity;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bachelor_Gr4_Chatbot_MVC
 {
@@ -30,7 +31,8 @@ namespace Bachelor_Gr4_Chatbot_MVC
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    SeedData.InitializeAsync(context, userManager, roleManager).Wait();
+                    var roleOptions = services.GetRequiredService<IOptions<RoleOptions>>();
+                    SeedData.InitializeAsync(context, userManager, roleManager, roleOptions).Wait();
                 }
                 catch (Exception ex)
                 {
