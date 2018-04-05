@@ -264,6 +264,10 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#chatbox__body").html("Du er ikke påkoblet noen chat.");
         });
 
+        connection.on('displayWaitTime', function (waitTime) {
+            $("#waitTime").html("Ventetid: " + waitTime);
+        });
+
 
  
 

@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
             connection.on('conversationEnded', function (message, id) {
                 resetChatBotVariables();
                 conversationIdForResult = id;
+                groupId = "";
                 displayConversationEnded(message);
             });
 

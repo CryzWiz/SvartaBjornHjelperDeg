@@ -11,27 +11,48 @@ using Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Bachelor_Gr4_Chatbot_MVC.Models;
+using Microsoft.Extensions.Options;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 {
 
     public class ChatController : Controller
     {
-        IChatRepository _repository;
-        ConnectionManager _connectionManager;
+        private readonly IChatRepository _repository;
+        private readonly ConnectionManager _connectionManager;
+        private static RoleOptions _roleOptions;
         private readonly IHubContext<ChatHub> _chatHub;
         public enum WeekDay { Mandag = 1, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag, Ukedager, Helg, Alle};
+        public enum LogInStatus
+        {
+            Available,
+            Gone,
+            Disconnected
+        };
 
 
-        public ChatController(IChatRepository repository, ConnectionManager connectionManager, IHubContext<ChatHub> chatHub)
+
+        public ChatController(IChatRepository repository, ConnectionManager connectionManager, IHubContext<ChatHub> chatHub, IOptions<RoleOptions> roleOptions)
         {
             _repository = repository;
             _connectionManager = connectionManager;
             _chatHub = chatHub;
+
+            _roleOptions = roleOptions.Value;
+
+            // TODO: Fix this
+            //adminRole = _roleOptions.AdminRole;
+            //chatEmployeeRole = _roleOptions.ChatEmployeeRole;
         }
 
+
+        [Authorize(Roles = "Admin, ChatEmployee")]
         public IActionResult Index()
         {
+            /*ChatIndexViewModel model = new ChatIndexViewModel
+            {
+                ChatLogInStatus = (int)LogInStatus.Available
+            };*/
             return View();
         }
 

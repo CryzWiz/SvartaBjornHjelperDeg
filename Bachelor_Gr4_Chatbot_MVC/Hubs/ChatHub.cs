@@ -57,6 +57,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             Disconnected
         };
 
+        // Wait time in queue
+        private static int _waitTimeCounter = 0;
+        private static TimeSpan _waitTimeSum;
+        private static string _currentWaitTime;
+
         // Keep track of all Chat-employees connected to the hub
         // ConcurrentDictionary<UserGroup, Status>
         //public readonly static ConnectionMapping<string> _chatWorkers = new ConnectionMapping<string>();
@@ -412,6 +417,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 try
                 {
                     Conversation conversation = await _repository.GetConversationByIdAsync((int)conversationId);
+                    TimeSpan thisWaitTime = DateTime.Now - conversation.StartTime;
+                    _waitTimeSum += thisWaitTime;
+                    _waitTimeCounter += 1;
+
+                    await DisplayWaitTime();
                     conversation.UserGroup2 = chatWorkerId;
                     await _repository.UpdateConversationAsync(conversation);
 
@@ -458,6 +468,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayErrorMessageInChat(chatWorkerId, "Køen er tom.");
             }      */
             
+        }
+
+        private async Task DisplayWaitTime()
+        {
+            int avrageWaitTime = (int)_waitTimeSum.TotalSeconds / _waitTimeCounter;
+            TimeSpan span = new TimeSpan(0, 0, avrageWaitTime);
+            _currentWaitTime = String.Format("{0}:{1:00}", (int)span.TotalMinutes, span.Seconds);
+            await Clients.All.InvokeAsync("displayWaitTime", _currentWaitTime);
         }
 
         public IEnumerable<int> GetQueue()
