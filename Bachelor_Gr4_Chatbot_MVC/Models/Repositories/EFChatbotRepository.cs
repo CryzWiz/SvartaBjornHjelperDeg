@@ -255,5 +255,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             else
                 return false;
         }
+
+        public async Task<QnAKnowledgeBase> GetQnAKnowledgeBaseAsync(int id)
+        {
+            var q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            return q;
+        }
+
     }
+
 }

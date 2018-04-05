@@ -397,5 +397,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> QnABaseDetails(int id)
+        {
+            var q = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
+            return View(q);
+            //throw new NotImplementedException();
+        }
+
     }
 }
