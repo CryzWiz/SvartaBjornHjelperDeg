@@ -1,0 +1,158 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnADetails
+
+@{
+    ViewData["Title"] = "QnABotDetails";
+}
+
+
+<div id="wrapper">
+
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+            <div class="row">
+                <h2>QnABotDetails</h2>
+
+
+                <h4>QnADetails</h4>
+                <hr />
+            </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <dl class="dl-horizontal">
+                       <dt>
+                           @Html.DisplayNameFor(model => model.QnAId)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.QnAId)
+                       </dd>
+                       <dt>
+                           @Html.DisplayNameFor(model => model.ChatbotName)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.ChatbotName)
+                       </dd>
+                       <dt>
+                           @Html.DisplayNameFor(model => model.RegDate)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.RegDate)
+                       </dd>
+                       <dt>
+                           @Html.DisplayNameFor(model => model.LastEdit)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.LastEdit)
+                       </dd>
+                       <dt>
+                           @Html.DisplayNameFor(model => model.IsActive)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.IsActive)
+                       </dd>
+                       <dt>
+                           @Html.DisplayNameFor(model => model.SubscriptionKey)
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.SubscriptionKey)
+                       </dd>
+                   </dl>
+               </div>
+
+               <div class="col-md-6">
+
+                   @Html.ActionLink("Legg til ny kunnskapsbase", "AddNewQnAKnowledgeBaseAsync", "Administrator", new{ id = Model.QnAId }, new { @class = "btn btn-info" })
+
+                   @Html.ActionLink("Legg til ny kunnskapsbase", "AddNewQnAKnowledgeBaseAsync", "Administrator", new { id = Model.QnAId }, new { @class = "btn btn-info" })
+               </div>
+            </div>
+
+
+            <div class="row">
+
+                <h4>Kunnskapsbaser for denne chatboten</h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                navn
+                            </th>
+                            <th>
+                                reg data
+                            </th>
+                            <th>
+                                edit date
+                            </th>
+                            <th>
+                                aktive
+                            </th>
+                            <th>
+                                baseid
+                            </th>
+                            <th>
+                                baseurl
+                            </th>
+                            <th>
+                                posturl
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var i in Model.KnowledgeBases)
+                        {
+                            <tr>
+                                <td>
+                                    @i.QnAKnowledgeName
+                                </td>
+                                <td>
+                                    @i.RegDate
+                            </td>
+                            <td>
+                                @i.LastEdit
+                            </td>
+                            <td>
+                                @i.IsActive
+                            </td>
+                            <td>
+                                @i.KnowledgeBaseID
+                            </td>
+                                <td>
+                                    @i.RequestUrl
+                                </td>
+                                <td>
+                                    @i.AskQuestionUrl
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId })
+                                </td>
+                        </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+                <a asp-action="QnaBots">Back to List</a>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Bachelor_Gr4_Chatbot_MVC.Models;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Data
 {
@@ -21,6 +22,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         // Chatbotdetails so we can store several chatbots
         // Just microsoft bots atm
         public virtual DbSet<ChatbotDetails> ChatbotDetails { get; set; }
+        public virtual DbSet<ChatbotTypes> ChatbotTypes { get; set; }
+        // QnA bots
+        public virtual DbSet<QnABaseClass> QnABaseClass { get; set; }
+        public virtual DbSet<QnAKnowledgeBase> QnAKnowledgeBase { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

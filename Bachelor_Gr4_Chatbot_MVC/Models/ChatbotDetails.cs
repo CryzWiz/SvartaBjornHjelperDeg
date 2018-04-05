@@ -18,16 +18,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public DateTime lastEdit { get; set; }
         public bool isActive { get; set; }
 
+        public string contentType { get; set; }
 
+        // Chatbot type
+        public string TypeName { get; set; }
+        public int TypeId { get; set; }
 
         // Microsoft bot details
-        public string contentType { get; set; }
         public string BotSecret { get; set; }
         public string baseUrl { get; set; }
         public string tokenUrlExtension { get; set; }
         public string conversationUrlExtension { get; set; }
+        public string conversationUrlExtensionEnding { get; set; }
         public string botAutorizeTokenScheme { get; set; }
 
-        
+        // ChatbotType Details
+
+        public virtual List<ChatbotTypes> chatbotTypes { get; set; }
     }
 }

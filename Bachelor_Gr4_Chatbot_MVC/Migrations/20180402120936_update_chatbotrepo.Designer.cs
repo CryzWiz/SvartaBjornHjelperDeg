@@ -11,9 +11,10 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180402120936_update_chatbotrepo")]
+    partial class update_chatbotrepo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,10 +85,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 
                     b.Property<string>("BotSecret");
 
-                    b.Property<int>("TypeId");
-
-                    b.Property<string>("TypeName");
-
                     b.Property<string>("baseUrl");
 
                     b.Property<string>("botAutorizeTokenScheme");
@@ -111,24 +108,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.HasKey("chatbotId");
 
                     b.ToTable("ChatbotDetails");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.ChatbotTypes", b =>
-                {
-                    b.Property<int>("chatBotTypeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("ChatbotDetailschatbotId");
-
-                    b.Property<string>("Type");
-
-                    b.Property<int>("TypeId");
-
-                    b.HasKey("chatBotTypeId");
-
-                    b.HasIndex("ChatbotDetailschatbotId");
-
-                    b.ToTable("ChatbotTypes");
                 });
 
             modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.Conversation", b =>
@@ -199,62 +178,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.HasKey("OpeningHoursId");
 
                     b.ToTable("OpeningHours");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnABaseClass", b =>
-                {
-                    b.Property<int>("QnAId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("askQuestionUrl");
-
-                    b.Property<string>("chatbotName");
-
-                    b.Property<bool>("isActive");
-
-                    b.Property<string>("knowledgeBaseID");
-
-                    b.Property<DateTime>("lastEdit");
-
-                    b.Property<string>("publishKnowledgeBaseUrl");
-
-                    b.Property<DateTime>("regDate");
-
-                    b.Property<string>("requestUrl");
-
-                    b.Property<string>("subscriptionKey");
-
-                    b.Property<string>("trainknowledgeBaseUrl");
-
-                    b.Property<string>("updateKnowledgeBaseUrl");
-
-                    b.HasKey("QnAId");
-
-                    b.ToTable("QnABaseClass");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase", b =>
-                {
-                    b.Property<int>("QnAKnowledgeBaseId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<string>("KnowledgeBaseID");
-
-                    b.Property<DateTime>("LastEdit");
-
-                    b.Property<int>("QnABotId");
-
-                    b.Property<string>("QnAKnowledgeName");
-
-                    b.Property<DateTime>("RegDate");
-
-                    b.Property<string>("RequestUrl");
-
-                    b.HasKey("QnAKnowledgeBaseId");
-
-                    b.ToTable("QnAKnowledgeBase");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -363,13 +286,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.ChatbotTypes", b =>
-                {
-                    b.HasOne("Bachelor_Gr4_Chatbot_MVC.Models.ChatbotDetails")
-                        .WithMany("chatbotTypes")
-                        .HasForeignKey("ChatbotDetailschatbotId");
                 });
 
             modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.Message", b =>

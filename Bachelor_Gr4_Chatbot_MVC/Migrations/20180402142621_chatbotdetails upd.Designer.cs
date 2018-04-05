@@ -11,9 +11,10 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180402142621_chatbotdetails upd")]
+    partial class chatbotdetailsupd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,62 +200,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.HasKey("OpeningHoursId");
 
                     b.ToTable("OpeningHours");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnABaseClass", b =>
-                {
-                    b.Property<int>("QnAId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("askQuestionUrl");
-
-                    b.Property<string>("chatbotName");
-
-                    b.Property<bool>("isActive");
-
-                    b.Property<string>("knowledgeBaseID");
-
-                    b.Property<DateTime>("lastEdit");
-
-                    b.Property<string>("publishKnowledgeBaseUrl");
-
-                    b.Property<DateTime>("regDate");
-
-                    b.Property<string>("requestUrl");
-
-                    b.Property<string>("subscriptionKey");
-
-                    b.Property<string>("trainknowledgeBaseUrl");
-
-                    b.Property<string>("updateKnowledgeBaseUrl");
-
-                    b.HasKey("QnAId");
-
-                    b.ToTable("QnABaseClass");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase", b =>
-                {
-                    b.Property<int>("QnAKnowledgeBaseId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<string>("KnowledgeBaseID");
-
-                    b.Property<DateTime>("LastEdit");
-
-                    b.Property<int>("QnABotId");
-
-                    b.Property<string>("QnAKnowledgeName");
-
-                    b.Property<DateTime>("RegDate");
-
-                    b.Property<string>("RequestUrl");
-
-                    b.HasKey("QnAKnowledgeBaseId");
-
-                    b.ToTable("QnAKnowledgeBase");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

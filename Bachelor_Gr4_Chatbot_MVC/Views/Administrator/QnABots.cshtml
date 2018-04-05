@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnABaseClass>
+
+    @{
+    ViewData["Title"] = "QnABots";
+    }
+
+
+    <div id="wrapper">
+
+        @await Html.PartialAsync("_Navbar_admin")
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <h2>QnABots</h2>
+                        </div>
+                        <div class="col-md-2 col-md-offset-2">
+                            <br />
+                            <br />
+                            @Html.ActionLink("Registrer ny QnAbot", "RegisterNewQnaBotAsync", "Administrator", null, new { @class = "btn btn-success btn-large" })
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.chatbotName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.regDate)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.lastEdit)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.subscriptionKey)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model) {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.chatbotName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.regDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.lastEdit)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.subscriptionKey)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Detaljer", "QnABotDetails", new { id = item.QnAId })
+                                            </td>
+                                        </tr>
+}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@section Scripts{
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}

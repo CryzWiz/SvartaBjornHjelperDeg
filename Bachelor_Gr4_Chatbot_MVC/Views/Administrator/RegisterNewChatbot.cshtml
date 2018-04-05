@@ -18,7 +18,15 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <form asp-action="ManageUser">
+                        <p>All types:</p>
+                        @foreach (var item in Model.chatbotTypes)
+                        {
+                            <p>Type: @item.Type</p>
+
+
+                        }
+
+                        <form asp-action="RegisterNewChatbot">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
                                 <label class="control-label"> Chatbotnavn</label>
@@ -26,35 +34,11 @@
                                 <span asp-validation-for="chatbotName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label class="control-label"> Content type</label>
-                                <input asp-for="contentType" class="form-control" />
-                                <span asp-validation-for="contentType" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label">Bot Secret</label>
                                 <input asp-for="BotSecret" class="form-control" />
                                 <span asp-validation-for="BotSecret" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">Url (base url)</label>
-                                <input asp-for="baseUrl" class="form-control" />
-                                <span asp-validation-for="baseUrl" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Token url (tillegg til base)</label>
-                                <input asp-for="tokenUrlExtension" class="form-control" />
-                                <span asp-validation-for="tokenUrlExtension" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Samtale Url (tillegg til samtaler)</label>
-                                <input asp-for="conversationUrlExtension" class="form-control" />
-                                <span asp-validation-for="conversationUrlExtension" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Token Autorization Scheme (token bearer)</label>
-                                <input asp-for="botAutorizeTokenScheme" class="form-control" />
-                                <span asp-validation-for="botAutorizeTokenScheme" class="text-danger"></span>
-                            </div>
+                            
                             <div class="form-group">
                                 <input type="submit" value="Lagre" class="btn btn-success" /> 
                                 @Html.ActionLink("Avbryt", "Chatbots", "Administrator", null, new { @class = "btn btn-danger" })
@@ -65,6 +49,36 @@
                         <img src="~/images/bot-help.jpg" style="float:right;max-height:250px;max-width:250px;" />
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>I tillegg lagres dette:</h4>
+                        <div class="form-group">
+                            <label class="control-label"> Content type</label>
+                            <p>application/json</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Url (base url)</label>
+                            <p>https://directline.botframework.com</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Token url (tillegg til base)</label>
+                            <p>/v3/directline/tokens/generate</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Samtale Url (tillegg til samtaler)</label>
+                            <p>/v3/directline/conversations/ + samtale-id for hver samtale + /activity</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Token Autorization Scheme (token bearer)</label>
+                            <p>Bearer</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
             </div>
         </div>
     </div>

@@ -166,12 +166,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// <returns>(string)The response from the chatbot</returns>
         public async Task<String> PostCommentByToken(string token, string comment)
         {
+            Models.ChatbotDetails chatbot = await chatbotRepository.GetActiveBot();
             // Get HttpClient
             HttpClient httpClient = await GetHttpClient(token);
             // Get active conversation
             Conversation conversationinfo = await GetActiveConversation(token);
             // Set the conversation url
-            string conversationUrl = directLineConversation_V3 + conversationinfo.ConversationId + "/activities";
+            string conversationUrl = chatbot.conversationUrlExtension + conversationinfo.ConversationId + chatbot.conversationUrlExtensionEnding;
             // Create activity
             Activity thisActivity = new Activity { Type = "message", Text = comment, From = new ChannelAccount { Id = "idToGoHere" } };
             var myContent = JsonConvert.SerializeObject(thisActivity);

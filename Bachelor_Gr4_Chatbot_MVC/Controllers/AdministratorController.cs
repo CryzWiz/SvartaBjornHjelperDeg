@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -68,6 +69,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             model.ChatUsers = ChatHubHandler.ConnectedUsers.Count;
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult MorrisCharts()
+        {
+
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult FlotCharts()
+        {
+
+            return View();
         }
 
         /// <summary>
@@ -222,15 +239,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public IActionResult RegisterNewChatbot()
+        public async Task<IActionResult> RegisterNewChatbot()
         {
-            return View();
+            var c = new ChatbotDetails();
+            List<ChatbotTypes> types = await chatbotRepository.GetAllTypes();
+            c.chatbotTypes = types;
+            return View(c);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "contentType", "BotSecret",
-            "baseUrl","tokenUrlExtension","conversationUrlExtension","botAutorizeTokenScheme")] ChatbotDetails chatbotDetails)
+        public async Task<IActionResult> RegisterNewChatbot([FromForm][Bind("chatbotName", "BotSecret")] ChatbotDetails chatbotDetails)
         {
             if (ModelState.IsValid)
             {
@@ -328,9 +347,55 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
 
 
+        [HttpGet]
+        public async Task<IActionResult> QnABots()
+        {
+            var q = await chatbotRepository.GetAllQnABots();
+            return View(q);
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> QnABotDetails(int id)
+        {
+            var q = await chatbotRepository.GetQnABotDetails(id);
+            return View(q);
+        }
 
+        [HttpGet]
+        public IActionResult RegisterNewQnaBotAsync()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> RegisterNewQnABotAsync([FromForm][Bind("chatbotName", "subscriptionKey", "knowledgeBaseID")] QnABaseClass qnabot)
+        {
+            var r = await chatbotRepository.RegisterNewQnABotAsync(qnabot);
+            if (r[0].Equals("success")) {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if(r[0].Equals("success") & r[2].Equals("success"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert med ny kunnskapsbase.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if (r[0].Equals("success") & r[2].Equals("error"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble registrert uten ny kunnskapsbase.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else if(r[0].Equals("error"))
+            {
+                TempData[r[0]] = String.Format("QnA-bot {0} ble ikke registrert.", r[1]);
+                return RedirectToAction("QnABots");
+            }
+            else
+            {
+                TempData[r[0]] = String.Format("Noe gikk galt", r[1]);
+                return RedirectToAction("QnABots");
+            }
+        }
 
     }
 }

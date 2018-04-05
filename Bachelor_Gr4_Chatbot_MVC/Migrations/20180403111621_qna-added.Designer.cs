@@ -11,9 +11,10 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180403111621_qna-added")]
+    partial class qnaadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,30 +232,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.HasKey("QnAId");
 
                     b.ToTable("QnABaseClass");
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase", b =>
-                {
-                    b.Property<int>("QnAKnowledgeBaseId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<string>("KnowledgeBaseID");
-
-                    b.Property<DateTime>("LastEdit");
-
-                    b.Property<int>("QnABotId");
-
-                    b.Property<string>("QnAKnowledgeName");
-
-                    b.Property<DateTime>("RegDate");
-
-                    b.Property<string>("RequestUrl");
-
-                    b.HasKey("QnAKnowledgeBaseId");
-
-                    b.ToTable("QnAKnowledgeBase");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
