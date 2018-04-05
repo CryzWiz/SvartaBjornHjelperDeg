@@ -91,7 +91,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             _connections.Add(key, connectionId);
 
             //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
-            await AddEmployeeToWorkGroupsBasedOnRole();
+
+                await AddEmployeeToWorkGroupsBasedOnRole();
 
 
             // TODO: 
@@ -114,6 +115,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
            // await DisplayQueueCount();
         }
 
+        public async Task SetChatEmployeeStatus(string userGroup, int status)
+        {
+
+        }
+
         public async Task AddEmployeeToWorkGroupsBasedOnRole()
         {
             if (Context.User.Identity.IsAuthenticated)
@@ -126,6 +132,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
                     {
                         await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
+                        await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
                     }
 
                     // Administrator groups
@@ -136,9 +143,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 }
                 catch (Exception e)
                 {
- 
-                }
 
+                }
             }
         }
 
@@ -646,7 +652,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private async Task LogIn()
         {
+            await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("updateEmployeeList");
+        }
 
+        private async Task LogOut()
+        {
+            await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Disconnected);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("updateEmployeeList");
+        }
+
+        private async Task SetStatusToGone()
+        {
+            await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Gone);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("updateEmployeeList");
         }
 
         /*
