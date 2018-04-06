@@ -14,24 +14,21 @@
             <h4>QnAKnowledgeBase</h4>
             <hr />
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <form asp-action="QnABaseDetails">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="QnAKnowledgeBaseId" class="control-label"></label>
-                            <p>@Model.QnAKnowledgeBaseId</p>
-                            
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="QnABotId" class="control-label"></label>
-                            <p>@Model.QnABotId</p>
-                            
-                        </div>
                         <div class="form-group">
                             <label asp-for="QnAKnowledgeName" class="control-label"></label>
                             <input asp-for="QnAKnowledgeName" class="form-control" />
                             <span asp-validation-for="QnAKnowledgeName" class="text-danger"></span>
                         </div>
+                    </form>
+                    <div class="form-group">
+                        <input type="submit" value="Oppdater" class="btn btn-success" />
+                    </div>
+               </div>
+            </div>
+            <div class="row>">
+                <div class="col-md-12">
                         <div class="form-group">
                             <label asp-for="RegDate" class="control-label"></label>
                             <p>@Model.RegDate</p>
@@ -72,10 +69,6 @@
                             <p>@Model.UpdateKnowledgeBaseUrl</p>
                            
                         </div>
-                        <div class="form-group">
-                            <input type="submit" value="Save" class="btn btn-default" />
-                        </div>
-                    </form>
                 </div>
             </div>
 

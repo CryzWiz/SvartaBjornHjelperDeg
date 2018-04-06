@@ -226,9 +226,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
 
 
-        /// All code below is for the chatbot
-        /// Maby it should be in its own file?
-        /// Also need some fixer upper regarding sec.
+        /// <summary>
+        /// Code below is for Microsoft bots
+        /// </summary>
+        
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Chatbots()
@@ -347,6 +348,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
 
 
+
+        /// <summary>
+        /// Code below is for QnA bots
+        /// </summary>
+     
         [HttpGet]
         public async Task<IActionResult> QnABots()
         {
@@ -404,6 +410,34 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
             //throw new NotImplementedException();
         }
+
+        [HttpGet]
+        public IActionResult AddNewQnAKnowledgeBaseAsync(int id)
+        {
+            var q = new QnAKnowledgeBase
+            {
+                QnABotId = id
+            };
+            return View(q);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewQnAKnowledgeBaseAsync([FromForm][Bind("QnABotId", "QnAKnowledgeName")]QnAKnowledgeBase b)
+        {
+            var r = await chatbotRepository.AddNewQnAKnowledgeBaseAsync(b);
+            if (r)
+            {
+                TempData["success"] = String.Format("Kunnskapsbase med navn {0} er registrert!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABots", new { id = b.QnABotId });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Kunnskapsbase med navn {0} ble ikke registrert!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABots", new { id = b.QnABotId });
+            }
+            
+        }
+
 
     }
 }

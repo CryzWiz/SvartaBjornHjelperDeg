@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -9,6 +11,10 @@ using System.Web;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 {
+    /// <summary>
+    /// This repository only holds methods for calling the QnAbot. 
+    /// 
+    /// </summary>
     public class EFQnARepository : IQnARepository
     {
 
@@ -35,6 +41,29 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
 
             return response.Content.ReadAsStringAsync().Result;
+        }
+
+        public async Task<String> RegisterNewQnAKnowledgeBaseAsync(QnABaseClass q, QnAKnowledgeBase b)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", q.subscriptionKey);
+
+            HttpResponseMessage response;
+            var uri = b.CreateNewQnAKnowledgeBase;
+
+            string c = "{'name':'" + b.QnAKnowledgeName +"'}";
+
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes(c);
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PostAsync(uri, content);
+            }
+            JObject o = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+            var kbId = (string)o.SelectToken("['kbId']");
+            return kbId;
         }
     }
 }

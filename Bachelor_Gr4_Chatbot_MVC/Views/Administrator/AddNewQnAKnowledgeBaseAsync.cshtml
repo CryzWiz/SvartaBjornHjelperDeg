@@ -1,0 +1,57 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase
+
+@{
+    ViewData["Title"] = "AddNewQnAKnowledgeBaseAsync";
+}
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <h2>AddNewQnAKnowledgeBaseAsync</h2>
+
+            <h4>QnAKnowledgeBase</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="AddNewQnAKnowledgeBaseAsync">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group" hidden>
+                            <label asp-for="QnABotId" class="control-label"></label>
+                            <input asp-for="QnABotId" class="form-control" />
+                            <span asp-validation-for="QnABotId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="QnAKnowledgeName" class="control-label"></label>
+                            <input asp-for="QnAKnowledgeName" class="form-control" />
+                            <span asp-validation-for="QnAKnowledgeName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="KnowledgeBaseID" class="control-label"></label>
+                            <input asp-for="KnowledgeBaseID" class="form-control" />
+                            <span asp-validation-for="KnowledgeBaseID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+}

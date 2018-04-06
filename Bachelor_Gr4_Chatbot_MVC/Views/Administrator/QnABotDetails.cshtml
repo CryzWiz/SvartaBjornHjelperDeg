@@ -70,6 +70,8 @@
                </div>
             </div>
 
+            <hr />
+
 
             <div class="row">
 
@@ -79,25 +81,19 @@
                     <thead>
                         <tr>
                             <th>
-                                navn
+                                Kunnskapsbase Navn 
                             </th>
                             <th>
-                                reg data
+                                Registrert Dato
                             </th>
                             <th>
-                                edit date
+                                Sist Oppdatert
                             </th>
                             <th>
                                 aktive
                             </th>
                             <th>
-                                baseid
-                            </th>
-                            <th>
-                                baseurl
-                            </th>
-                            <th>
-                                posturl
+                                Kunnskapsbase Id
                             </th>
                             <th></th>
                         </tr>
@@ -112,26 +108,20 @@
                                 </td>
                                 <td>
                                     @i.RegDate
-                            </td>
-                            <td>
-                                @i.LastEdit
-                            </td>
-                            <td>
-                                @i.IsActive
-                            </td>
-                            <td>
-                                @i.KnowledgeBaseID
-                            </td>
-                                <td>
-                                    @i.RequestUrl
                                 </td>
                                 <td>
-                                    @i.AskQuestionUrl
+                                    @i.LastEdit
+                                </td>
+                                <td>
+                                    @i.IsActive
+                                </td>
+                                <td>
+                                    @i.KnowledgeBaseID
                                 </td>
                                 <td>
                                     @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId })
                                 </td>
-                        </tr>
+                            </tr>
 
                         }
                     </tbody>
@@ -139,7 +129,7 @@
             </div>
             <div>
                 @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-                <a asp-action="QnaBots">Back to List</a>
+                <a asp-action="QnaBots">Tilbake til listen</a>
             </div>
 
 

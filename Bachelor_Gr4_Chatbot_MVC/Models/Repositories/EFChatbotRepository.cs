@@ -13,11 +13,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
     {
 
         private ApplicationDbContext db;
+        private IQnARepository qnaRepository;
         private UserManager<ApplicationUser> manager;
 
-        public EFChatbotRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
+        public EFChatbotRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext db, IQnARepository qnARepository)
         {
             this.db = db;
+            this.qnaRepository = qnARepository;
             manager = userManager;
         }
 
@@ -189,6 +191,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return qna;
         }
 
+        public async Task<QnABaseClass> GetQnABotByIdAsync(int id)
+        {
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.QnAId == id);
+            return q;
+        }
+
         public async Task<string[]> RegisterNewQnABotAsync(QnABaseClass qnabot)
         {
             string[] r = new string[3];
@@ -262,6 +270,29 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return q;
         }
 
+        public async Task<bool> AddNewQnAKnowledgeBaseAsync(QnAKnowledgeBase b)
+        {
+            string[] result = new string[2];
+
+            var q = await GetQnABotByIdAsync(b.QnABotId);
+
+            b.RegDate = DateTime.Now;
+            b.LastEdit = DateTime.Now;
+            b.IsActive = false;
+
+            var r = await qnaRepository.RegisterNewQnAKnowledgeBaseAsync(q, b);
+            if(r != null)
+            {
+                b.KnowledgeBaseID = r;
+                await db.AddAsync(b);
+                if (await db.SaveChangesAsync() > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else return false;
+
+        }
     }
 
 }
