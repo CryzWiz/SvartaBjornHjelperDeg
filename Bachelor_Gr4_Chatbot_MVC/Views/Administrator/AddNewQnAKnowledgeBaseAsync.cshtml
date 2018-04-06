@@ -28,19 +28,14 @@
                             <span asp-validation-for="QnAKnowledgeName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="KnowledgeBaseID" class="control-label"></label>
-                            <input asp-for="KnowledgeBaseID" class="form-control" />
-                            <span asp-validation-for="KnowledgeBaseID" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Create" class="btn btn-default" />
+                            <input type="submit" value="Opprett" class="btn btn-success" />
                         </div>
                     </form>
                 </div>
             </div>
 
             <div>
-                <a asp-action="Index">Back to List</a>
+                @Html.ActionLink("Tilbake til bot", "QnABotDetails", new { id = Model.QnABotId })
             </div>
         </div>
     </div>

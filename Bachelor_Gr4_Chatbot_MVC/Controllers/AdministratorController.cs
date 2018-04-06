@@ -354,6 +354,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// </summary>
      
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABots()
         {
             var q = await chatbotRepository.GetAllQnABots();
@@ -361,6 +362,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABotDetails(int id)
         {
             var q = await chatbotRepository.GetQnABotDetails(id);
@@ -368,12 +370,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult RegisterNewQnaBotAsync()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterNewQnABotAsync([FromForm][Bind("chatbotName", "subscriptionKey", "knowledgeBaseID")] QnABaseClass qnabot)
         {
             var r = await chatbotRepository.RegisterNewQnABotAsync(qnabot);
@@ -404,6 +408,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABaseDetails(int id)
         {
             var q = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
@@ -412,6 +417,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddNewQnAKnowledgeBaseAsync(int id)
         {
             var q = new QnAKnowledgeBase
@@ -422,6 +428,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddNewQnAKnowledgeBaseAsync([FromForm][Bind("QnABotId", "QnAKnowledgeName")]QnAKnowledgeBase b)
         {
             var r = await chatbotRepository.AddNewQnAKnowledgeBaseAsync(b);
@@ -433,6 +440,53 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             else
             {
                 TempData["error"] = String.Format("Kunnskapsbase med navn {0} ble ikke registrert!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABots", new { id = b.QnABotId });
+            }
+            
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddQnAPairsToBaseAsync()
+        {
+            var q = await chatbotRepository.GetActiveQnABaseClassAsync();
+            var b = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
+
+            var t = new QnATrainBase
+            {
+                KnowledgeBaseId = b.KnowledgeBaseID,
+                KnowledgeBaseName = b.QnAKnowledgeName,
+                SubscriptionKey = q.subscriptionKey,
+                QnABotName = q.chatbotName
+            };
+
+            return View(t);
+
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "SubscriptionKey", "KnowledgeBaseId")] QnATrainBase qna)
+        {
+            var r = await chatbotRepository.AddSingleQnAPairToBaseAsync(qna);
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteQnAKnowledgeBaseByIdAsync(int id)
+        {
+            var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
+            var r = await chatbotRepository.DeleteQnAKnowledgeBaseByIdAsync(id);
+            if (r)
+            {
+
+                TempData["success"] = String.Format("Kunnskapsbase med navn {0} er slettet!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABots", new { id = b.QnABotId });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Kunnskapsbase med navn {0} er ikke slettet!", b.QnAKnowledgeName);
                 return RedirectToAction("QnABots", new { id = b.QnABotId });
             }
             

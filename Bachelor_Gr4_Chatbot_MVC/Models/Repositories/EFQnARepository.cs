@@ -17,6 +17,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
     /// </summary>
     public class EFQnARepository : IQnARepository
     {
+        public async Task<bool> DeleteKnowledgeBase(QnABaseClass q, QnAKnowledgeBase b)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", q.subscriptionKey);
+
+            HttpResponseMessage response;
+            var uri = b.DeleteQnAKnowledgeBase;
+
+            response = await client.DeleteAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else return false;
+        }
 
         public async Task<String> PostQuery(string Query)
         {

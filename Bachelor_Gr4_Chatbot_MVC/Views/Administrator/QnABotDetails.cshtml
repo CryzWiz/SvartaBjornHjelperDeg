@@ -119,7 +119,8 @@
                                     @i.KnowledgeBaseID
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId })
+                                    @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId }) | 
+                                    @Html.ActionLink("Slett", "DeleteQnAKnowledgeBaseByIdAsync", new { id = i.QnAKnowledgeBaseId })
                                 </td>
                             </tr>
 

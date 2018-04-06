@@ -79,6 +79,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/create", RequestUrl);
             }
         }
+
+        [DisplayName("Slett Kunnskapsbase Url")]
+        public string DeleteQnAKnowledgeBase
+        {
+            get
+            {
+                return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
+            }
+        }
         //public string contentType { get; set; }
     }
 }

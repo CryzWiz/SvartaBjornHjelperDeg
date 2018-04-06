@@ -155,7 +155,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
 
         /// <summary>
-        /// QnA methods are gathered below
+        /// QnA methods are gathered below, but all communication to the QnA API is
+        /// put in its own repository - EFQnARepository. So you can with ease change the API calls without
+        /// changing the logistic in this file.
         /// </summary>
  
 
@@ -270,6 +272,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return q;
         }
 
+        public async Task<QnAKnowledgeBase> GetActiveQnAKnowledgeBaseAsync()
+        {
+            var q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.IsActive == true);
+            return q;
+        }
+
         public async Task<bool> AddNewQnAKnowledgeBaseAsync(QnAKnowledgeBase b)
         {
             string[] result = new string[2];
@@ -292,6 +300,37 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
             else return false;
 
+        }
+
+        public async Task<bool> DeleteQnAKnowledgeBaseByIdAsync(int id)
+        {
+            var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.QnAId == b.QnABotId);
+            var r = await qnaRepository.DeleteKnowledgeBase(q, b);
+            if (r)
+            {
+                await Task.Run(() => db.Remove(b));
+                if (await db.SaveChangesAsync() > 0)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+
+        public async Task<QnABaseClass> GetActiveQnABaseClassAsync()
+        {
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.isActive == true);
+            return q;
+        }
+
+        public Task<bool> AddSingleQnAPairToBaseAsync(QnATrainBase qna)
+        {
+            throw new NotImplementedException();
         }
     }
 
