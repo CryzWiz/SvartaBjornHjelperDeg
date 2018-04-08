@@ -17,6 +17,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
     /// </summary>
     public class EFQnARepository : IQnARepository
     {
+        public IChatbotRepository chatbotRepository;
+
+        public EFQnARepository(IChatbotRepository chatRep)
+        {
+            this.chatbotRepository = chatRep;
+        }
+
         public async Task<bool> DeleteKnowledgeBase(QnABaseClass q, QnAKnowledgeBase b)
         {
             var client = new HttpClient();
@@ -82,9 +89,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return kbId;
         }
 
-        public async Task<String> AddSingleQnAPairAsync(QnATrainBase qna)
+        public async Task<bool> AddSingleQnAPairAsync(QnATrainBase qna)
         {
-            throw new NotImplementedException();
+            var c = await chatbotRepository.GetQnABotDetailsBySubscriptionAsync(qna.SubscriptionKey);
+            var b = await chatbotRepository.GetQnAKnowledgeBaseByKnowledgeIdAsync(qna.KnowledgeBaseId);
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", qna.SubscriptionKey);
+
+            HttpResponseMessage response;
+            var uri = ;
         }
     }
 }

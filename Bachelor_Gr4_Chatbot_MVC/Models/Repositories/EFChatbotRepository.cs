@@ -328,9 +328,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return q;
         }
 
-        public Task<bool> AddSingleQnAPairToBaseAsync(QnATrainBase qna)
+        public async Task<bool> AddSingleQnAPairToBaseAsync(QnATrainBase qna)
         {
-            throw new NotImplementedException();
+            var r = await qnaRepository.AddSingleQnAPairAsync(qna);
+            if (r)
+            {
+                QnAPairs pair = new QnAPairs
+                {
+                    Query = qna.Query,
+                    Answer = qna.Answer,
+                    Trained = true
+                };
+                await db.AddAsync(pair);
+                await db.SaveChangesAsync();
+                return true;
+            }
+            else return false;
         }
     }
 
