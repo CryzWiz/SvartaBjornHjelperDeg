@@ -81,5 +81,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var kbId = (string)o.SelectToken("['kbId']");
             return kbId;
         }
+
+        public async Task<String> AddSingleQnAPairAsync(QnATrainBase qna)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
