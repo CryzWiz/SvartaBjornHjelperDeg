@@ -9,15 +9,21 @@ using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 {
+    /// <summary>
+    /// Repository for all interactions with the chatbot. If the interaction demands data
+    /// to be transfere to QnAMaker.ai this repository will use the QnArepository to perform the calls. 
+    /// </summary>
     public class EFChatbotRepository : IChatbotRepository
     {
 
         private ApplicationDbContext db;
+        private IQnARepository qnaRepository;
         private UserManager<ApplicationUser> manager;
 
-        public EFChatbotRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
+        public EFChatbotRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext db, IQnARepository qnARepository)
         {
             this.db = db;
+            this.qnaRepository = qnARepository;
             manager = userManager;
         }
 
@@ -152,18 +158,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
 
 
-        /// <summary>
-        /// QnA methods are gathered below
-        /// </summary>
+        /// QnA methods are gathered below, but all communication to the QnA API is
+        /// put in its own repository - EFQnARepository. So you can with ease change the API calls without
+        /// changing the logistic in this file.
+
  
 
-
+        ///<summary>
+        /// Method for fetching all the registered chatbots from the database
+        ///</summary>
+        ///<returns>A list of all the registered chatbots</returns>
         public async Task<List<QnABaseClass>> GetAllQnABots()
         {
             var q = await db.QnABaseClass.ToListAsync();
             return q;
         }
 
+        /// <summary>
+        /// Fetch all details for the given chatbot
+        /// </summary>
+        /// <param name="id">Database id for chatbot</param>
+        /// <returns>QnADetails Chatbotdetails</returns>
         public async Task<QnADetails> GetQnABotDetails(int id)
         {
             var qna = await Task.Run(() => db.QnABaseClass.FirstOrDefault(x => x.QnAId == id));
@@ -183,12 +198,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return r;
         }
 
+        /// <summary>
+        /// Fetch chatbot by name
+        /// </summary>
+        /// <param name="name">The stored name for the chatbot</param>
+        /// <returns>QnABaseClass chatbot</returns>
         public async Task<QnABaseClass> GetQnABotByNameAsync(string name)
         {
             var qna = await Task.Run(() => db.QnABaseClass.FirstOrDefault(x => x.chatbotName == name));
             return qna;
         }
 
+        /// <summary>
+        /// Fetch chatbot by database-id
+        /// </summary>
+        /// <param name="id">database id for chatbot</param>
+        /// <returns>QnABaseClass chatbot</returns>
+        public async Task<QnABaseClass> GetQnABotByIdAsync(int id)
+        {
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.QnAId == id);
+            return q;
+        }
+
+        /// <summary>
+        /// Register a new chatbot in the database
+        /// </summary>
+        /// <param name="qnabot">QnABaseClass chatbot to be registered</param>
+        /// <returns>r[0] = operationresult, r[1] = chatbotname, r[2] = result from QnAKnowledgeBase creation</returns>
         public async Task<string[]> RegisterNewQnABotAsync(QnABaseClass qnabot)
         {
             string[] r = new string[3];
@@ -245,6 +281,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
         }
 
+        /// <summary>
+        /// Register a new knowledgebase in the database. This only happens if you
+        /// register a new chatbot with a knowledgebase already exsisting
+        /// </summary>
+        /// <param name="klb">knowledgebase id from microsoft</param>
+        /// <returns>true if ok, false if not</returns>
         private async Task<bool> RegisterNewQnAKnowledgeBaseAsync(QnAKnowledgeBase klb)
         {
             
@@ -255,5 +297,143 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             else
                 return false;
         }
+
+        /// <summary>
+        /// Fetch QnAKnowledgebase from db
+        /// </summary>
+        /// <param name="id">knowledgebase id in database</param>
+        /// <returns>found QnAKnowledgeBase</returns>
+        public async Task<QnAKnowledgeBase> GetQnAKnowledgeBaseAsync(int id)
+        {
+            var q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            return q;
+        }
+
+        /// <summary>
+        /// Fetch active knowledgebase from db
+        /// </summary>
+        /// <returns>the active QnAKnowledgeBase</returns>
+        public async Task<QnAKnowledgeBase> GetActiveQnAKnowledgeBaseAsync()
+        {
+            var q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.IsActive == true);
+            return q;
+        }
+
+        /// <summary>
+        /// Add a new QnAKnowledgebase to the database, and call EFQnARepository to
+        /// create the new knowledgebase to QnAMaker.ai
+        /// </summary>
+        /// <param name="b">QnAKnowledgeBase name</param>
+        /// <returns>true if registered, false if not</returns>
+        public async Task<bool> AddNewQnAKnowledgeBaseAsync(QnAKnowledgeBase b)
+        {
+            string[] result = new string[2];
+
+            var q = await GetQnABotByIdAsync(b.QnABotId);
+
+            b.RegDate = DateTime.Now;
+            b.LastEdit = DateTime.Now;
+            b.IsActive = false;
+
+            var r = await qnaRepository.RegisterNewQnAKnowledgeBaseAsync(q, b);
+            if(r != null)
+            {
+                b.KnowledgeBaseID = r;
+                await db.AddAsync(b);
+                if (await db.SaveChangesAsync() > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else return false;
+
+        }
+
+        /// <summary>
+        /// Delete the given QnAKnowledgeBase in the database, and call EFQnARepository
+        /// to delete the knowledgebase on QnAMaker.ai
+        /// </summary>
+        /// <param name="id">knowledgeid in database</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteQnAKnowledgeBaseByIdAsync(int id)
+        {
+            var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.QnAId == b.QnABotId);
+            var r = await qnaRepository.DeleteKnowledgeBase(q, b);
+            if (r)
+            {
+                await Task.Run(() => db.Remove(b));
+                if (await db.SaveChangesAsync() > 0)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Get the active QnABaseClass
+        /// </summary>
+        /// <returns>active QnABaseClass</returns>
+        public async Task<QnABaseClass> GetActiveQnABaseClassAsync()
+        {
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.isActive == true);
+            return q;
+        }
+
+        /// <summary>
+        /// Add a single QnA pair to the database, and call EFQnARepository to 
+        /// add the pair to knowledgebase on QnAMaker.ai
+        /// </summary>
+        /// <param name="qna">the QnA to be added</param>
+        /// <returns>true if added, false if not</returns>
+        public async Task<bool> AddSingleQnAPairToBaseAsync(QnATrainBase qna)
+        {
+            var r = await qnaRepository.AddSingleQnAPairAsync(qna);
+            if (r)
+            {
+                QnAPairs pair = new QnAPairs
+                {
+                    Query = qna.Query,
+                    Answer = qna.Answer,
+                    KnowledgeBaseId = qna.KnowledgeBaseId,
+                    Trained = true,
+                    TrainedDate = DateTime.Now,
+                    Published = false
+                };
+
+                await db.AddAsync(pair);
+                await db.SaveChangesAsync();
+
+                return true;
+            }
+            else return false;
+        }
+
+        /// <summary>
+        /// Fetch the correct QnABaseClass from the given QnAMaker.ai subcription key
+        /// </summary>
+        /// <param name="subKey">subscription key</param>
+        /// <returns>QnABaseClass</returns>
+        public async Task<QnABaseClass> GetQnABotDetailsBySubscriptionAsync(string subKey)
+        {
+            var q = await db.QnABaseClass.FirstOrDefaultAsync(X => X.subscriptionKey == subKey);
+            return q;
+        }
+
+        /// <summary>
+        /// Fetch the correct QnAKnowledgeBase from the given QnAMaker.ai knowledgebase id
+        /// </summary>
+        /// <param name="knowledgeBaseId">knowledgebase id</param>
+        /// <returns>QnAKnowledgeBase</returns>
+        public async Task<QnAKnowledgeBase> GetQnAKnowledgeBaseByKnowledgeIdAsync(string knowledgeBaseId)
+        {
+            var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.KnowledgeBaseID == knowledgeBaseId);
+            return b;
+        }
     }
+
 }

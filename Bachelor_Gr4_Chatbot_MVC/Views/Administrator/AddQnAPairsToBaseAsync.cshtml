@@ -1,0 +1,71 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnATrainBase
+
+@{
+    ViewData["Title"] = "AddQnAPairsToBaseAsync";
+}
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <h2>Legg til spørsmål og svar par til chatbot @Html.DisplayName(Model.QnABotName)</h2>
+
+            <h4>Aktiv base er: @Html.DisplayName(Model.KnowledgeBaseName)</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="AddQnAPairsToBaseAsync">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Query" class="control-label"></label>
+                            <input asp-for="Query" class="form-control" />
+                            <span asp-validation-for="Query" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Answer" class="control-label"></label>
+                            <input asp-for="Answer" class="form-control" />
+                            <span asp-validation-for="Answer" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SubscriptionKey" class="control-label"></label>
+                            <input asp-for="SubscriptionKey" class="form-control" />
+                            <span asp-validation-for="SubscriptionKey" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="KnowledgeBaseId" class="control-label"></label>
+                            <input asp-for="KnowledgeBaseId" class="form-control" />
+                            <span asp-validation-for="KnowledgeBaseId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="KnowledgeBaseName" class="control-label"></label>
+                            <input asp-for="KnowledgeBaseName" class="form-control" />
+                            <span asp-validation-for="KnowledgeBaseName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="QnABotName" class="control-label"></label>
+                            <input asp-for="QnABotName" class="form-control" />
+                            <span asp-validation-for="QnABotName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+}

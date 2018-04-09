@@ -247,7 +247,7 @@ public class SeedData
         var qna = new QnAKnowledgeBase
         {
             QnABotId = 1,
-            QnAKnowledgeName = "Svarta Bjørn Base",
+            QnAKnowledgeName = "SvartaBjorn_QnA",
             RegDate = DateTime.Now,
             LastEdit = DateTime.Now,
             IsActive = true,
