@@ -26,6 +26,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         // QnA bots
         public virtual DbSet<QnABaseClass> QnABaseClass { get; set; }
         public virtual DbSet<QnAKnowledgeBase> QnAKnowledgeBase { get; set; }
+        public virtual DbSet<QnAPairs> QnAPairs { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

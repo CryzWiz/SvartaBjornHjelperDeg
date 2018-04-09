@@ -1,7 +1,9 @@
-﻿using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
+﻿using Bachelor_Gr4_Chatbot_MVC.Data;
+using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,11 +19,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
     /// </summary>
     public class EFQnARepository : IQnARepository
     {
-        public IChatbotRepository chatbotRepository;
+        public ApplicationDbContext db;
 
-        public EFQnARepository(IChatbotRepository chatRep)
+        public EFQnARepository(ApplicationDbContext db)
         {
-            this.chatbotRepository = chatRep;
+            this.db = db;
         }
 
         public async Task<bool> DeleteKnowledgeBase(QnABaseClass q, QnAKnowledgeBase b)
@@ -91,14 +93,58 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         public async Task<bool> AddSingleQnAPairAsync(QnATrainBase qna)
         {
-            var c = await chatbotRepository.GetQnABotDetailsBySubscriptionAsync(qna.SubscriptionKey);
-            var b = await chatbotRepository.GetQnAKnowledgeBaseByKnowledgeIdAsync(qna.KnowledgeBaseId);
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.subscriptionKey == qna.SubscriptionKey));
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.KnowledgeBaseID == qna.KnowledgeBaseId));
 
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", qna.SubscriptionKey);
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            string pair = "{'add': {'qnaPairs': [{'answer': '"+qna.Answer+"','question': '"+qna.Query+"'}]},}";
 
             HttpResponseMessage response;
-            var uri = ;
+
+            var uri = b.AddQnAPairUrl;
+
+            var method = new HttpMethod("PATCH");
+            HttpContent content = new StringContent(pair, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(method, uri)
+            {
+                Content = content
+            };
+
+            response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else return false;
+        }
+
+        public async Task<bool> PublishKnowledgeBase(string knowledgeBaseId)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.KnowledgeBaseID == knowledgeBaseId));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.PublishKnowledgeBaseUrl;
+
+            HttpResponseMessage response;
+
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes("");
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PutAsync(uri, content);
+            }
+            if (response.IsSuccessStatusCode) return true;
+            else return false;
+
+
         }
     }
 }

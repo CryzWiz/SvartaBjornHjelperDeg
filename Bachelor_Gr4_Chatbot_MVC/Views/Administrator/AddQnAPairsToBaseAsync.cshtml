@@ -37,6 +37,16 @@
                             <input asp-for="KnowledgeBaseId" class="form-control" />
                             <span asp-validation-for="KnowledgeBaseId" class="text-danger"></span>
                         </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="KnowledgeBaseName" class="control-label"></label>
+                            <input asp-for="KnowledgeBaseName" class="form-control" />
+                            <span asp-validation-for="KnowledgeBaseName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="QnABotName" class="control-label"></label>
+                            <input asp-for="QnABotName" class="form-control" />
+                            <span asp-validation-for="QnABotName" class="text-danger"></span>
+                        </div>
                         <div class="form-group">
                             <input type="submit" value="Save" class="btn btn-default" />
                         </div>

@@ -13,8 +13,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
 
         public string Query { set; get; }
         public string Answer { set; get; }
-        public int KnowledgeBaseId { set; get; }
+        public string KnowledgeBaseId { set; get; }
         public bool Trained { set; get; }
-        public DateTime Published { get; set; }
+        public bool Published { set; get; }
+        public DateTime PublishedDate { set; get; }
+        public DateTime TrainedDate { set; get; }
     }
 }

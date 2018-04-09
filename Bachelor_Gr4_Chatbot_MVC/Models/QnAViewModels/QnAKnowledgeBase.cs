@@ -88,6 +88,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
             }
         }
+
+        [DisplayName("Legg til QnA par Url")]
+        public string AddQnAPairUrl
+        {
+            get
+            {
+                return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
+            }
+        }
         //public string contentType { get; set; }
     }
 }

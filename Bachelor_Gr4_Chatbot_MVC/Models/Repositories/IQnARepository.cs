@@ -12,5 +12,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<string> RegisterNewQnAKnowledgeBaseAsync(QnABaseClass q, QnAKnowledgeBase b);
         Task<bool> DeleteKnowledgeBase(QnABaseClass q, QnAKnowledgeBase b);
         Task<bool> AddSingleQnAPairAsync(QnATrainBase qna);
+        Task<bool> PublishKnowledgeBase(string knowledgeBaseId);
     }
 }

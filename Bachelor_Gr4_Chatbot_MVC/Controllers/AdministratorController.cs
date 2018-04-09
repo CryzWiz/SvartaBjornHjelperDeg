@@ -466,10 +466,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "SubscriptionKey", "KnowledgeBaseId")] QnATrainBase qna)
+        public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "SubscriptionKey", "KnowledgeBaseId", "QnABotName", "KnowledgeBaseName")] QnATrainBase qna)
         {
             var r = await chatbotRepository.AddSingleQnAPairToBaseAsync(qna);
-            throw new NotImplementedException();
+            if (r)
+            {
+                TempData["success"] = String.Format("Kunnskapsbase med navn {0} er oppdatert med nytt QnA par!", qna.QnABotName);
+                return RedirectToAction("AddQnAPairsToBaseAsync");
+            }
+            else
+            {
+                TempData["error"] = String.Format("Kunnskapsbase med navn {0} er ikke oppdatert med nytt QnA par!", qna.QnABotName);
+                return RedirectToAction("AddQnAPairsToBaseAsync");
+            }
         }
 
         [HttpGet]
@@ -491,6 +500,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
             
         }
+
 
 
     }
