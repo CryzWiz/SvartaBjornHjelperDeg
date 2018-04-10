@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairs>
+
+@{
+    ViewData["Title"] = "ViewUnPublishedQnAPairs";
+}
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <h2>ViewUnPublishedQnAPairs</h2>
+            </div>
+            <hr />
+
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.QnAPairsId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Query)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Answer)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.KnowledgeBaseId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Trained)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Published)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PublishedDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TrainedDate)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QnAPairsId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Query)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Answer)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KnowledgeBaseId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Trained)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Published)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PublishedDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrainedDate)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}

@@ -26,6 +26,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             this.db = db;
         }
 
+        /// <summary>
+        /// Delete the given QnAKnowledgeBase from QnAMaker.ai
+        /// </summary>
+        /// <param name="q">QnABaseClass q</param>
+        /// <param name="b">QnAKnowledgeBase b</param>
+        /// <returns>true if deleted, false if not</returns>
         public async Task<bool> DeleteKnowledgeBase(QnABaseClass q, QnAKnowledgeBase b)
         {
             var client = new HttpClient();
@@ -43,6 +49,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             else return false;
         }
 
+        /// <summary>
+        /// Testmethod
+        /// </summary>
+        /// <param name="Query">query as string</param>
+        /// <returns>answer as string</returns>
         public async Task<String> PostQuery(string Query)
         {
             var client = new HttpClient();
@@ -68,6 +79,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return response.Content.ReadAsStringAsync().Result;
         }
 
+        /// <summary>
+        /// Register the given knowledgebase at the given qna chatbot at QnAMaker.ai
+        /// </summary>
+        /// <param name="q">QnABaseClass q</param>
+        /// <param name="b">QnAKnowledgeBase b</param>
+        /// <returns>KnowledgeBase Id-string from QnAMaker.ai</returns>
         public async Task<String> RegisterNewQnAKnowledgeBaseAsync(QnABaseClass q, QnAKnowledgeBase b)
         {
             var client = new HttpClient();
@@ -91,6 +108,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return kbId;
         }
 
+        /// <summary>
+        /// Add a single QnA pair to the knowledgebase given to the QnATrainBase
+        /// </summary>
+        /// <param name="qna">QnATrainBase qna</param>
+        /// <returns>true if added, false if not</returns>
         public async Task<bool> AddSingleQnAPairAsync(QnATrainBase qna)
         {
             var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.subscriptionKey == qna.SubscriptionKey));
@@ -121,6 +143,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             else return false;
         }
 
+        /// <summary>
+        /// Publish given knowledgebase unpublished QnAPairs
+        /// </summary>
+        /// <param name="knowledgeBaseId">Id for knowledgebase at QnAMaker.ai</param>
+        /// <returns>true if published, false if not</returns>
         public async Task<bool> PublishKnowledgeBase(string knowledgeBaseId)
         {
             var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.KnowledgeBaseID == knowledgeBaseId));

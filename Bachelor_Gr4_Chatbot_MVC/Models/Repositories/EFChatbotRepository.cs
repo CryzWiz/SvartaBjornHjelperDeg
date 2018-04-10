@@ -305,7 +305,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>found QnAKnowledgeBase</returns>
         public async Task<QnAKnowledgeBase> GetQnAKnowledgeBaseAsync(int id)
         {
-            var q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            QnAKnowledgeBase q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
+            List<QnAPairs> qPairs = await db.QnAPairs.Where(X => X.KnowledgeBaseId == q.KnowledgeBaseID).ToListAsync();
+            q.QnAPairs = qPairs;
+
             return q;
         }
 
@@ -433,6 +436,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.KnowledgeBaseID == knowledgeBaseId);
             return b;
+        }
+
+
+        public async Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id)
+        {
+            var b = await GetQnAKnowledgeBaseAsync(id);
+            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.KnowledgeBaseID).ToListAsync();
+              
+        }
+
+        public async Task<List<QnAPairs>> GetUnPublishedQnAPairsAsync(int id)
+        {
+            var b = await GetQnAKnowledgeBaseAsync(id);
+            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.KnowledgeBaseID && X.Published == false).ToListAsync();
         }
     }
 

@@ -413,7 +413,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         {
             var q = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
             return View(q);
-            //throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -501,6 +500,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             
         }
 
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> ViewUnPublishedQnAPairs(int id)
+        {
+
+            var qnaPairs = await chatbotRepository.GetUnPublishedQnAPairsAsync(id);
+            return View(qnaPairs);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewPublishedQnAPairs(int id)
+        {
+
+            throw new NotImplementedException();
+        }
 
 
     }

@@ -9,11 +9,40 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <h2>QnABaseDetails</h2>
+            <div class="row">
+                <h2>Detaljer for @Model.QnAKnowledgeName</h2>
 
-            <h4>QnAKnowledgeBase</h4>
+                <h4>Registrert: @Model.RegDate.ToString(string.Format("dd/MM/yyyy")) | Sist endret: @Model.LastEdit.ToString(string.Format("dd/MM/yyyy hh:mm"))</h4>
+            </div>
             <hr />
             <div class="row">
+               
+                <div class="col-lg-3 col-md-6 pull-right">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">@Model.QnAPairsToPublish</div>
+                                    <div>QnA par til publisering!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a asp-action="ViewUnPublishedQnAPairs/@Model.QnAKnowledgeBaseId">
+                            <div class="panel-footer">
+                                <span class="pull-left">Publiser</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+
+
+
                 <div class="col-md-12">
                     <form asp-action="QnABaseDetails">
                         <div class="form-group">
@@ -27,52 +56,56 @@
                     </div>
                </div>
             </div>
-            <div class="row>">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label asp-for="RegDate" class="control-label"></label>
-                        <p>@Model.RegDate</p>
 
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Kunnskapsbase id hos QnAMaker.ai</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="well well-sm">
+                        <div class="form-group">                          
+                            <p>@Model.KnowledgeBaseID</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="LastEdit" class="control-label"></label>
-                        <p>@Model.LastEdit</p>
+                </div>
+            </div>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="KnowledgeBaseID" class="control-label"></label>
-                        <p>@Model.KnowledgeBaseID</p>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Url'er som benyttes</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="well well-lg">
+                        <div class="form-group">
+                            <label asp-for="RequestUrl" class="control-label"></label>
+                            <p>@Model.RequestUrl</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="RequestUrl" class="control-label"></label>
-                        <p>@Model.RequestUrl</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AskQuestionUrl" class="control-label"></label>
+                            <p>@Model.AskQuestionUrl</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="AskQuestionUrl" class="control-label"></label>
-                        <p>@Model.AskQuestionUrl</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TrainknowledgeBaseUrl" class="control-label"></label>
+                            <p>@Model.TrainknowledgeBaseUrl</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="TrainknowledgeBaseUrl" class="control-label"></label>
-                        <p>@Model.TrainknowledgeBaseUrl</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PublishKnowledgeBaseUrl" class="control-label"></label>
+                            <p>@Model.PublishKnowledgeBaseUrl</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="PublishKnowledgeBaseUrl" class="control-label"></label>
-                        <p>@Model.PublishKnowledgeBaseUrl</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateKnowledgeBaseUrl" class="control-label"></label>
+                            <p>@Model.UpdateKnowledgeBaseUrl</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="UpdateKnowledgeBaseUrl" class="control-label"></label>
-                        <p>@Model.UpdateKnowledgeBaseUrl</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CreateNewQnAKnowledgeBase" class="control-label"></label>
+                            <p>@Model.CreateNewQnAKnowledgeBase</p>
 
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="CreateNewQnAKnowledgeBase" class="control-label"></label>
-                        <p>@Model.CreateNewQnAKnowledgeBase</p>
-
+                        </div>
                     </div>
                 </div>
             </div>

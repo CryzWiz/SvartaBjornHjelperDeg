@@ -99,5 +99,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="knowledgeBaseId">knowledgebase id</param>
         /// <returns>QnAKnowledgeBase</returns>
         Task<QnAKnowledgeBase> GetQnAKnowledgeBaseByKnowledgeIdAsync(string knowledgeBaseId);
+
+        /// <summary>
+        /// Fetch all the unpublished QnAPairs for the given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledge database id</param>
+        /// <returns>List<QnAPairs>unpublished</QnAPairs></returns>
+        Task<List<QnAPairs>> GetUnPublishedQnAPairsAsync(int id);
+
+        /// <summary>
+        /// Fetch all QnAPairs to a given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledgebase id in database</param>
+        /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
+        Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id);
     }
 }
