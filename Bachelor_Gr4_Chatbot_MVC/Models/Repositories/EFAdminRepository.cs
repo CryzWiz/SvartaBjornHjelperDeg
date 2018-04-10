@@ -1,4 +1,5 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
+using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -147,5 +148,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return ((await db.SaveChangesAsync() > 0) ? true: false);
         }
 
+        public async Task<IEnumerable<ChatGroupViewModel>> GetAllChatGroupsVM()
+        {
+            IEnumerable<ChatGroupViewModel> chatGroups = await (from chatGroup in db.ChatGroups
+                                                          select new ChatGroupViewModel
+                                                          {
+                                                              ChatGroupName = chatGroup.ChatGroupName
+                                                          }).ToListAsync();
+            return chatGroups;
+                            
+        }
     }
 }

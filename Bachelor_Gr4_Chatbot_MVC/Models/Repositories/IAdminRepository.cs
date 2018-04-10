@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,5 +14,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<bool> ActivateUser(String username);
         Task<bool> UpdateUserData(User user);
         Task<bool> AddChatGroup(ChatGroup chatGroup);
+        Task<IEnumerable<ChatGroupViewModel>> GetAllChatGroupsVM();
     }
 }

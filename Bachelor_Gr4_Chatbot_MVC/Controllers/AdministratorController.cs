@@ -251,6 +251,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ChatGroups()
+        {
+            IEnumerable<ChatGroupViewModel> chatGroups = await repository.GetAllChatGroupsVM();
+            return View(chatGroups);
+        }
 
 
 
