@@ -29,6 +29,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         public virtual DbSet<QnAPairs> QnAPairs { get; set; }
 
 
+        // Chat Groups
+        public virtual DbSet<ChatGroup> ChatGroups { get; set; }
+        public virtual DbSet<UserChatGroup> UserChatGroup { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -37,6 +41,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Conversation>().ToTable("Conversation");
             builder.Entity<Message>().ToTable("Message");
+            builder.Entity<ChatGroup>().ToTable("ChatGroup");
+            builder.Entity<UserChatGroup>()
+                .HasKey(x => new { x.UserId, x.ChatGroupId });
         }
     }
 }
