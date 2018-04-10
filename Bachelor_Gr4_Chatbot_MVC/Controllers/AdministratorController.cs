@@ -514,7 +514,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<IActionResult> ViewPublishedQnAPairs(int id)
         {
 
-            throw new NotImplementedException();
+            var qnaPairs = await chatbotRepository.GetPublishedQnAPairsAsync(id);
+            return View(qnaPairs);
         }
 
 

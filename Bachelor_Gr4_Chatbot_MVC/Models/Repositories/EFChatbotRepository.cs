@@ -439,7 +439,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         }
 
 
-        public async Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id)
+        public async Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id)
         {
             var b = await GetQnAKnowledgeBaseAsync(id);
             return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.KnowledgeBaseID).ToListAsync();

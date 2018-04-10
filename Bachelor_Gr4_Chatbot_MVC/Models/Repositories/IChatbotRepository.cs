@@ -112,6 +112,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="id">knowledgebase id in database</param>
         /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
-        Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id);
+        Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id);
+
     }
 }
