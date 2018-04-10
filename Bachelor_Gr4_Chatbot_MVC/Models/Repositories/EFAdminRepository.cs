@@ -136,5 +136,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             
         }
 
+        /// <summary>
+        /// Add ChatGroup to the database
+        /// </summary>
+        /// <param name="chatGroup"></param>
+        /// <returns>bool result</returns>
+        public async Task<bool> AddChatGroup(ChatGroup chatGroup)
+        {
+            await db.ChatGroups.AddAsync(chatGroup);
+            return ((await db.SaveChangesAsync() > 0) ? true: false);
+        }
+
     }
 }

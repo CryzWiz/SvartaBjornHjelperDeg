@@ -219,6 +219,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult RegisterChatGroup()
+        {
+            return View(new RegisterChatGroupViewModel());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterChatGroup(RegisterChatGroupViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                ChatGroup chatGroup = new ChatGroup
+                {
+                    ChatGroupName = model.ChatGroupName
+                };
+
+                var result = await repository.AddChatGroup(chatGroup);
+                if(result)
+                {
+                    TempData["success"] = String.Format("Chat gruppen: '{0}' ble opprettet", model.ChatGroupName);
+                    return RedirectToAction("RegisterChatGroup");
+                }
+
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under oppretting av char gruppe.";
+            return View(model);
+
+        }
+
 
 
 
@@ -229,7 +261,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// <summary>
         /// Code below is for Microsoft bots
         /// </summary>
-        
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Chatbots()

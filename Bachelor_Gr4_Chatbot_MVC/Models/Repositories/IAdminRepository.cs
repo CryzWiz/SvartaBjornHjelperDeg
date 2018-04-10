@@ -12,5 +12,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<bool> DeactivateUser(String username);
         Task<bool> ActivateUser(String username);
         Task<bool> UpdateUserData(User user);
+        Task<bool> AddChatGroup(ChatGroup chatGroup);
     }
 }
