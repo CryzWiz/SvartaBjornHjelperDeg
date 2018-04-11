@@ -10,7 +10,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
     {
         [Key]
         public string ChatGroupId { get; set; }
-        public string Name { get; set; }
+        public string ChatGroupName { get; set; }
         public virtual ICollection<UserChatGroup> GroupMembers { get; set; }
     }
 }

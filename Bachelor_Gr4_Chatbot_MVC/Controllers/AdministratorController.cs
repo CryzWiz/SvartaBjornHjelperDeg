@@ -234,7 +234,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             {
                 ChatGroup chatGroup = new ChatGroup
                 {
-                    ChatGroupId = model.ChatGroupName
+                    ChatGroupName = model.ChatGroupName
                 };
 
                 var result = await repository.AddChatGroup(chatGroup);

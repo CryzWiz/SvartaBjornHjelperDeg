@@ -153,7 +153,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             IEnumerable<ChatGroupViewModel> chatGroups = await (from chatGroup in db.ChatGroups
                                                           select new ChatGroupViewModel
                                                           {
-                                                              ChatGroupName = chatGroup.ChatGroupId
+                                                              ChatGroupId = chatGroup.ChatGroupId,
+                                                              ChatGroupName = chatGroup.ChatGroupName
                                                           }).ToListAsync();
             return chatGroups;
                             
