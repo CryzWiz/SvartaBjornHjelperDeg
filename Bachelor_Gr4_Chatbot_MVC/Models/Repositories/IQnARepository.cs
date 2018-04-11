@@ -43,6 +43,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgeBaseId">Id for knowledgebase at QnAMaker.ai</param>
         /// <returns>true if published, false if not</returns>
-        Task<bool> PublishKnowledgeBase(string knowledgeBaseId);
+        Task<bool> PublishKnowledgeBase(int knowledgeBaseId);
+
     }
 }

@@ -453,7 +453,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
             var t = new QnATrainBase
             {
-                KnowledgeBaseId = b.KnowledgeBaseID,
+                KnowledgeBaseId = b.QnAKnowledgeBaseId,
                 KnowledgeBaseName = b.QnAKnowledgeName,
                 SubscriptionKey = q.subscriptionKey,
                 QnABotName = q.chatbotName
@@ -465,7 +465,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "SubscriptionKey", "KnowledgeBaseId", "QnABotName", "KnowledgeBaseName")] QnATrainBase qna)
+        public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "Dep", "SubscriptionKey", "KnowledgeBaseId", "QnABotName", "KnowledgeBaseName")] QnATrainBase qna)
         {
             var r = await chatbotRepository.AddSingleQnAPairToBaseAsync(qna);
             if (r)
@@ -504,18 +504,57 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ViewUnPublishedQnAPairs(int id)
         {
+            // Fetch UnPublished QnAPairs
+            var p = await chatbotRepository.GetUnPublishedQnAPairsAsync(id);
+            // Fetch KnowledgeBase
+            var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
+            // Fetch Chatbot
+            var q = await chatbotRepository.GetQnABotDetails(b.QnABotId);
 
-            var qnaPairs = await chatbotRepository.GetUnPublishedQnAPairsAsync(id);
-            return View(qnaPairs);
+            QnAPairsView QnAPairs = new QnAPairsView
+            {
+                QnAId = b.QnABotId,
+                QnAKnowledgeBaseId = id,
+                QnAPairs = p
+            };
+            return View(QnAPairs);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ViewPublishedQnAPairs(int id)
         {
+            // Fetch published QnAPairs
+            var p = await chatbotRepository.GetPublishedQnAPairsAsync(id);
+            // Fetch KnowledgeBase
+            var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
 
-            var qnaPairs = await chatbotRepository.GetPublishedQnAPairsAsync(id);
-            return View(qnaPairs);
+            QnAPairsView QnAPairs = new QnAPairsView
+            {
+                QnAId = b.QnABotId,
+                QnAKnowledgeBaseId = id,
+                QnAPairs = p
+            };
+            return View(QnAPairs);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PublishTrainedQnAPairs(int id)
+        {
+            var r = await chatbotRepository.PublishTrainedQnAPairs(id);
+            if (r)
+            {
+                var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
+                TempData["success"] = String.Format("Kunnskapsbase med navn {0} er publisert!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABaseDetails", new { id = b.QnAKnowledgeBaseId });
+            }
+            else
+            {
+                var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
+                TempData["error"] = String.Format("Kunnskapsbase med navn {0} ble ikke publisert!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABaseDetails", new { id = b.QnAKnowledgeBaseId });
+            }
         }
 
 

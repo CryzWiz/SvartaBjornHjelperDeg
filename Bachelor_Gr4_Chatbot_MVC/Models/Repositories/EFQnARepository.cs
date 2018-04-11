@@ -116,7 +116,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         public async Task<bool> AddSingleQnAPairAsync(QnATrainBase qna)
         {
             var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.subscriptionKey == qna.SubscriptionKey));
-            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.KnowledgeBaseID == qna.KnowledgeBaseId));
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == qna.KnowledgeBaseId));
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
@@ -148,9 +148,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgeBaseId">Id for knowledgebase at QnAMaker.ai</param>
         /// <returns>true if published, false if not</returns>
-        public async Task<bool> PublishKnowledgeBase(string knowledgeBaseId)
+        public async Task<bool> PublishKnowledgeBase(int knowledgeBaseId)
         {
-            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.KnowledgeBaseID == knowledgeBaseId));
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgeBaseId));
             var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
 
             var client = new HttpClient();

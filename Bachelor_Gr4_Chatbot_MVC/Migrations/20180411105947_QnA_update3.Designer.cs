@@ -11,8 +11,8 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180410091103_QnA_update1")]
-    partial class QnA_update1
+    [Migration("20180411105947_QnA_update3")]
+    partial class QnA_update3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -253,7 +253,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 
                     b.Property<string>("Answer");
 
-                    b.Property<string>("KnowledgeBaseId");
+                    b.Property<string>("Dep");
+
+                    b.Property<int>("KnowledgeBaseId");
 
                     b.Property<bool>("Published");
 

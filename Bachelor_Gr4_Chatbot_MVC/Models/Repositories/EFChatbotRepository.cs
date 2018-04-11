@@ -306,7 +306,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         public async Task<QnAKnowledgeBase> GetQnAKnowledgeBaseAsync(int id)
         {
             QnAKnowledgeBase q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
-            List<QnAPairs> qPairs = await db.QnAPairs.Where(X => X.KnowledgeBaseId == q.KnowledgeBaseID).ToListAsync();
+            List<QnAPairs> qPairs = await db.QnAPairs.Where(X => X.KnowledgeBaseId == q.QnAKnowledgeBaseId).ToListAsync();
             q.QnAPairs = qPairs;
 
             return q;
@@ -402,6 +402,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 {
                     Query = qna.Query,
                     Answer = qna.Answer,
+                    Dep = qna.Dep,
                     KnowledgeBaseId = qna.KnowledgeBaseId,
                     Trained = true,
                     TrainedDate = DateTime.Now,
@@ -439,17 +440,52 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         }
 
 
-        public async Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id)
+        public async Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id)
         {
             var b = await GetQnAKnowledgeBaseAsync(id);
-            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.KnowledgeBaseID).ToListAsync();
+            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.QnAKnowledgeBaseId).ToListAsync();
               
         }
 
         public async Task<List<QnAPairs>> GetUnPublishedQnAPairsAsync(int id)
         {
             var b = await GetQnAKnowledgeBaseAsync(id);
-            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.KnowledgeBaseID && X.Published == false).ToListAsync();
+            return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.QnAKnowledgeBaseId && X.Published == false).ToListAsync();
+        }
+
+        public async Task<bool> PublishTrainedQnAPairs(int knowledgebaseId)
+        {
+            var r = await qnaRepository.PublishKnowledgeBase(knowledgebaseId);
+            if (r)
+            {
+                var qnaPairs = db.QnAPairs.Where(X => X.KnowledgeBaseId == knowledgebaseId);
+                foreach (QnAPairs p in qnaPairs)
+                {
+                    if (p.Trained)
+                    {
+                        p.Published = true;
+                        p.PublishedDate = DateTime.Now;
+
+                        
+                    }
+                    
+                }
+                db.QnAPairs.UpdateRange(qnaPairs);
+                await db.SaveChangesAsync();
+
+                return true;
+            }
+            else return false;
+            
+        }
+
+        public async Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id)
+        {
+            var kbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnABotId == id);
+            var b = await Task.Run(() => db.QnAPairs.Where(X => X.Published == true
+            && X.KnowledgeBaseId == kbase.QnAKnowledgeBaseId).ToList());
+
+            return b;
         }
     }
 

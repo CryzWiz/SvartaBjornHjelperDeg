@@ -114,5 +114,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
         Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id);
 
+        /// <summary>
+        /// Mark all unpublished QnA pairs as published, and call
+        /// EFQnARepository to perform the publish method on QnAMaker.ai
+        /// </summary>
+        /// <param name="knowledgebaseId">QnAMaker.ai knowledgebase id</param>
+        /// <returns>true if stored and published, false if not</returns>
+        Task<bool> PublishTrainedQnAPairs(int knowledgebaseId);
+
     }
 }

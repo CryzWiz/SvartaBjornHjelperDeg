@@ -252,7 +252,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 
                     b.Property<string>("Answer");
 
-                    b.Property<string>("KnowledgeBaseId");
+                    b.Property<string>("Dep");
+
+                    b.Property<int>("KnowledgeBaseId");
 
                     b.Property<bool>("Published");
 

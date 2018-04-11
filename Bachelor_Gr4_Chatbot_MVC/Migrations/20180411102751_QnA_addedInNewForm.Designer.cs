@@ -11,8 +11,8 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180409130210_QnA_Added")]
-    partial class QnA_Added
+    [Migration("20180411102751_QnA_addedInNewForm")]
+    partial class QnA_addedInNewForm
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -253,11 +253,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 
                     b.Property<string>("Answer");
 
-                    b.Property<string>("KnowledgeBaseId");
+                    b.Property<int>("KnowledgeBaseId");
 
                     b.Property<bool>("Published");
 
                     b.Property<DateTime>("PublishedDate");
+
+                    b.Property<int?>("QnAKnowledgeBaseId");
 
                     b.Property<string>("Query");
 
@@ -266,6 +268,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<DateTime>("TrainedDate");
 
                     b.HasKey("QnAPairsId");
+
+                    b.HasIndex("QnAKnowledgeBaseId");
 
                     b.ToTable("QnAPairs");
                 });
@@ -391,6 +395,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                         .WithMany("Messages")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairs", b =>
+                {
+                    b.HasOne("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase")
+                        .WithMany("QnAPairs")
+                        .HasForeignKey("QnAKnowledgeBaseId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
