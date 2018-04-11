@@ -159,5 +159,28 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return chatGroups;
                             
         }
+
+        public async Task<ChatGroup> GetChatGroupByIdAsync(string id)
+        {
+            return await db.ChatGroups.Where(x => x.ChatGroupId == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateChatGroupAsync(ChatGroup chatGroup)
+        {
+            try
+            {
+                // Check if UserGroup exists
+                ChatGroup updated = await GetChatGroupByIdAsync(chatGroup.ChatGroupId);
+                updated.ChatGroupName = chatGroup.ChatGroupName;
+
+                await Task.Run(() => db.ChatGroups.Update(updated));
+                await db.SaveChangesAsync();
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+
+        }
     }
 }

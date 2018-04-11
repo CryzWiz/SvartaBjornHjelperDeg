@@ -15,5 +15,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<bool> UpdateUserData(User user);
         Task<bool> AddChatGroup(ChatGroup chatGroup);
         Task<IEnumerable<ChatGroupViewModel>> GetAllChatGroupsVM();
+        Task<ChatGroup> GetChatGroupByIdAsync(string id);
+        Task<bool> UpdateChatGroupAsync(ChatGroup chatGroup);
     }
 }

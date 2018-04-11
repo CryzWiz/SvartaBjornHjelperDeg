@@ -252,11 +252,50 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChatGroups()
         {
             IEnumerable<ChatGroupViewModel> chatGroups = await repository.GetAllChatGroupsVM();
             return View(chatGroups);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditChatGroup(string id)
+        {
+            ChatGroup chatGroup = await repository.GetChatGroupByIdAsync(id);
+            ChatGroupEditViewModel model = new ChatGroupEditViewModel
+            {
+                ChatGroupId = chatGroup.ChatGroupId,
+                ChatGroupName = chatGroup.ChatGroupName
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditChatGroup(ChatGroupEditViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                ChatGroup chatGroup = new ChatGroup
+                {
+                    ChatGroupId = model.ChatGroupId,
+                    ChatGroupName = model.ChatGroupName
+                };
+                bool success = await repository.UpdateChatGroupAsync(chatGroup);
+                if(success)
+                {
+                    TempData["success"] = "Chat gruppe ble oppdatert";
+                    return RedirectToAction("ChatGroups");
+                }
+ 
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under oppdatering av chat gruppe";
+            return View(model);
+        }
+
 
 
 
