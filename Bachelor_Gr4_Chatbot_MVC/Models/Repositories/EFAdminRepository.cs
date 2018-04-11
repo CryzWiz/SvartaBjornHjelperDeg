@@ -182,5 +182,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
 
         }
+
+        public async Task<bool> DeleteChatGroupAsync(string id)
+        {
+            try
+            {
+                ChatGroup chatGroup = await GetChatGroupByIdAsync(id);
+                await Task.Run(() => db.ChatGroups.Remove(chatGroup));
+                await db.SaveChangesAsync();
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

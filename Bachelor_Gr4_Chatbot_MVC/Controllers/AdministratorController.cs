@@ -274,7 +274,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditChatGroup(ChatGroupEditViewModel model)
+        public async Task<IActionResult> UpdateChatGroup(ChatGroupEditViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -294,6 +294,21 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             // Something went wrong, show form again
             TempData["error"] = "Feil under oppdatering av chat gruppe";
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteChatGroup(string id)
+        {
+            bool success = await repository.DeleteChatGroupAsync(id);
+            if(success)
+            {
+                TempData["success"] = "Chat gruppe ble slettet";
+                return RedirectToAction("ChatGroups");
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under sletting av chat gruppe";
+            return RedirectToAction("ChatGroups");
         }
 
 

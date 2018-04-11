@@ -17,5 +17,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task<IEnumerable<ChatGroupViewModel>> GetAllChatGroupsVM();
         Task<ChatGroup> GetChatGroupByIdAsync(string id);
         Task<bool> UpdateChatGroupAsync(ChatGroup chatGroup);
+        Task<bool> DeleteChatGroupAsync(string id);
     }
 }
