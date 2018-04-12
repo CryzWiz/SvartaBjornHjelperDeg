@@ -49,6 +49,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
+        
+
         // ChatWorkers status
         public enum LogInStatus
         {
@@ -71,8 +73,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
 
+        // Move chat queue to a seperate file
 
 
+        IEnumerable<ChatGroup> _allChatGroups;
        
         public ChatHub(IChatRepository repository, 
             IChatBot chatBot, 
@@ -95,9 +99,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
+
+            //TODO: DENNE SKAL FLYTTES
+            await GetAllChatGroups();
+         
             //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
 
-                await AddEmployeeToWorkGroupsBasedOnRole();
+            await AddEmployeeToWorkGroupsBasedOnRole();
 
 
             // TODO: 
@@ -118,6 +126,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             
             await DisplayConnectedUsers();
            // await DisplayQueueCount();
+        }
+
+                                                                    
+
+        public async Task CreateQueueForEachChatGroup()
+        {
+            IEnumerable<ChatQueue> chatQueues = await _repository.GetAllChatGroupsAsQueueAsync();
         }
 
         public async Task SetChatEmployeeStatus(string userGroup, int status)
@@ -375,6 +390,35 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
 
+        public async Task JoinSpecificQueue(ChatQueue queue)
+        {
+            string userGroup = GetConnectionKey();
+            //Create conversation
+            Conversation conversation = new Conversation
+            {
+                IsChatBot = false,
+                StartTime = DateTime.Now,
+                UserGroup1 = userGroup
+            };
+
+            try
+            {
+                int conversationId = await _repository.AddConversationAsync(conversation);
+
+                int? placeInQueue = queue.Enqueue(conversationId, userGroup);
+                if(placeInQueue != null)
+                {
+                    await DisplayQueueCount();
+                }
+                await Clients.Group(userGroup).InvokeAsync("displayPlaceInQueue", placeInQueue);
+                await SetConversationId(userGroup, conversationId);
+            }
+            catch (Exception exception)
+            {
+                await DisplayErrorMessageInChat(userGroup, "Feil under tilkobling av chat. "); // TODO: Error messages...
+            }
+        }
+
 
         public async Task<bool> MessageIsKeyword(string message, int conversationId)
         {
@@ -402,6 +446,50 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             }
             return null;
+        }
+
+
+        public async Task PickFromSpecificQueue(ChatQueue queue)
+        {
+            string chatWorkerId = GetConnectionKey();
+            int? conversationId = queue.Dequeue();
+            if (conversationId != null)
+            {
+                string displayName = await GetDisplayName();
+
+                // TODO: Hent fra databasen:
+                string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
+
+                try
+                {
+                    Conversation conversation = await _repository.GetConversationByIdAsync((int)conversationId);
+                    queue.AddWaitTime(DateTime.Now - conversation.StartTime);
+  
+                    await DisplayWaitTime();
+                    conversation.UserGroup2 = chatWorkerId;
+                    await _repository.UpdateConversationAsync(conversation);
+
+                    // Set groupId for chatworker and user
+                    await SetGroupId(chatWorkerId, conversation.UserGroup1);
+                    await SetGroupId(conversation.UserGroup1, chatWorkerId);
+
+                    _inQueue.Remove(conversation.UserGroup1, out int value);
+                    ChatQueue.RemoveFromFullQueue(conversation.UserGroup1, (int)conversationId);
+                    await SetConversationId(chatWorkerId, conversationId);
+                    await DisplayMessage(conversation.UserGroup1, chatWorkerId, message);
+                    await DisplayQueueCount();
+
+                }
+                catch (Exception e)
+                {
+                    await DisplayErrorMessageInChat(chatWorkerId, "Feil under henting fra kø. ");
+                }
+
+            }
+            else
+            {
+                await DisplayErrorMessageInChat(chatWorkerId, "Køen er tom ");
+            }
         }
 
         public async Task PickFromQueue()
@@ -685,6 +773,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Gone);
             await Clients.Group(_roleOptions.AdminRole).InvokeAsync("updateEmployeeList");
         }
+        
+        private async Task GetAllChatGroups()
+        {
+            IEnumerable<ChatGroup> chatGroups = await _repository.GetAllChatGroupsAsync();
+            _allChatGroups = chatGroups;
+        }
+
+
 
         /*
         // This method is copied from: 

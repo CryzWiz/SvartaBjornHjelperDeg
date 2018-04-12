@@ -84,5 +84,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             _db.Conversations.Update(conversation);
             await _db.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ChatGroup>> GetAllChatGroupsAsync()
+        {
+            return await _db.ChatGroups.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ChatQueue>> GetAllChatGroupsAsQueueAsync()
+        {
+            // TODO: Exclude
+            IEnumerable<ChatQueue> chatQueues = await (from chatGroup in _db.ChatGroups
+                                                      select new ChatQueue
+                                                      {
+                                                          ChatGroupId = chatGroup.ChatGroupId,
+                                                          ChatGroupName = chatGroup.ChatGroupName
+                                                      }).ToListAsync();
+            return chatQueues;
+        }
     }
 }
