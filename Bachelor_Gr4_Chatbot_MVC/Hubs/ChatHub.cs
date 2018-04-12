@@ -10,10 +10,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -106,7 +109,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
 
             await AddEmployeeToWorkGroupsBasedOnRole();
-
+            await DisplayAllChatQueues(); // TODO: LLLLL
 
             // TODO: 
             if (key.Equals(connectionId))
@@ -448,9 +451,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return null;
         }
 
+        
 
-        public async Task PickFromSpecificQueue(ChatQueue queue)
+        public async Task PickFromSpecificQueue(string queueId)
         {
+
+            ChatQueue queue = new ChatQueue(); // TODO: DENNE MÅ HENTES FRA ET ANNET STED
             string chatWorkerId = GetConnectionKey();
             int? conversationId = queue.Dequeue();
             if (conversationId != null)
@@ -780,6 +786,46 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             _allChatGroups = chatGroups;
         }
 
+        public async Task DisplayAllChatQueues()
+        {
+            //IEnumerable<ChatQueue> queues = await _repository.GetAllChatGroupsAsQueueAsync();
+
+            List<TestQueue> queues = new List<TestQueue>();
+            TestQueue q1 = new TestQueue
+            {
+                ChatGroupId = "tralalala",
+                ChatGroupName = "TestNavn1"
+            };
+
+            TestQueue q2 = new TestQueue
+            {
+                ChatGroupId = "tralalala",
+                ChatGroupName = "TestNavn2"
+            };
+
+            queues.Add(q1);
+            queues.Add(q2);
+
+            await Clients.All.InvokeAsync("displayAllChatQueues", ConvertToJson(queues));
+
+        }
+
+        /// <summary>
+        /// Based upon example code at: 
+        /// https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-serialize-and-deserialize-json-data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ConvertToJson<T>(T obj)
+        {
+            MemoryStream ms = new MemoryStream();
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+            serializer.WriteObject(ms, obj);
+            byte[] json = ms.ToArray();
+            ms.Close();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
+        }
 
 
         /*

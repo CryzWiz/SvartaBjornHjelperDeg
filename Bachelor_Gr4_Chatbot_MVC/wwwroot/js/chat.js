@@ -59,6 +59,8 @@ function test() {
 }
 
 
+
+
 /*
 $('#connectionListTable tbody').click(function (event) {
     var row = $(this).find("tr");
@@ -129,6 +131,31 @@ function displaySentMessage(message) {
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }
+
+// ------------------ All queue buttons ------------------
+function displayChatQueues(queues) {
+    var str = "";
+    $.each(queues, function (index, queue) {
+        str = "<button class='btn btn-primary'";
+        str += "id = '" + queue.chatGroupId + "'>";
+        str += queue.chatGroupName;
+        str += "</button>";
+        str += "<p class='text-primary'>Antall brukere i kø: </p>";
+        str += "<p class='text-primary'>" + queue.chatGroupId + queue.chatGroupName + "</p>"
+       // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
+    });
+    $("#queueContainer").html(str);
+}
+
+
+function CreateButton(id, text, buttonClass) {
+    str = "<button class='" + buttonClass + "' ";
+    str += "id = '" + id + "'>";
+    str += text;
+    str += "</button>";
+    return str;
+}
+
 // -------------- List of all connections ------------------
 function updateConnectionList(connections) {
     var str = "";
@@ -268,6 +295,11 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#waitTime").html("Ventetid: " + waitTime);
         });
 
+        connection.on('displayAllChatQueues', function (queues) {
+            var q = JSON.parse(queues);
+            displayChatQueues(q);
+        });
+
 
  
 
@@ -312,6 +344,12 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#chatLogin").click(function (event) {
                 loggedIn = true;
                 connection.invoke('logIn')
+            });
+
+            // Queue, pick from specific queue
+            $("#queueContainer").on('click', "button", function (event) {
+                var queueId = this.id;
+                connection.invoke('pickFromSpecificQueue', queueId);
             });
         })
         .catch(error => {
