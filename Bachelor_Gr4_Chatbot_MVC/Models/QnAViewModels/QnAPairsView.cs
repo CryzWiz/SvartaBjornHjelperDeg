@@ -10,6 +10,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
         public int QnAId { get; set; }
         public int QnAKnowledgeBaseId { get; set; }
 
+        public string QnAKnowledgeBaseName { get; set; }
+
         public List<QnAPairs> QnAPairs { get; set; }
     }
 }

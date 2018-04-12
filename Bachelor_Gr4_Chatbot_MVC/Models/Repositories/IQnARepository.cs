@@ -45,5 +45,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>true if published, false if not</returns>
         Task<bool> PublishKnowledgeBase(int knowledgeBaseId);
 
+        /// <summary>
+        /// Download the given knowledgebase and return the QnAPairs found
+        /// </summary>
+        /// <param name="knowledgebase">knowledgebase id in database</param>
+        /// <returns>QnAPairs found</returns>
+        Task<string> DownloadKnowledgeBase(int knowledgebase);
+
     }
 }

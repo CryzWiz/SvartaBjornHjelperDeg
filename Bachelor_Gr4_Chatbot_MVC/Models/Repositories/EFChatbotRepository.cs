@@ -439,7 +439,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return b;
         }
 
-
+        /// <summary>
+        /// Fetch all QnAPairs belonging to a given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledgebase id in knowledgebase</param>
+        /// <returns>all QnAPairs for given knowledgebase</returns>
         public async Task<List<QnAPairs>> GetQnAPairsByKnowledgeBaseIdAsync(int id)
         {
             var b = await GetQnAKnowledgeBaseAsync(id);
@@ -447,12 +451,23 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
               
         }
 
+        /// <summary>
+        /// Fetch all the unpublished QnAPairs for the given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledge database id</param>
+        /// <returns>List<QnAPairs>unpublished</QnAPairs></returns>
         public async Task<List<QnAPairs>> GetUnPublishedQnAPairsAsync(int id)
         {
             var b = await GetQnAKnowledgeBaseAsync(id);
             return await db.QnAPairs.Where(X => X.KnowledgeBaseId == b.QnAKnowledgeBaseId && X.Published == false).ToListAsync();
         }
 
+        /// <summary>
+        /// Mark all unpublished QnA pairs as published, and call
+        /// EFQnARepository to perform the publish method on QnAMaker.ai
+        /// </summary>
+        /// <param name="knowledgebaseId">QnAMaker.ai knowledgebase id</param>
+        /// <returns>true if stored and published, false if not</returns>
         public async Task<bool> PublishTrainedQnAPairs(int knowledgebaseId)
         {
             var r = await qnaRepository.PublishKnowledgeBase(knowledgebaseId);
@@ -479,6 +494,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             
         }
 
+        /// <summary>
+        /// Fetch all QnAPairs to a given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledgebase id in database</param>
+        /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
         public async Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id)
         {
             var kbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnABotId == id);
@@ -486,6 +506,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             && X.KnowledgeBaseId == kbase.QnAKnowledgeBaseId).ToList());
 
             return b;
+        }
+
+        /// <summary>
+        /// Check the local knowledgebase to the published knowledgebase and
+        /// add the missing QnAPairs to the local db, if any are missing.
+        /// This function is added since you can add QnA pairs on QnAMaker.ai. With this function you
+        /// can get them and add them to the local db so you can manage them (delete, view)
+        /// </summary>
+        /// <param name="id">KnowledgeBase id in database</param>
+        /// <returns>number of pairs added</returns>
+        public async Task<string> VerifyLocalDbToPublishedDb(int id)
+        {
+            var onlineQnA = await qnaRepository.DownloadKnowledgeBase(id);
+            return onlineQnA;
         }
     }
 

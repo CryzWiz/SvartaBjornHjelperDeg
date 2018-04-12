@@ -122,5 +122,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>true if stored and published, false if not</returns>
         Task<bool> PublishTrainedQnAPairs(int knowledgebaseId);
 
+        /// <summary>
+        /// Check the local knowledgebase to the published knowledgebase and
+        /// add the missing QnAPairs to the local db, if any are missing.
+        /// This function is added since you can add QnA pairs on QnAMaker.ai. With this function you
+        /// can get them and add them to the local db so you can manage them (delete, view)
+        /// </summary>
+        /// <param name="id">KnowledgeBase id in database</param>
+        /// <returns>number of pairs added</returns>
+        Task<string> VerifyLocalDbToPublishedDb(int id);
+
     }
 }

@@ -1,8 +1,9 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairsView
 
 @{
-    ViewData["Title"] = "ViewUnPublishedQnAPairs";
+    ViewData["Title"] = "ViewPublishedQnAPairs";
 }
+
 <div id="wrapper">
     @await Html.PartialAsync("_Navbar_admin")
 
@@ -10,22 +11,11 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-
-                <div class="col-md-10">
-                    <h2>QnA par for kunnskapsbase @Model.QnAKnowledgeBaseName</h2>
-                    <h4>Alle trente QnA par som venter publisering</h4>
-                </div>
-                <div class="col-md-2">
-                    <br /><br />
-                    @Html.ActionLink("Publiser", "PublishTrainedQnAPairs", "Administrator", new{ id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
-                </div>
-
+                <h2>QnA par for kunnskapsbase @Model.QnAKnowledgeBaseName</h2>
+                <h4>Alle publiserte QnA par</h4>
             </div>
             <hr />
 
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
             @if (Model.QnAPairs.Count > 0)
             {
                 <table class="table">
@@ -108,14 +98,14 @@
             else
             {
                 <div class="col-md-12">
-                    <p>Ingenting å vise. Legg til QnA par, kanskje? Link kommer...</p>
+                    <p>Ingenting å vise. Om du mener at det skal finnes QnA par for denne kunnskapsbasen, trykk @Html.ActionLink("her", "VerifyLocalKnowledgeBaseToOnlineKnowledgeBase", new { id = Model.QnAKnowledgeBaseId }) for å verifisere database.</p>
                 </div>
 
             }
-
         </div>
     </div>
 </div>
+
 @section Scripts{
 
     <!-- Bootstrap Core JavaScript -->

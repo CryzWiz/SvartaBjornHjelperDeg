@@ -508,13 +508,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             var p = await chatbotRepository.GetUnPublishedQnAPairsAsync(id);
             // Fetch KnowledgeBase
             var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
-            // Fetch Chatbot
-            var q = await chatbotRepository.GetQnABotDetails(b.QnABotId);
 
             QnAPairsView QnAPairs = new QnAPairsView
             {
                 QnAId = b.QnABotId,
                 QnAKnowledgeBaseId = id,
+                QnAKnowledgeBaseName = b.QnAKnowledgeName,
                 QnAPairs = p
             };
             return View(QnAPairs);
@@ -533,6 +532,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             {
                 QnAId = b.QnABotId,
                 QnAKnowledgeBaseId = id,
+                QnAKnowledgeBaseName = b.QnAKnowledgeName,
                 QnAPairs = p
             };
             return View(QnAPairs);
@@ -557,6 +557,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
-
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> VerifyLocalKnowledgeBaseToOnlineKnowledgeBase(int id)
+        {
+            var r = await chatbotRepository.VerifyLocalDbToPublishedDb(id);
+            TempData["error"] = String.Format("{0}", r);
+            return RedirectToAction("QnABaseDetails", new { id = id });
+        }
     }
 }

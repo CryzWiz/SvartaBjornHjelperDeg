@@ -4,7 +4,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -172,6 +174,50 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             else return false;
 
 
+        }
+
+        /// <summary>
+        /// Download the given knowledgebase and return the QnAPairs found
+        /// </summary>
+        /// <param name="knowledgebase">knowledgebase id in database</param>
+        /// <returns>QnAPairs found</returns>
+        public async Task<string> DownloadKnowledgeBase(int knowledgebase)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebase));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.PublishKnowledgeBaseUrl;
+
+            HttpResponseMessage response;
+            response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string url = await response.Content.ReadAsStringAsync();
+                string urlClean = url.Replace("\"", "");
+                string[] surl = urlClean.Split("?");
+                string burl = surl[0];
+                string paramaters = surl[1];
+                string result = GetCSV(urlClean);
+                return result;
+            }
+            else return null;
+            //throw new NotImplementedException();
+        }
+
+        public string GetCSV(string url)
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+
+            StreamReader sr = new StreamReader(resp.GetResponseStream());
+            string results = sr.ReadToEnd();
+            sr.Close();
+
+            return results;
         }
     }
 }
