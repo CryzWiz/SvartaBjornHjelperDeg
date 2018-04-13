@@ -102,8 +102,6 @@ function displaySentMessage(message) {
 
 // ------------------ All queue buttons ------------------
 function displayChatQueueButtons(queues) {
-
-
     var str = "";
     $.each(queues, function (index, queue) {
         str += "<div class='container'>";
@@ -111,8 +109,7 @@ function displayChatQueueButtons(queues) {
         str += "id = '" + queue.chatGroupId + "'>";
         str += queue.chatGroupName;
         str += "</button>";
-        str += "<p class='text-primary'>Antall brukere i kø: </p>";
-        str += generateConnectionKey() + "ConnectionKeyTest";
+        str += "<p class='text-primary'>Antall brukere i kø: " + queue.count + "</p>";
         str += "</div>";
        // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
     });

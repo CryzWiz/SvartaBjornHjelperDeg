@@ -21,7 +21,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public string ChatGroupId { get; set; }
         private readonly ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private readonly ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
-
+        public int Count { get { return _inQueue.Count; } }
 
         private int _waitTimeCounter = 0;
         private TimeSpan _waitTimeSum;
@@ -107,6 +107,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             CurrentWaitTime = String.Format("{0}:{1:00}", (int)span.TotalMinutes, span.Seconds);
         }
 
+        
 
     }
 }
