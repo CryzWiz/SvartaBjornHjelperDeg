@@ -58,7 +58,10 @@ function test() {
     alert("Testing, testing...");
 }
 
+function generateConnectionKey() {
+    var key = node.uuid.v4();
 
+}
 
 
 /*
@@ -133,15 +136,19 @@ function displaySentMessage(message) {
 }
 
 // ------------------ All queue buttons ------------------
-function displayChatQueues(queues) {
+function displayChatQueueButtons(queues) {
+
+
     var str = "";
     $.each(queues, function (index, queue) {
-        str = "<button class='btn btn-primary'";
+        str += "<div class='container'>";
+        str += "<button class='btn btn-primary'";
         str += "id = '" + queue.chatGroupId + "'>";
         str += queue.chatGroupName;
         str += "</button>";
         str += "<p class='text-primary'>Antall brukere i kø: </p>";
-        str += "<p class='text-primary'>" + queue.chatGroupId + queue.chatGroupName + "</p>"
+        str += generateConnectionKey() + "ConnectionKeyTest";
+        str += "</div>";
        // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
     });
     $("#queueContainer").html(str);
@@ -169,6 +176,7 @@ function updateConnectionList(connections) {
             //str += "<button class='btn btn-default' name= 'joinChat' value= '" + key + "'> Åpne chat</button>";
             str += "</td>";
         str += "</tr>";
+
     });
     $("#connectionList").html(str);
 }
@@ -253,51 +261,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         connection.on('setGroupId', function (id) {
+            console.log("setGroupId", id);
             groupId = id;
         });
 
         connection.on('setConversationId', function (id) {
+            console.log("setConversationId", id);
             conversationId = id;
         });
 
         connection.on('displayConnections', function (connections) {
+            console.log("displayConnections", connections);
             updateConnectionList(connections);
         });
 
         connection.on('displayQueueCount', function (count) {
+            console.log("displayQueueCount", count);
             displayQueueCounter(count);
         });
 
         connection.on('addToQueue', function (connection) {
+            console.log("addToQueue", connection);
             addToQueue(connection);
         });
 
         connection.on('errorMessage', function (message) {
+            console.log("errorMessage", message);
             displayReceivedMessage(message);
         });
 
         connection.on('receiveMessage', function (groupFrom, message) {
-            //groupId = groupFrom;
+            console.log("receiveMessage", groupFrom, message);
             displayReceivedMessage(message);
         });
 
         connection.on('sendMessage', function (message) {
+            console.log("sendMessage", message);
             displaySentMessage(message);
         });
 
         connection.on('conversationEnded', function (message, id) {
+            console.log("conversationEnded", message, id);
             var groupId = "";
             var conversationId = "";
             $("#chatbox__body").html("Du er ikke påkoblet noen chat.");
         });
 
         connection.on('displayWaitTime', function (waitTime) {
+            console.log("displayWaitTime", waitTime);
             $("#waitTime").html("Ventetid: " + waitTime);
         });
 
         connection.on('displayAllChatQueues', function (queues) {
-            var q = JSON.parse(queues);
-            displayChatQueues(q);
+            console.log("displayAllChatQueues", queues);
+            displayChatQueueButtons(queues);
         });
 
 

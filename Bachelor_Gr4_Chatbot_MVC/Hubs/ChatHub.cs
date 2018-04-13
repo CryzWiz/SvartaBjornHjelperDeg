@@ -800,33 +800,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             TestQueue q2 = new TestQueue
             {
                 ChatGroupId = "tralalala",
-                ChatGroupName = "TestNavn2"
+                ChatGroupName = "TestNavn3"
             };
 
             queues.Add(q1);
             queues.Add(q2);
 
-            await Clients.All.InvokeAsync("displayAllChatQueues", ConvertToJson(queues));
+            await Clients.All.InvokeAsync("displayAllChatQueues", queues);
 
         }
-
-        /// <summary>
-        /// Based upon example code at: 
-        /// https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-serialize-and-deserialize-json-data
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ConvertToJson<T>(T obj)
-        {
-            MemoryStream ms = new MemoryStream();
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-            serializer.WriteObject(ms, obj);
-            byte[] json = ms.ToArray();
-            ms.Close();
-            return Encoding.UTF8.GetString(json, 0, json.Length);
-        }
-
 
         /*
         // This method is copied from: 
