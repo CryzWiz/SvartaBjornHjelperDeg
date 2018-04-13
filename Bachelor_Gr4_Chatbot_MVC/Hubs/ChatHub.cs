@@ -788,23 +788,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task DisplayAllChatQueues()
         {
-            //IEnumerable<ChatQueue> queues = await _repository.GetAllChatGroupsAsQueueAsync();
+            IEnumerable<ChatQueue> queues = await _repository.GetAllChatGroupsAsQueueAsync();
 
-            List<TestQueue> queues = new List<TestQueue>();
-            TestQueue q1 = new TestQueue
-            {
-                ChatGroupId = "tralalala",
-                ChatGroupName = "TestNavn1"
-            };
-
-            TestQueue q2 = new TestQueue
-            {
-                ChatGroupId = "tralalala",
-                ChatGroupName = "TestNavn3"
-            };
-
-            queues.Add(q1);
-            queues.Add(q2);
 
             await Clients.All.InvokeAsync("displayAllChatQueues", queues);
 

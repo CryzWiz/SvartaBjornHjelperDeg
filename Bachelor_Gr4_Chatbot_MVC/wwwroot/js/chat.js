@@ -54,42 +54,7 @@ function startConnection(url, configureConnection) {
     }(signalR.TransportType.WebSockets);
 }
 
-function test() {
-    alert("Testing, testing...");
-}
 
-function generateConnectionKey() {
-    var key = node.uuid.v4();
-
-}
-
-
-/*
-$('#connectionListTable tbody').click(function (event) {
-    var row = $(this).find("tr");
-    var value = row.find("td:nth-child(2)").html();
-    alert(value);
-});
-*/
-
-/*
-function displaySentMessage(message) {
-    /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
-    str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
-    str += "<p>" + message + "</p>";
-    str += "</div>";
-    // TODO: Html encode message.
-    var encodedMsg = message;
-    // Add the sent message to the page.
-    var liElement = document.createElement('div');
-    liElement.className += "chatbox__body__message";
-    liElement.className += " chatbox__body__message--left";
-    //liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
-    document.getElementById('chatbox__body').appendChild(liElement);
-    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
-}
-*/
 function displayReceivedMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
