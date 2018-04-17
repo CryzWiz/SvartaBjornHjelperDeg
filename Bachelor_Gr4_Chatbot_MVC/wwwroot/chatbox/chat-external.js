@@ -39,6 +39,8 @@ function sessionId() {
     return sessionId;
 }
 
+
+
 // Starts a SignalR connection with transport fallback - if the connection cannot be started using
 // the webSockets transport the function will fallback to the serverSentEvents transport and
 // if this does not work it will try longPolling. If the connection cannot be started using
@@ -108,12 +110,49 @@ function displayReceivedMessage(message) {
     var isFocused = (document.activeElement === dummyEl);
     if (isFocused === false) {
         addBlink();
+        browserTabFlash();
     }
     else {
         removeBlink();
     }
     
 }
+
+
+function browserTabFlash() {
+    var title = document.title;
+    var newTitle = "Ny melding";
+    var timeout = false;
+
+    var blink = function () {
+        document.title = (document.title == newTitle ? title : newTitle);
+
+        // Stop blinking
+        if (document.hasFocus())
+        {
+            document.title = title;
+            clearInterval(timeout);
+        }
+    };
+
+    if (!timeout) {
+        // Start blinking
+        timeout = setInterval(blink, 400);
+    };
+}
+
+
+
+
+
+
+
+function browserTabFlash2(numberOfUnreadMessages) {
+    var title = document.title;
+    var newTitle = "(" + numberOfUnreadMessages + ") " + title;
+    var flash
+}
+
 function addBlink() {
     var element = document.getElementById("chatbox__light");
     element.classList.add("chatbox__blink");
