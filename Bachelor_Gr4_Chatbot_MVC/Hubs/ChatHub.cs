@@ -526,6 +526,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     _inQueue.Remove(conversation.UserGroup1, out int value);
                     await SetConversationId(chatWorkerId, conversationId);
                     await DisplayMessage(conversation.UserGroup1, chatWorkerId, message);
+                    await Clients.Group(conversation.UserGroup1).InvokeAsync("enableInputField", "hei");
                     await DisplayQueueCount();
 
                 } catch (Exception e)

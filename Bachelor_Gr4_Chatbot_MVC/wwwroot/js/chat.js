@@ -328,7 +328,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Queue, pick from specific queue
             $("#queueContainer").on('click', "button", function (event) {
                 var queueId = this.id;
-                connection.invoke('pickFromSpecificQueue', queueId);
+                connection.invoke('pickFromQueue');
+                //connection.invoke('pickFromSpecificQueue', queueId);
             });
         })
         .catch(error => {

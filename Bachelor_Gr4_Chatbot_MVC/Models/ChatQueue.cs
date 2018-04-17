@@ -98,6 +98,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return null;
         }
 
+        public int? DequeFromGroup()
+        {
+            // Remove from group queue and inqueue
+            // remove from full inque 
+            return null;
+        }
+
         public void AddWaitTime(TimeSpan thisWaitTime)
         {
             _waitTimeSum += thisWaitTime;

@@ -66,6 +66,12 @@ function startConnection(url, configureConnection) {
     }(signalR.TransportType.WebSockets);
 }
 
+function startConnectionWithProxy() {
+    var chatHubProxy = $.connection.chatHub;
+    //chatHubProxy.client.
+
+}
+
 function displaySentMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
@@ -152,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var chatBotToken = "";
     var chatIsWithBot = false;
     var conversationIdForResult = null;
+
     // Set initial focus to message input box.
     messageInput.focus();
 
@@ -164,80 +171,84 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //$("#connectToSignalR").click(function () {
         // Start the connection.
-        startConnection('/chathub', function (connection) {
-            // Create a function that the hub can call to broadcast messages.
-            connection.on('broadcastMessage', function (message) {
-                // TODO: Html encode display name and message.
-                //var encodedName = name;
-                var encodedMsg = message;
-                // Add the message to the page.
-                var liElement = document.createElement('div');
-                liElement.className += "chatbox__body__message";
-                liElement.className += " chatbox__body__message--left";
-                liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-                liElement.innerHTML += '<p>' + encodedMsg + '</p>';
-                document.getElementById('chatbox__body').appendChild(liElement);
-                document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+    startConnection('/chathub', function (connection) {
+        // Create a function that the hub can call to broadcast messages.
+        connection.on('broadcastMessage', function (message) {
+            // TODO: Html encode display name and message.
+            //var encodedName = name;
+            var encodedMsg = message;
+            // Add the message to the page.
+            var liElement = document.createElement('div');
+            liElement.className += "chatbox__body__message";
+            liElement.className += " chatbox__body__message--left";
+            liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+            liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+            document.getElementById('chatbox__body').appendChild(liElement);
+            document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 
-            });
+        });
 
 
-            /// SignalR Client methods called from hub:
-            /*connection.on('send', function (message, from) {
-                groupId = from;
-                
-                displayReceivedMessage(message);
-                // TODO: Html encode message.
-                var encodedMsg = message;
-                // Add the sent message to the page.
-                var liElement = document.createElement('div');
-                liElement.className += "chatbox__body__message";
-                liElement.className += " chatbox__body__message--left";
-                liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-                liElement.innerHTML += '<p>' + encodedMsg + '</p>';
-                document.getElementById('chatbox__body').appendChild(liElement);
-                document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
-                groupId = from;
-            });*/
+        /// SignalR Client methods called from hub:
+        /*connection.on('send', function (message, from) {
+            groupId = from;
+            
+            displayReceivedMessage(message);
+            // TODO: Html encode message.
+            var encodedMsg = message;
+            // Add the sent message to the page.
+            var liElement = document.createElement('div');
+            liElement.className += "chatbox__body__message";
+            liElement.className += " chatbox__body__message--left";
+            liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
+            liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+            document.getElementById('chatbox__body').appendChild(liElement);
+            document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+            groupId = from;
+        });*/
 
-            connection.on('receiveMessage', function (groupFrom, message) {
-                //groupId = groupFrom;
-                displayReceivedMessage(message);
-            });
+        connection.on('receiveMessage', function (groupFrom, message) {
+            //groupId = groupFrom;
+            displayReceivedMessage(message);
+        });
 
-            connection.on('sendMessage', function (message) {
-                displaySentMessage(message);
-            });
+        connection.on('sendMessage', function (message) {
+            displaySentMessage(message);
+        });
 
-            connection.on('setConversationId', function (id) {
-                conversationId = id;
-            });
+        connection.on('setConversationId', function (id) {
+            conversationId = id;
+        });
 
-            connection.on('setGroupId', function (id) {
-                groupId = id;
-            });
+        connection.on('setGroupId', function (id) {
+            groupId = id;
+        });
 
-            connection.on('setChatBotToken', function (token) {
-                chatBotToken = token;
-                chatIsWithBot = true;
-            });
+        connection.on('setChatBotToken', function (token) {
+            chatBotToken = token;
+            chatIsWithBot = true;
+        });
 
-            connection.on('errorMessage', function (message) {
-                displayReceivedMessage(message);
-            });
+        connection.on('errorMessage', function (message) {
+            displayReceivedMessage(message);
+        });
 
-            connection.on('endBotConversation', function (message, id) {
-                resetChatBotVariables();
-                conversationIdForResult = id;
-                displayConversationEnded(message);
-            });
+        connection.on('endBotConversation', function (message, id) {
+            resetChatBotVariables();
+            conversationIdForResult = id;
+            displayConversationEnded(message);
+        });
 
-            connection.on('conversationEnded', function (message, id) {
-                resetChatBotVariables();
-                conversationIdForResult = id;
-                groupId = "";
-                displayConversationEnded(message);
-            });
+        connection.on('conversationEnded', function (message, id) {
+            resetChatBotVariables();
+            conversationIdForResult = id;
+            groupId = "";
+            displayConversationEnded(message);
+        });
+
+        connection.on('enableInputField', function (test) {
+            messageInput.disabled = false;
+        });
 
 
 
@@ -285,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         resetChatBotVariables();
                     }
                     connection.invoke('joinQueue');
+                    messageInput.disabled = true;
                 });
 
                 // Start chat-bot
