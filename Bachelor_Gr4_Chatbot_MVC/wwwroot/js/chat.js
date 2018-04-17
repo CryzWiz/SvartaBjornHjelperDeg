@@ -125,28 +125,12 @@ function CreateButton(id, text, buttonClass) {
     return str;
 }
 
-// -------------- List of all connections ------------------
-function updateConnectionList(connections) {
-    var str = "";
-    $.each(connections, function (index, key) {
-        str += "<tr>";
-            str += "<td>" + (index + 1) + "</td>";
-            str += "<td>" + key + "</td>"; // TODO: Endres
-            str += "<td>test</td><td>test</td>"; // TODO: Endres
-            str += "<td>"
-            str += "Testknapp fjernet ";
-            //str += "<button class='btn btn-default' name= 'joinChat' value= '" + key + "'> Åpne chat</button>";
-            str += "</td>";
-        str += "</tr>";
-
-    });
-    $("#connectionList").html(str);
-}
-
 function displayQueueCounter(count) {
     var str = "Antall brukere i kø: " + count;
     $("#inQueue").html(str);
 }
+
+
 /*
 function displayQueue(connections) {
     var str = "";
@@ -174,6 +158,27 @@ function addToQueue(connection) {
     str += "</tr>";
     $("#queueList").append(str);
 }*/
+
+
+// -------------- List of all connections ------------------
+/*
+function updateConnectionList(connections) {
+    var str = "";
+    $.each(connections, function (index, key) {
+        str += "<tr>";
+            str += "<td>" + (index + 1) + "</td>";
+            str += "<td>" + key + "</td>"; // TODO: Endres
+            str += "<td>test</td><td>test</td>"; // TODO: Endres
+            str += "<td>"
+            str += "Testknapp fjernet ";
+            //str += "<button class='btn btn-default' name= 'joinChat' value= '" + key + "'> Åpne chat</button>";
+            str += "</td>";
+        str += "</tr>";
+
+    });
+    $("#connectionList").html(str);
+}
+*/
 
 // 
 document.addEventListener('DOMContentLoaded', function () {
