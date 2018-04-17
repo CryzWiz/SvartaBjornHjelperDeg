@@ -90,12 +90,13 @@ function displayReceivedMessage(message) {
 function displaySentMessage(message) {
     // TODO: Html encode message.
     var encodedMsg = message;
+    var time = new Date().getTime();
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
     liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    liElement.innerHTML += '<p>' + encodedMsg + time + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }

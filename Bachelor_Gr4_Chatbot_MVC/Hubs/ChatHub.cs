@@ -127,7 +127,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
             
-            await DisplayConnectedUsers();
+            //await DisplayConnectedUsers();
            // await DisplayQueueCount();
         }
 
@@ -339,7 +339,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 await DisplayQueueCount();
             }
-            await DisplayConnectedUsers();
+            //await DisplayConnectedUsers();
 
         }
 
