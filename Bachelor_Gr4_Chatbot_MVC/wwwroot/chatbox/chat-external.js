@@ -141,18 +141,6 @@ function browserTabFlash() {
     };
 }
 
-
-
-
-
-
-
-function browserTabFlash2(numberOfUnreadMessages) {
-    var title = document.title;
-    var newTitle = "(" + numberOfUnreadMessages + ") " + title;
-    var flash
-}
-
 function addBlink() {
     var element = document.getElementById("chatbox__light");
     element.classList.add("chatbox__blink");
