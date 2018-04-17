@@ -54,6 +54,26 @@ function startConnection(url, configureConnection) {
     }(signalR.TransportType.WebSockets);
 }
 
+function browserTabFlash() {
+    var title = document.title;
+    var newTitle = "Ny melding";
+    var timeout = false;
+
+    var blink = function () {
+        document.title = (document.title == newTitle ? title : newTitle);
+
+        // Stop blinking
+        if (document.hasFocus()) {
+            document.title = title;
+            clearInterval(timeout);
+        }
+    };
+
+    if (!timeout) {
+        // Start blinking
+        timeout = setInterval(blink, 400);
+    };
+}
 
 function displayReceivedMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
@@ -62,15 +82,23 @@ function displayReceivedMessage(message) {
     str += "</div>";*/
     // TODO: Html encode message.
     var encodedMsg = message;
+    var time = new Date().toLocaleTimeString();
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--right";
     liElement.innerHTML += '<img src="../images/user.png"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    liElement.innerHTML += '<p>' + encodedMsg + '<br />' + time + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+    browserTabFlash();
 }
+
+
+
+
+
 
 /*
 function displayReceivedMessage(message) {
@@ -90,13 +118,13 @@ function displayReceivedMessage(message) {
 function displaySentMessage(message) {
     // TODO: Html encode message.
     var encodedMsg = message;
-    var time = new Date().getTime();
+    var time = new Date().toLocaleTimeString();
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
     liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + time + '</p>';
+    liElement.innerHTML += '<p>' + encodedMsg + '<br />' + time + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 }

@@ -343,6 +343,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }
 
+
+
         public string GetStandardChatBotHello()
         {
             // TODO: Denne skal hentes fra et annet sted, kun testkode
@@ -700,10 +702,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 await Clients.Group(groupTo).InvokeAsync("receiveMessage", groupFrom, message);
             }
-
-
-
-
         }
 
         public async Task DisplayMessage2(Message message)

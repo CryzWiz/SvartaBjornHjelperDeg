@@ -28,7 +28,7 @@
     });
 })(jQuery);
 
-function sessionId() {
+function getSessionId() {
     //https://blogs.msmvps.com/ricardoperes/2015/10/29/persisting-signalr-connections-across-page-reloads/
     var sessionId = window.sessionStorage.sessionId;
 
@@ -81,12 +81,13 @@ function displaySentMessage(message) {
     str += "</div>";*/
     // TODO: Html encode message.
     var encodedMsg = message;
+    var time = new Date().toLocaleTimeString();
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--right";
     liElement.innerHTML += '<img src="../images/user.png"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    liElement.innerHTML += '<p>' + encodedMsg + '<br />' + time + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 
@@ -95,22 +96,25 @@ function displaySentMessage(message) {
 function displayReceivedMessage(message) {
     // TODO: Html encode message.
     var encodedMsg = message;
+    var time = new Date().toLocaleTimeString();
     // Add the sent message to the page.
     var liElement = document.createElement('div');
     liElement.className += "chatbox__body__message";
     liElement.className += " chatbox__body__message--left";
     liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-    liElement.innerHTML += '<p>' + encodedMsg + '</p>';
+    liElement.innerHTML += '<p>' + encodedMsg + '<br />' + time + '</p>';
     document.getElementById('chatbox__body').appendChild(liElement);
     document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+    browserTabFlash();
 
     // dummy element
     var dummyEl = document.getElementById('message');
     // check for focus
     var isFocused = (document.activeElement === dummyEl);
     if (isFocused === false) {
-        addBlink();
-        browserTabFlash();
+        //addBlink();
+        
     }
     else {
         removeBlink();
@@ -200,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Start the connection.
     startConnection('/chathub', function (connection) {
         // Create a function that the hub can call to broadcast messages.
-        connection.on('broadcastMessage', function (message) {
+        /*connection.on('broadcastMessage', function (message) {
             // TODO: Html encode display name and message.
             //var encodedName = name;
             var encodedMsg = message;
@@ -213,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('chatbox__body').appendChild(liElement);
             document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
 
-        });
+        });*/
 
 
         /// SignalR Client methods called from hub:
@@ -276,9 +280,6 @@ document.addEventListener('DOMContentLoaded', function () {
         connection.on('enableInputField', function (test) {
             messageInput.disabled = false;
         });
-
-
-
 
             // TODO: for 
             connection.on('displayPlaceInQueue', function (queNumber) {
