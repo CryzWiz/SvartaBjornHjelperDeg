@@ -50,7 +50,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgebase">knowledgebase id in database</param>
         /// <returns>QnAPairs found</returns>
-        Task<string> DownloadKnowledgeBase(int knowledgebase);
+        Task<List<QnAPairs>> DownloadKnowledgeBase(int knowledgebase);
 
     }
 }

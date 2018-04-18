@@ -130,7 +130,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="id">KnowledgeBase id in database</param>
         /// <returns>number of pairs added</returns>
-        Task<string> VerifyLocalDbToPublishedDb(int id);
+        Task<int> VerifyLocalDbToPublishedDb(int id);
 
     }
 }

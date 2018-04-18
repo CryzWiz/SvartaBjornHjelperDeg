@@ -562,8 +562,24 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<IActionResult> VerifyLocalKnowledgeBaseToOnlineKnowledgeBase(int id)
         {
             var r = await chatbotRepository.VerifyLocalDbToPublishedDb(id);
-            TempData["error"] = String.Format("{0}", r);
-            return RedirectToAction("QnABaseDetails", new { id = id });
+            //TempData["success"] = String.Format("{0}", r);
+            //return RedirectToAction("QnABaseDetails", new { id = id });
+
+            if (r == 0)
+            {
+                TempData["success"] = String.Format("Databasen er verifisert", r);
+                return RedirectToAction("QnABaseDetails", new { id = id });
+            }
+            else if (r < 0)
+            {
+                TempData["error"] = String.Format("Noe gikk galt..", r);
+                return RedirectToAction("QnABaseDetails", new { id = id });
+            }
+            else
+            {
+                TempData["success"] = String.Format("{0} QnA par ble lagt til i databasen", r);
+                return RedirectToAction("QnABaseDetails", new { id = id });
+            }
         }
     }
 }

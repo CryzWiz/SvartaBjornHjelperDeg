@@ -498,13 +498,24 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// Fetch all QnAPairs to a given knowledgebase
         /// </summary>
         /// <param name="id">knowledgebase id in database</param>
-        /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
+        /// <returns>List<QnAPairs>publishedQnAPairs</QnAPairs></returns>
         public async Task<List<QnAPairs>> GetPublishedQnAPairsAsync(int id)
         {
             var kbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnABotId == id);
             var b = await Task.Run(() => db.QnAPairs.Where(X => X.Published == true
             && X.KnowledgeBaseId == kbase.QnAKnowledgeBaseId).ToList());
 
+            return b;
+        }
+
+        /// <summary>
+        /// Fetch all QnAPairs to a given knowledgebase
+        /// </summary>
+        /// <param name="id">knowledgebase id in database</param>
+        /// <returns>List<QnAPairs>allQnAPairs</QnAPairs></returns>
+        public async Task<List<QnAPairs>> GetAllQnAPairsAsync(int id)
+        {
+            var b = await Task.Run(() => db.QnAPairs.Where(X => X.KnowledgeBaseId == id).ToList());
             return b;
         }
 
@@ -516,10 +527,74 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="id">KnowledgeBase id in database</param>
         /// <returns>number of pairs added</returns>
-        public async Task<string> VerifyLocalDbToPublishedDb(int id)
+        public async Task<int> VerifyLocalDbToPublishedDb(int id)
         {
             var onlineQnA = await qnaRepository.DownloadKnowledgeBase(id);
-            return onlineQnA;
+            var localQnA = await GetAllQnAPairsAsync(id);
+
+            string result = "";
+            //int size = onlineQnA.Count();
+            //int i = 2;
+            //while (i <= size - 2)
+            //{
+
+            //    result += i + ":" + onlineQnA[i] + " | " + (i+1) +":"+onlineQnA[i+1] + " | ";
+
+            //    i += 3;
+            //}
+            //return result;
+            int number = 0;
+            if (localQnA.Count > 0)
+            {
+                foreach (QnAPairs external_qna in onlineQnA)
+                {
+                    foreach (QnAPairs local_qna in localQnA)
+                    {
+                        if (!external_qna.Query.Equals(local_qna.Query) && !external_qna.Answer.Equals(local_qna.Answer))
+                        {
+                            var newQnA = new QnAPairs
+                            {
+                                Query = external_qna.Query,
+                                Answer = external_qna.Answer,
+                                KnowledgeBaseId = id,
+                                Trained = true,
+                                Published = true,
+                                PublishedDate = DateTime.Now,
+                                TrainedDate = DateTime.Now,
+                                Dep = "Web-sync - Må oppdateres"
+                            };
+                            await db.AddAsync(newQnA);
+                            await db.SaveChangesAsync();
+                            number++;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (QnAPairs external_qna in onlineQnA)
+                {
+                    var newQnA = new QnAPairs
+                    {
+                        Query = external_qna.Query,
+                        Answer = external_qna.Answer,
+                        KnowledgeBaseId = id,
+                        Trained = true,
+                        Published = true,
+                        PublishedDate = DateTime.Now,
+                        TrainedDate = DateTime.Now,
+                        Dep = "Web-sync - Må oppdateres"
+                    };
+                    await db.AddAsync(newQnA);
+                    await db.SaveChangesAsync();
+                    number++;
+                }
+            }
+            if (number > 0)
+                return number;
+            else
+                return -1;
+
         }
     }
 

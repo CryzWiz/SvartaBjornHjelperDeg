@@ -181,7 +181,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgebase">knowledgebase id in database</param>
         /// <returns>QnAPairs found</returns>
-        public async Task<string> DownloadKnowledgeBase(int knowledgebase)
+        public async Task<List<QnAPairs>> DownloadKnowledgeBase(int knowledgebase)
         {
             var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebase));
             var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
@@ -198,11 +198,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             {
                 string url = await response.Content.ReadAsStringAsync();
                 string urlClean = url.Replace("\"", "");
-                string[] surl = urlClean.Split("?");
-                string burl = surl[0];
-                string paramaters = surl[1];
                 string result = GetCSV(urlClean);
-                return result;
+
+                var clean = result.Replace("Editorial", "\t");
+
+                string[] temp = clean.Split("\t");
+                temp[2] = temp[2].Replace("Source", "");
+                for (int x = 2; x < temp.Count(); x++)
+                {
+                    temp[x] = temp[x].Trim();
+
+                }
+                result = temp.Count().ToString();
+                List<QnAPairs> qnas = new List<QnAPairs>();
+                int i = 2;
+                while (i < temp.Count()-1)
+                {
+                    var qna = new QnAPairs
+                    {
+                        Query = temp[i],
+                        Answer = temp[i + 1],
+                        Trained = true,
+                        Published = true,
+                        TrainedDate = DateTime.Now,
+                        PublishedDate = DateTime.Now,
+                        Dep = "Web",
+                        KnowledgeBaseId = b.QnAKnowledgeBaseId
+                    };
+                    qnas.Add(qna);
+                    i = i + 3;
+                }
+
+                return qnas;
             }
             else return null;
             //throw new NotImplementedException();
