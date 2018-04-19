@@ -61,7 +61,7 @@ Tom side, viser chat fra brukers side.
 
 
     <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>
-   <!--<script src="~/signalr/hubs"></script>
+   <!--<script src="~/chathub/hubs"></script>
 
  <script src="Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
@@ -81,13 +81,53 @@ Tom side, viser chat fra brukers side.
             $.connection.hub.start().done(function () {
                 chat.server.test();
             });*/
+            function setSignalRCookie(connectionId) {
+                var cookieName = "SignalRCookie";
 
+                if (!cookieExists(cookieName)) {
+                    var cookieValue = connectionId;
+
+   
+                    //var domain = "testDomain.com";
+                    //var path = "/path";
+
+                    // Cookie expire when browser is closed
+                    document.cookie = cookieName + "=" + cookieValue + ";expires=;";
+                    console.log("Cookie set: " + connectionId);
+                } else {
+                    console.log("SignalRCookie exists: " + document.cookie);
+                }
+            }
+
+            // Check if cookie with given cookieName exists
+            function cookieExists(cookieName) {
+                if (document.cookie.indexOf(cookieName + "=") >= 0) {
+                    return true;
+                }
+                return false;
+            }
+
+            document.cookie = "SignalRCookieTEST=TEST;expires=;path=/;";
             var connection = new signalR.HubConnection("chatHub");
+            /*    {
+                CookieContainer = new CookieContainer()
+            };
+            connection.CookieContainer.Add(cookie);*/
+            console.log(document.cookie);
+            
             connection.start()
-                .then(() => { console.log("Connection started"); })
+                .then(() => {
+                    console.log("Connection started");
+
+                    connection.on("returnConnectionId", function(connectionId) {
+                        setSignalRCookie(connectionId);
+                    });
+                })
                 .catch(error => { console.log(error.message); });
 
         });
+
+        
 
 
     </script>
