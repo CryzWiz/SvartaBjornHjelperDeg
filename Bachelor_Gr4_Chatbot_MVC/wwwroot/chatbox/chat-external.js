@@ -28,26 +28,41 @@
     });
 })(jQuery);
 
-// Get a random user id
-// Source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-function getRandomUserId() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    )
+
+
+
+
+// Check if cookie with given cookieName exists
+function cookieExists(cookieName) {
+    if (document.cookie.indexOf(cookieName + "=") >= 0) {
+        return true;
+    }
+    return false;
 }
 
-// Set cookie used in signalr to map all users active connections. 
+function getSessionId() {
+    //https://blogs.msmvps.com/ricardoperes/2015/10/29/persisting-signalr-connections-across-page-reloads/
+    var sessionId = window.sessionStorage.sessionId;
+
+    if (!sessionId) {
+        sessionId = window.sessionStorage.sessionId = Date.Now();
+    }
+
+    return sessionId;
+}
+
 function setSignalRCookie(cookieValue) {
     var cookieName = "SignalRCookie";
 
-    // Set cookie if it does not exist
-    if (!(document.cookie.indexOf(cookieName + "=") >= 0)) {
+    if (!cookieExists(cookieName)) {
         var cookieValue = cookieValue;
         var path = "/";
-        var expires = ""; // Cookie expire when browser is closed
 
-        document.cookie = cookieName + "=" + cookieValue + ";expires=" + expires + ";path=" + path + ";";
+        //var domain = "testDomain.com";
+        //var path = "/path";
 
+        // Cookie expire when browser is closed
+        document.cookie = cookieName + "=" + cookieValue + ";expires=;path=" + path + ";";
         console.log("Cookie set: " + document.cookie);
     } else {
         console.log("SignalRCookie exists: " + document.cookie);
@@ -173,8 +188,8 @@ $(function () {
     var conversationIdForResult = null;
 
 
-    setSignalRCookie(getRandomUserId());
-    var connection = new signalR.HubConnection("https://allanarnesen.com/chathub");
+    setSignalRCookie("chat-external-cookie");
+    var connection = new signalR.HubConnection("chatHub");
 
     /// SignalR Client methods called from hub:
     connection.on('send', function (message, from) {
