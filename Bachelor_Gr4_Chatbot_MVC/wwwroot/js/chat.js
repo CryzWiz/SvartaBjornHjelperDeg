@@ -95,11 +95,6 @@ function displayReceivedMessage(message) {
     browserTabFlash();
 }
 
-
-
-
-
-
 /*
 function displayReceivedMessage(message) {
     // TODO: Html encode message.
