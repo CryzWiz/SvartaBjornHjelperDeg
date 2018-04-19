@@ -8,29 +8,33 @@
 
 <h2>Chat</h2>
 
+<!-- Navigasjon -->
 <div class="col-sm-3" role="navigation">
     <!-- Login/out -->
     <ul class="nav">
-        <li>
-            <div class="container">
+        <!--<li>
+            <div class="container" style="padding-bottom: 20px;">
                 <button class="btn btn-primary" id="chatLogin">Logg inn</button>
             </div>
         </li>
+    </li>-->
+
         <!-- Queue -->
         <li>
             
 
         </li>
         <li>
-            <div class="container">
+            <div id="queueContainer" class="container" style="padding-bottom: 20px;">
                 <button class="btn btn-primary" id="pickFromQueue">Velg samtale fra køen</button>
-                <p class="text-primary"id="inQueue">Antall brukere i kø: </p>
+                <p class="text-primary" id="inQueue">Antall brukere i kø: </p>
                 <p class="text-primary" id="waitTime">Ventetid: </p>
             </div>
         </li>
     </ul>
 </div>
 
+<!-- Chat vindu -->
 <div class="col-sm-9">
 
         <div class="panel panel-primary" style="display: flex; flex-direction: column;">
@@ -41,7 +45,7 @@
                 </div>
             </div>
 
-           <div class="panel-body" id="chatbox__body" style="min-height: 300px; max-height: 500px;overflow-y: scroll;">
+           <div class="panel-body" id="chatbox__body" style="min-height: 500px; max-height: 500px;overflow-y: scroll;">
 
                 Du er ikke påkoblet noen chat.
             </div>

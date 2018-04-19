@@ -11,9 +11,10 @@ using System;
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180411001637_Refactor ChatGroupName")]
+    partial class RefactorChatGroupName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,15 +265,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
 
                     b.Property<string>("Answer");
 
-                    b.Property<string>("Dep");
-
-                    b.Property<int>("KnowledgeBaseId");
+                    b.Property<string>("KnowledgeBaseId");
 
                     b.Property<bool>("Published");
 
                     b.Property<DateTime>("PublishedDate");
-
-                    b.Property<int?>("QnAKnowledgeBaseId");
 
                     b.Property<string>("Query");
 
@@ -281,8 +278,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<DateTime>("TrainedDate");
 
                     b.HasKey("QnAPairsId");
-
-                    b.HasIndex("QnAKnowledgeBaseId");
 
                     b.ToTable("QnAPairs");
                 });
@@ -437,13 +432,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                         .WithMany("GroupMembers")
                         .HasForeignKey("ChatGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairs", b =>
-                {
-                    b.HasOne("Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAKnowledgeBase")
-                        .WithMany("QnAPairs")
-                        .HasForeignKey("QnAKnowledgeBaseId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

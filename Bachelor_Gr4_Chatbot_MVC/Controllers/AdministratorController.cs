@@ -219,6 +219,98 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult RegisterChatGroup()
+        {
+            return View(new RegisterChatGroupViewModel());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterChatGroup(RegisterChatGroupViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                ChatGroup chatGroup = new ChatGroup
+                {
+                    ChatGroupName = model.ChatGroupName
+                };
+
+                var result = await repository.AddChatGroup(chatGroup);
+                if(result)
+                {
+                    TempData["success"] = String.Format("Chat gruppen: '{0}' ble opprettet", model.ChatGroupName);
+                    return RedirectToAction("RegisterChatGroup");
+                }
+
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under oppretting av char gruppe.";
+            return View(model);
+
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChatGroups()
+        {
+            IEnumerable<ChatGroupViewModel> chatGroups = await repository.GetAllChatGroupsVM();
+            return View(chatGroups);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditChatGroup(string id)
+        {
+            ChatGroup chatGroup = await repository.GetChatGroupByIdAsync(id);
+            ChatGroupEditViewModel model = new ChatGroupEditViewModel
+            {
+                ChatGroupId = chatGroup.ChatGroupId,
+                ChatGroupName = chatGroup.ChatGroupName
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateChatGroup(ChatGroupEditViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                ChatGroup chatGroup = new ChatGroup
+                {
+                    ChatGroupId = model.ChatGroupId,
+                    ChatGroupName = model.ChatGroupName
+                };
+                bool success = await repository.UpdateChatGroupAsync(chatGroup);
+                if(success)
+                {
+                    TempData["success"] = "Chat gruppe ble oppdatert";
+                    return RedirectToAction("ChatGroups");
+                }
+ 
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under oppdatering av chat gruppe";
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteChatGroup(string id)
+        {
+            bool success = await repository.DeleteChatGroupAsync(id);
+            if(success)
+            {
+                TempData["success"] = "Chat gruppe ble slettet";
+                return RedirectToAction("ChatGroups");
+            }
+            // Something went wrong, show form again
+            TempData["error"] = "Feil under sletting av chat gruppe";
+            return RedirectToAction("ChatGroups");
+        }
+
 
 
 
@@ -229,7 +321,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// <summary>
         /// Code below is for Microsoft bots
         /// </summary>
-        
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Chatbots()
