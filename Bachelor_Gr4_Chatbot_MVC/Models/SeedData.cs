@@ -2,6 +2,7 @@
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,27 +13,28 @@ using System.Threading.Tasks;
 /// </summary>
 public class SeedData
 {
-    private const string AdminRole = "Admin";
-    private const string ChatEmployeeRole = "ChatEmployee";
-
     /// <summary>
     /// Initialize seeding of the database
     /// </summary>
     /// <param name="context"></param>
     /// <param name="userManager"></param>
     /// <param name="roleManager"></param>
+    /// <param name="roleOptions"></param>
     /// <returns></returns>
-    public static async Task InitializeAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public static async Task InitializeAsync(ApplicationDbContext context, 
+        UserManager<ApplicationUser> userManager, 
+        RoleManager<IdentityRole> roleManager, 
+        IOptions<RoleOptions> roleOptions)
     {
         if (!context.Roles.Any())
         {
-            await CreateRolesAsync(context, roleManager);
+            await CreateRolesAsync(context, roleManager, roleOptions.Value);
         }
 
         if(!context.Users.Any())
         {
-            await CreateAdminAsync(context, userManager);
-            await CreateUserAsync(context, userManager);
+            await CreateAdminAsync(context, userManager, roleOptions.Value);
+            await CreateUserAsync(context, userManager, roleOptions.Value);
         }
 
         if(!context.OpeningHours.Any())
@@ -67,10 +69,10 @@ public class SeedData
     /// <param name="context"></param>
     /// <param name="roleManager"></param>
     /// <returns></returns>
-    private static async Task CreateRolesAsync(ApplicationDbContext context, RoleManager<IdentityRole> roleManager)
+    private static async Task CreateRolesAsync(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, RoleOptions roleOptions)
     {
-        await roleManager.CreateAsync(new IdentityRole(AdminRole));
-        await roleManager.CreateAsync(new IdentityRole(ChatEmployeeRole));
+        await roleManager.CreateAsync(new IdentityRole(roleOptions.AdminRole));
+        await roleManager.CreateAsync(new IdentityRole(roleOptions.ChatEmployeeRole));
         await context.SaveChangesAsync();
     }
 
@@ -81,7 +83,7 @@ public class SeedData
     /// <param name="context"></param>
     /// <param name="userManager"></param>
     /// <returns></returns>
-    private static async Task CreateAdminAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    private static async Task CreateAdminAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleOptions roleOptions)
     {
         var admin = new ApplicationUser
         {
@@ -98,7 +100,7 @@ public class SeedData
         await userManager.CreateAsync(admin);
         await context.SaveChangesAsync();
 
-        await userManager.AddToRoleAsync(admin, AdminRole);
+        await userManager.AddToRoleAsync(admin, roleOptions.AdminRole);
         await context.SaveChangesAsync();
     }
 
@@ -109,7 +111,7 @@ public class SeedData
     /// <param name="context"></param>
     /// <param name="userManager"></param>
     /// <returns></returns>
-    private static async Task CreateUserAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    private static async Task CreateUserAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleOptions roleOptions)
     {
         var user = new ApplicationUser
         {
@@ -124,7 +126,7 @@ public class SeedData
         await userManager.CreateAsync(user);
         await context.SaveChangesAsync();
 
-        await userManager.AddToRoleAsync(user, ChatEmployeeRole);
+        await userManager.AddToRoleAsync(user, roleOptions.ChatEmployeeRole);
         await context.SaveChangesAsync();
 
         var user2 = new ApplicationUser
@@ -140,7 +142,7 @@ public class SeedData
         await userManager.CreateAsync(user2);
         await context.SaveChangesAsync();
 
-        await userManager.AddToRoleAsync(user2, ChatEmployeeRole);
+        await userManager.AddToRoleAsync(user2, roleOptions.ChatEmployeeRole);
         await context.SaveChangesAsync();
     }
 

@@ -1,4 +1,5 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
+using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -136,5 +137,64 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             
         }
 
+        /// <summary>
+        /// Add ChatGroup to the database
+        /// </summary>
+        /// <param name="chatGroup"></param>
+        /// <returns>bool result</returns>
+        public async Task<bool> AddChatGroup(ChatGroup chatGroup)
+        {
+            await db.ChatGroups.AddAsync(chatGroup);
+            return ((await db.SaveChangesAsync() > 0) ? true: false);
+        }
+
+        public async Task<IEnumerable<ChatGroupViewModel>> GetAllChatGroupsVM()
+        {
+            IEnumerable<ChatGroupViewModel> chatGroups = await (from chatGroup in db.ChatGroups
+                                                          select new ChatGroupViewModel
+                                                          {
+                                                              ChatGroupId = chatGroup.ChatGroupId,
+                                                              ChatGroupName = chatGroup.ChatGroupName
+                                                          }).ToListAsync();
+            return chatGroups;
+                            
+        }
+
+        public async Task<ChatGroup> GetChatGroupByIdAsync(string id)
+        {
+            return await db.ChatGroups.Where(x => x.ChatGroupId == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateChatGroupAsync(ChatGroup chatGroup)
+        {
+            try
+            {
+                // Check if UserGroup exists
+                ChatGroup updated = await GetChatGroupByIdAsync(chatGroup.ChatGroupId);
+                updated.ChatGroupName = chatGroup.ChatGroupName;
+
+                await Task.Run(() => db.ChatGroups.Update(updated));
+                await db.SaveChangesAsync();
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<bool> DeleteChatGroupAsync(string id)
+        {
+            try
+            {
+                ChatGroup chatGroup = await GetChatGroupByIdAsync(id);
+                await Task.Run(() => db.ChatGroups.Remove(chatGroup));
+                await db.SaveChangesAsync();
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }
