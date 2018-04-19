@@ -72,6 +72,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        public IActionResult UserChat2()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> OpeningHours()
         {
