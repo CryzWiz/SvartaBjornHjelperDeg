@@ -46,8 +46,7 @@ namespace Bachelor_Gr4_Chatbot_MVC
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
       
-
-
+            
             // Options
             services.Configure<EmailSenderOptions>(Configuration);
             services.Configure<RoleOptions>(Configuration);
@@ -85,6 +84,14 @@ namespace Bachelor_Gr4_Chatbot_MVC
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseCors(builder =>
+                // TODO: These settings MUST be fixed, potensial SAFETY RISK!!!!! Only testcode to see if we get CORS running
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader() 
+                           .AllowAnyMethod()
+                           .AllowCredentials()
+                    );
+
             app.UseStaticFiles();
 
             // TODO: .... Configure proxy server.
@@ -97,11 +104,6 @@ namespace Bachelor_Gr4_Chatbot_MVC
             app.UseAuthentication();
 
             app.UseSession();
-
-            app.UseCors(options =>
-                options.WithOrigins("https://allanarnesen.com")
-                    .AllowAnyMethod()
-                );
 
             app.UseSignalR(routes =>
             {
