@@ -3,6 +3,7 @@ using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Bachelor_Gr4_Chatbot_MVC.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
@@ -102,11 +103,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
-
             //TODO: DENNE SKAL FLYTTES
             await GetAllChatGroups();
-         
-            //var test = Context.Request.Cookies["ASP.NET_SessionId"].Value;
 
             await AddEmployeeToWorkGroupsBasedOnRole();
             await DisplayAllChatQueues(); // TODO: LLLLL
@@ -204,7 +202,23 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private string GetConnectionKey()
         {
             string connectionId = Context.ConnectionId;
-            return (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
+
+            string connectionKey = connectionId;
+            if(Context.User.Identity.IsAuthenticated)
+            {
+                connectionKey = Context.User.Identity.Name;
+            } else
+            {
+                var context = Context.Connection.GetHttpContext();
+                string signalRCookie = context.Request.Cookies["SignalRCookie"];
+                if(signalRCookie != null)
+                {
+                    connectionKey = signalRCookie;
+                }
+            }
+
+            return connectionKey;
+            //return (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
         }
 
         /// <summary>
@@ -765,6 +779,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             await Clients.All.InvokeAsync("displayAllChatQueues", queues);
 
+        }
+
+        public async Task Test()
+        {
+            await Clients.All.InvokeAsync("test2", "test melding fra chathub");
         }
 
 
