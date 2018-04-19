@@ -14,6 +14,7 @@ using Bachelor_Gr4_Chatbot_MVC.Services;
 using Bachelor_Gr4_Chatbot_MVC.Models.Repositories;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Microsoft.Bot.Connector;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Bachelor_Gr4_Chatbot_MVC
 {
@@ -85,6 +86,13 @@ namespace Bachelor_Gr4_Chatbot_MVC
             }
 
             app.UseStaticFiles();
+
+            // TODO: .... Configure proxy server.
+            /*app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });*/
+            // TODO: /
 
             app.UseAuthentication();
 

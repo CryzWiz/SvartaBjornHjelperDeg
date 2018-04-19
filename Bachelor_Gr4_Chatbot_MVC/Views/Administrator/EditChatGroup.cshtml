@@ -1,0 +1,52 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel.ChatGroupEditViewModel
+
+
+
+<div id="wrapper">
+
+    @await Html.PartialAsync("_Navbar_admin")
+
+
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+
+
+                    <!-- Page Content -->
+                    <h4>Rediger chat gruppe</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form asp-action="UpdateChatGroup">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="ChatGroupId" />
+                                <div class="form-group">
+                                    <label asp-for="ChatGroupName" class="control-label"></label>
+                                    <input asp-for="ChatGroupName" class="form-control" />
+                                    <span asp-validation-for="ChatGroupName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a asp-action="ChatGroups">Tilbake til chat grupper</a>
+                    </div>
+
+
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+
+</div>
+<!-- /#wrapper -->
