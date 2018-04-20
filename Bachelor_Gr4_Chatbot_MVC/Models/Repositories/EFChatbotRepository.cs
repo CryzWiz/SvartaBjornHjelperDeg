@@ -602,6 +602,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         }
 
+        /// <summary>
+        /// Post a query to the active knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>(string) response</returns>
         public async Task<string> PostToActiveKnowledgeBase(string comment)
         {
             var kbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.IsActive == true);

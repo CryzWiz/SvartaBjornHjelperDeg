@@ -51,12 +51,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            ChatbotDetails c = await chatbotRepository.GetActiveBot();
+            var c = await chatbotRepository.GetActiveQnABaseClassAsync();
             var model = new AdministratorIndexViewModel();
             if(c != null)
             {
                 model.ChatbotName = c.chatbotName;
-                model.ChatbotId = c.chatbotId;
+                model.ChatbotId = c.QnAId;
             }
             else
             {

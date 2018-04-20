@@ -235,6 +235,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             //throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public string GetCSV(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
@@ -247,6 +252,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return results;
         }
 
+        /// <summary>
+        /// Post comment to a given knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="knowledgebaseId"></param>
+        /// <returns></returns>
         public async Task<string> PostCommentToGivenKnowledgebase(string comment, int knowledgebaseId)
         {
             var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebaseId));
@@ -277,7 +288,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         }
 
-
+        /// <summary>
+        /// Post comment to active knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns></returns>
         public async Task<string> PostCommentToActiveKnowledgebase(string comment)
         {
             var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.IsActive == true));
