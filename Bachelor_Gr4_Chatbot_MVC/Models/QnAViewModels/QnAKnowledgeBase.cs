@@ -43,6 +43,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
             }
         }
 
+        public int QnAPairsPublished
+        {
+            get
+            {
+                var Published = 0;
+                foreach (QnAPairs i in QnAPairs)
+                {
+                    if (i.Published)
+                    {
+                        Published++;
+                    }
+                }
+                return Published;
+            }
+        }
+
         [DisplayName("Base Url")]
         // https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases
         public string RequestUrl {

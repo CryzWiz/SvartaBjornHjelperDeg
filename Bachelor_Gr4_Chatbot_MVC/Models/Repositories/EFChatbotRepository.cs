@@ -488,6 +488,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 db.QnAPairs.UpdateRange(qnaPairs);
                 await db.SaveChangesAsync();
 
+                var qbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == knowledgebaseId);
+                qbase.LastEdit = DateTime.Now;
+                db.QnAKnowledgeBase.Update(qbase);
+                await db.SaveChangesAsync();
+
                 return true;
             }
             else return false;
