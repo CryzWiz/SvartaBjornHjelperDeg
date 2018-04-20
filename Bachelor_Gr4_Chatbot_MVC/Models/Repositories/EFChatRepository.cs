@@ -75,7 +75,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
         public async Task<Conversation> GetConversationByIdAsync(int conversationId)
         {
-            Conversation conversation = await _db.Conversations.Where(x => x.ConversationId == conversationId).SingleOrDefaultAsync();
+            Conversation conversation = await _db.Conversations
+                .Where(x => x.ConversationId == conversationId)
+                .Include(x => x.Messages)
+                .FirstOrDefaultAsync();
             return conversation;
         }
 

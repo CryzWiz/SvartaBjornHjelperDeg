@@ -53,7 +53,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        
+        // Keep track of all active conversations
+        public readonly static ConcurrentDictionary<string, int> _activeConversations 
+            = new ConcurrentDictionary<string, int>();
 
         // ChatWorkers status
         public enum LogInStatus
@@ -103,13 +105,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
+
+
+
+
             //TODO: DENNE SKAL FLYTTES
             await GetAllChatGroups();
 
-            await AddEmployeeToWorkGroupsBasedOnRole();
+            //await AddEmployeeToWorkGroupsBasedOnRole();
             await DisplayAllChatQueues(); // TODO: LLLLL
 
-            // TODO: 
+            // TODO: ChatHubHandler skal fjernes
             if (key.Equals(connectionId))
             {
                 ChatHubHandler.ConnectedUsers.Add(key);
@@ -124,12 +130,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             // Add to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
-            
+
+
+            // Check if user has active conversations and display conversation if it exists
+            if (_activeConversations.TryGetValue(key, out int conversationId))
+            {
+                // TODO: Testcode, replace with functional code
+                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+                await Clients.Client(Context.ConnectionId).InvokeAsync("displayConversation", conversation);
+
+            }
+
             //await DisplayConnectedUsers();
-           // await DisplayQueueCount();
+            // await DisplayQueueCount();
         }
 
-                                                                    
+
 
         public async Task CreateQueueForEachChatGroup()
         {
@@ -247,7 +263,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <returns></returns>
         public async Task StartConversationWithChatBot()
         {
-            string connectionId = Context.ConnectionId;
+            string connectionId = Context.ConnectionId; // TODO: ENDRES TIL KEY!!!
             string userGroup = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
             Conversation conversation = await ConnectWithChatBot(userGroup);
 
@@ -260,7 +276,30 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await SetConversationId(userGroup, conversation.ConversationId);
             // TODO: GetStandardChatBotHello should be changed
             await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
+
         }
+
+        /// <summary>
+        /// Add conversation to list over all active conversations. 
+        /// </summary>
+        /// <param name="connectionKey"></param>
+        /// <param name="conversationId"></param>
+        public void AddConversationToActiveConversations(string connectionKey, int conversationId)
+        {
+            _activeConversations.TryAdd(connectionKey, conversationId);
+        }
+
+        /// <summary>
+        /// Remove conversation from list over all active conversations. 
+        /// </summary>
+        /// <param name="connectionKey"></param>
+        /// <param name="conversationId"></param>
+        public void RemoveConversationFromActiveConversations(string connectionKey)
+        {
+            _activeConversations.TryRemove(connectionKey, out int conversationId);
+        }
+
+
 
         public async Task EndConversationWithChatBot(int conversationId)
         {
@@ -290,6 +329,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string user = GetConnectionKey();
             string displayName = await GetDisplayName();
             string message = displayName + " forlot samtalen. ";
+            RemoveConversationFromActiveConversations(user);
+
             await Clients.Group(conversation.UserGroup1).InvokeAsync("conversationEnded", message, conversationId);
             await Clients.Group(conversation.UserGroup2).InvokeAsync("conversationEnded", message, conversationId);
         }
@@ -371,8 +412,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             conversation.Result = result;
             await _repository.UpdateConversationAsync(conversation);
         }
-
-             
+        
         public async Task JoinQueue()
         {
             string userGroup = GetConnectionKey();
@@ -437,8 +477,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayErrorMessageInChat(userGroup, "Feil under tilkobling av chat. "); // TODO: Error messages...
             }
         }
-
-
+        
         public async Task<bool> MessageIsKeyword(string message, int conversationId)
         {
             string msg = message.ToLower();
@@ -466,8 +505,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
             return null;
         }
-
-        
 
         public async Task PickFromSpecificQueue(string queueId)
         {
@@ -527,6 +564,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 try
                 {
                     Conversation conversation = await _repository.GetConversationByIdAsync((int)conversationId);
+
+                    AddConversationToActiveConversations(conversation.UserGroup1, (int)conversationId);
+
                     TimeSpan thisWaitTime = DateTime.Now - conversation.StartTime;
                     _waitTimeSum += thisWaitTime;
                     _waitTimeCounter += 1;
@@ -775,10 +815,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task DisplayAllChatQueues()
         {
             IEnumerable<ChatQueue> queues = await _repository.GetAllChatGroupsAsQueueAsync();
-
-
             await Clients.All.InvokeAsync("displayAllChatQueues", queues);
-
         }
 
         public async Task Test()
