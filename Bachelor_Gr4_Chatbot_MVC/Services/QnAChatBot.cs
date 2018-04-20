@@ -204,6 +204,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Services
                 return null;    // we dont have any active bots
             }
         }
+
+
+
+        // QNA - BOT, Code below is the code we are gonna use
+
+        public async Task<string> PostCommentToActiveBase(string comment)
+        {
+            var response = await _chatBotRepository.PostToActiveKnowledgeBase(comment);
+            return response;
+        }
     }
 }
 

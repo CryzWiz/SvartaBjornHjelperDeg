@@ -246,5 +246,66 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
 
             return results;
         }
+
+        public async Task<string> PostCommentToGivenKnowledgebase(string comment, int knowledgebaseId)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebaseId));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+
+            var client = new HttpClient();
+            var queryString = HttpUtility.ParseQueryString(String.Empty);
+
+            // Request headers
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.AskQuestionUrl;
+
+            HttpResponseMessage response;
+
+            string q = "{'question':'" + comment + "'}";
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes(q);
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PostAsync(uri, content);
+            }
+
+            return response.Content.ReadAsStringAsync().Result;
+
+        }
+
+
+        public async Task<string> PostCommentToActiveKnowledgebase(string comment)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.IsActive == true));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+
+            var client = new HttpClient();
+            var queryString = HttpUtility.ParseQueryString(String.Empty);
+
+            // Request headers
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.AskQuestionUrl;
+
+            HttpResponseMessage response;
+
+            string q = "{'question':'" + comment + "'}";
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes(q);
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PostAsync(uri, content);
+            }
+
+            return response.Content.ReadAsStringAsync().Result;
+
+        }
     }
 }

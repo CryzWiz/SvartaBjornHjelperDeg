@@ -132,5 +132,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>number of pairs added</returns>
         Task<int> VerifyLocalDbToPublishedDb(int id);
 
+        Task<string> PostToActiveKnowledgeBase(string comment);
+
     }
 }

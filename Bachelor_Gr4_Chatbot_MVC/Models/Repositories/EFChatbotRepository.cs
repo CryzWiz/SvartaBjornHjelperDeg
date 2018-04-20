@@ -601,6 +601,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 return -1;
 
         }
+
+        public async Task<string> PostToActiveKnowledgeBase(string comment)
+        {
+            var kbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.IsActive == true);
+            var response = await qnaRepository.PostCommentToActiveKnowledgebase(comment);
+            return response;
+        }
     }
 
 }
