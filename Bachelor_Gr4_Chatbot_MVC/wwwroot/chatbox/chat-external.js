@@ -51,6 +51,15 @@ function getSessionId() {
     return sessionId;
 }
 
+// Get a random user id
+function getRandomUserId() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+// Set cookie used in signalr to map all users active connections. 
 function setSignalRCookie(cookieValue) {
     var cookieName = "SignalRCookie";
 
@@ -188,7 +197,7 @@ $(function () {
     var conversationIdForResult = null;
 
 
-    setSignalRCookie("chat-external-cookie");
+    setSignalRCookie(getRandomUserId());
     var connection = new signalR.HubConnection("chatHub");
 
     /// SignalR Client methods called from hub:
