@@ -50,7 +50,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgebase">knowledgebase id in database</param>
         /// <returns>QnAPairs found</returns>
-        Task<string> DownloadKnowledgeBase(int knowledgebase);
+        Task<List<QnAPairs>> DownloadKnowledgeBase(int knowledgebase);
 
+        /// <summary>
+        /// Post a comment to the given knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="knowledgebaseId"></param>
+        /// <returns>(string) response</returns>
+        Task<string> PostCommentToGivenKnowledgebase(string comment, int knowledgebaseId);
+
+        /// <summary>
+        /// Post a comment to the active knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="knowledgebaseId"></param>
+        /// <returns>(string) response</returns>
+        Task<string> PostCommentToActiveKnowledgebase(string comment);
     }
 }

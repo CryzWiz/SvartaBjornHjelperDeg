@@ -285,7 +285,7 @@
                             </a>
                             @if (Model.ChatbotId > 0)
                             {
-                                <a asp-action="ViewChatbotDetails/@Model.ChatbotId" class="list-group-item">
+                                <a asp-action="QnABotDetails/@Model.ChatbotId" class="list-group-item">
                                     <i class='fa fa-tasks fa-fw'></i> @Html.DisplayFor(model => model.ChatbotName)
                                     <span class='pull-right text-muted small' style="color:green;">
                                         <em>Aktiv</em>

@@ -181,7 +181,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <param name="knowledgebase">knowledgebase id in database</param>
         /// <returns>QnAPairs found</returns>
-        public async Task<string> DownloadKnowledgeBase(int knowledgebase)
+        public async Task<List<QnAPairs>> DownloadKnowledgeBase(int knowledgebase)
         {
             var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebase));
             var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
@@ -198,16 +198,48 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             {
                 string url = await response.Content.ReadAsStringAsync();
                 string urlClean = url.Replace("\"", "");
-                string[] surl = urlClean.Split("?");
-                string burl = surl[0];
-                string paramaters = surl[1];
                 string result = GetCSV(urlClean);
-                return result;
+
+                var clean = result.Replace("Editorial", "\t");
+
+                string[] temp = clean.Split("\t");
+                temp[2] = temp[2].Replace("Source", "");
+                for (int x = 2; x < temp.Count(); x++)
+                {
+                    temp[x] = temp[x].Trim();
+
+                }
+                result = temp.Count().ToString();
+                List<QnAPairs> qnas = new List<QnAPairs>();
+                int i = 2;
+                while (i < temp.Count()-1)
+                {
+                    var qna = new QnAPairs
+                    {
+                        Query = temp[i],
+                        Answer = temp[i + 1],
+                        Trained = true,
+                        Published = true,
+                        TrainedDate = DateTime.Now,
+                        PublishedDate = DateTime.Now,
+                        Dep = "Web",
+                        KnowledgeBaseId = b.QnAKnowledgeBaseId
+                    };
+                    qnas.Add(qna);
+                    i = i + 3;
+                }
+
+                return qnas;
             }
             else return null;
             //throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public string GetCSV(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
@@ -218,6 +250,77 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             sr.Close();
 
             return results;
+        }
+
+        /// <summary>
+        /// Post comment to a given knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="knowledgebaseId"></param>
+        /// <returns></returns>
+        public async Task<string> PostCommentToGivenKnowledgebase(string comment, int knowledgebaseId)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == knowledgebaseId));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+
+            var client = new HttpClient();
+            var queryString = HttpUtility.ParseQueryString(String.Empty);
+
+            // Request headers
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.AskQuestionUrl;
+
+            HttpResponseMessage response;
+
+            string q = "{'question':'" + comment + "'}";
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes(q);
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PostAsync(uri, content);
+            }
+
+            return response.Content.ReadAsStringAsync().Result;
+
+        }
+
+        /// <summary>
+        /// Post comment to active knowledgebase and return the response
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        public async Task<string> PostCommentToActiveKnowledgebase(string comment)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.IsActive == true));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+
+            var client = new HttpClient();
+            var queryString = HttpUtility.ParseQueryString(String.Empty);
+
+            // Request headers
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            var uri = b.AskQuestionUrl;
+
+            HttpResponseMessage response;
+
+            string q = "{'question':'" + comment + "'}";
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes(q);
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                response = await client.PostAsync(uri, content);
+            }
+
+            return response.Content.ReadAsStringAsync().Result;
+
         }
     }
 }
