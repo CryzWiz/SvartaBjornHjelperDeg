@@ -38,13 +38,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
     public class ChatHub : Hub
     {
-        private readonly IChatRepository _repository;
+        private readonly IChatRepository _chatRepository;
+        private readonly IChatbotRepository _chatBotRepository;
         private readonly IChatBot _chatBot;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleOptions _roleOptions;
 
         // Chat keyword constants
         private const string Exit = "avslutt";
+        private const string RouteToChatWorker = "medarbeider";
 
         // ChatBot user constant
         private const string ChatBot = "ChatBot";
@@ -84,12 +86,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         IEnumerable<ChatGroup> _allChatGroups;
        
-        public ChatHub(IChatRepository repository, 
+        public ChatHub(IChatRepository chatRepository,
+            IChatbotRepository chatbotRepository,
             IChatBot chatBot, 
             UserManager<ApplicationUser> userManager,
             IOptions<RoleOptions> roleOptions)
         {
-            _repository = repository;
+            _chatRepository = chatRepository;
+            _chatBotRepository = chatbotRepository;
             _chatBot = chatBot;
             _userManager = userManager;
             _roleOptions = roleOptions.Value;
@@ -136,7 +140,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             if (_activeConversations.TryGetValue(key, out int conversationId))
             {
                 // TODO: Testcode, replace with functional code
-                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+                Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
                 await Clients.Client(Context.ConnectionId).InvokeAsync("displayConversation", conversation);
 
             }
@@ -149,7 +153,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task CreateQueueForEachChatGroup()
         {
-            IEnumerable<ChatQueue> chatQueues = await _repository.GetAllChatGroupsAsQueueAsync();
+            IEnumerable<ChatQueue> chatQueues = await _chatRepository.GetAllChatGroupsAsQueueAsync();
         }
 
         public async Task SetChatEmployeeStatus(string userGroup, int status)
@@ -186,30 +190,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
 
 
-        public async Task<Conversation> ConnectWithChatBot(string userGroup)
-        {
-            try
-            {
-                string conversationToken = await _chatBot.GetConversationTokenAsString();
-                // Create conversation 
-                Conversation conversation = new Conversation
-                {
-                    ConversationToken = conversationToken,
-                    UserGroup1 = userGroup,
-                    IsChatBot = true,
-                    StartTime = DateTime.Now
-                };
 
-                // Save conversation
-                int conversationId = await _repository.AddConversationAsync(conversation);
-
-                conversation.ConversationId = conversationId;
-                return conversation;
-            } catch(Exception exception)
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Get key used to map connection in Single-user group and In-memory connection mapping. 
@@ -249,7 +230,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 try
                 {
-                    displayName = await _repository.GetName(Context.User.Identity.Name);
+                    displayName = await _chatRepository.GetName(Context.User.Identity.Name);
                 } catch(Exception e) {
                     displayName = "Chat-medarbeider";
                 }
@@ -258,26 +239,34 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
 
         /// <summary>
-        /// Connects user with chatbot and diplays standard ChatBot "Hello" message. 
+        /// Start conversation with ChatBot and display ChatBot "Hello" message. 
         /// </summary>
         /// <returns></returns>
         public async Task StartConversationWithChatBot()
         {
-            string connectionId = Context.ConnectionId; // TODO: ENDRES TIL KEY!!!
-            string userGroup = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
-            Conversation conversation = await ConnectWithChatBot(userGroup);
+            string userGroup = GetConnectionKey();
 
-            if(conversation == null)
+            Conversation conversation = new Conversation
+            {
+                UserGroup1 = userGroup,
+                IsChatBot = true,
+                StartTime = DateTime.Now
+            };
+
+            try
+            {
+                int conversationId = await _chatRepository.AddConversationAsync(conversation);
+                conversation.ConversationId = conversationId;
+            } catch
             {
                 await DisplayChatBotConnectionError(userGroup);
                 return;
             }
-            await SetChatBotToken(userGroup, conversation.ConversationToken);
-            await SetConversationId(userGroup, conversation.ConversationId);
-            // TODO: GetStandardChatBotHello should be changed
-            await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
 
+            await SetConversationId(userGroup, conversation.ConversationId);
+            await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
         }
+
 
         /// <summary>
         /// Add conversation to list over all active conversations. 
@@ -339,10 +328,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             try
             {
-                Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+                Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
                 conversation.EndTime = DateTime.Now;
                 conversation.Result = true; // Standard result set to true, but user can modify
-                await _repository.UpdateConversationAsync(conversation);
+                await _chatRepository.UpdateConversationAsync(conversation);
                 return conversation;
             } catch(Exception e)
             {
@@ -398,8 +387,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }
 
-
-
         public string GetStandardChatBotHello()
         {
             // TODO: Denne skal hentes fra et annet sted, kun testkode
@@ -408,9 +395,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task RegisterConversationResult(int conversationId, bool result)
         {
-            Conversation conversation = await _repository.GetConversationByIdAsync(conversationId);
+            Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
             conversation.Result = result;
-            await _repository.UpdateConversationAsync(conversation);
+            await _chatRepository.UpdateConversationAsync(conversation);
         }
         
         public async Task JoinQueue()
@@ -426,7 +413,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             try
             {
-                int conversationId = await _repository.AddConversationAsync(conversation);
+                int conversationId = await _chatRepository.AddConversationAsync(conversation);
                 //_queue.Enqueue(userGroup);
                 _queue.Enqueue(conversationId);
 
@@ -462,7 +449,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             try
             {
-                int conversationId = await _repository.AddConversationAsync(conversation);
+                int conversationId = await _chatRepository.AddConversationAsync(conversation);
 
                 int? placeInQueue = queue.Enqueue(conversationId, userGroup);
                 if(placeInQueue != null)
@@ -521,12 +508,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 try
                 {
-                    Conversation conversation = await _repository.GetConversationByIdAsync((int)conversationId);
+                    Conversation conversation = await _chatRepository.GetConversationByIdAsync((int)conversationId);
                     queue.AddWaitTime(DateTime.Now - conversation.StartTime);
   
                     await DisplayWaitTime();
                     conversation.UserGroup2 = chatWorkerId;
-                    await _repository.UpdateConversationAsync(conversation);
+                    await _chatRepository.UpdateConversationAsync(conversation);
 
                     // Set groupId for chatworker and user
                     await SetGroupId(chatWorkerId, conversation.UserGroup1);
@@ -563,7 +550,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 try
                 {
-                    Conversation conversation = await _repository.GetConversationByIdAsync((int)conversationId);
+                    Conversation conversation = await _chatRepository.GetConversationByIdAsync((int)conversationId);
 
                     AddConversationToActiveConversations(conversation.UserGroup1, (int)conversationId);
 
@@ -573,7 +560,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                     await DisplayWaitTime();
                     conversation.UserGroup2 = chatWorkerId;
-                    await _repository.UpdateConversationAsync(conversation);
+                    await _chatRepository.UpdateConversationAsync(conversation);
 
                     // Set groupId for chatworker and user
                     await SetGroupId(chatWorkerId, conversation.UserGroup1);
@@ -665,7 +652,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 try
                 {
-                    await _repository.AddMessageAsync(msg);
+                    await _chatRepository.AddMessageAsync(msg);
                     
                 } catch (Exception e)
                 {
@@ -677,6 +664,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayErrorMessageInChat(from, "Sending av melding feilet, du er ikke koblet på noen chat");
             }           
         }
+
+
+        
 
         public async Task SendToChatBot(string conversationId, string conversationToken, string message)
         {
@@ -706,13 +696,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     try
                     {
 
-                        string response = await _chatBot.PostCommentByToken(conversationToken, message);
+                        string response = await _chatBotRepository.PostToActiveKnowledgeBase(message);
 
                         Message responseMsg = new Message
                         {
                             ConversationId = id,
                             From = ChatBot,
-                            DisplayName = "ChatBot",
+                            DisplayName = ChatBot,
                             Content = response,
                             IsChatBot = true,
                             IsChatWorker = false,
@@ -735,9 +725,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayChatBotConnectionError(from);
             }
 
+
             try
             {
-                await _repository.AddMessagesAsync(messages);
+                // Save messages
+                await _chatRepository.AddMessagesAsync(messages);
             } catch (Exception exception)
             {
                 // ChatBot should continue to work even if messages does not get stored to db. 
@@ -808,13 +800,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         
         private async Task GetAllChatGroups()
         {
-            IEnumerable<ChatGroup> chatGroups = await _repository.GetAllChatGroupsAsync();
+            IEnumerable<ChatGroup> chatGroups = await _chatRepository.GetAllChatGroupsAsync();
             _allChatGroups = chatGroups;
         }
 
         public async Task DisplayAllChatQueues()
         {
-            IEnumerable<ChatQueue> queues = await _repository.GetAllChatGroupsAsQueueAsync();
+            IEnumerable<ChatQueue> queues = await _chatRepository.GetAllChatGroupsAsQueueAsync();
             await Clients.All.InvokeAsync("displayAllChatQueues", queues);
         }
 

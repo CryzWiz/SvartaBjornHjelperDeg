@@ -242,7 +242,7 @@ $(function () {
     var groupId = "";
     var conversationId = null;
     var chatBotToken = "";
-    var chatIsWithBot = false;
+    var chatIsWithBot = true;
     var conversationIdForResult = null;
 
 
@@ -338,6 +338,8 @@ $(function () {
     connection.start()
         .then(() => {
             console.log("Connection started");
+            connection.invoke('startConversationWithChatBot');
+            console.log("Conversation with chatbot started");
 
             // Functions used when sending data to chathub
             function sendMessage() {

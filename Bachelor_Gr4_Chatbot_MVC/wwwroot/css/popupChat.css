@@ -233,29 +233,6 @@
     min-width:70%;
 }
 
-.chatbox--empty {
-    height: 262px;
-}
-
-.chatbox--empty.chatbox--tray {
-    bottom: -212px;
-}
-
-.chatbox--empty.chatbox--closed {
-    bottom: -262px;
-}
-
-.chatbox--empty .chatbox__body,
-.chatbox--empty .chatbox__message,
-.chatbox--empty .chatbox__button
-{
-    display: none;
-}
-
-.chatbox--empty .chatbox__credentials {
-    display: block;
-}
-
 .chat-message-sender {
     position: relative;
     background-color: #fff;
