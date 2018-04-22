@@ -354,8 +354,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 response = await client.PostAsync(uri, content);
             }
-
-            return response.Content.ReadAsStringAsync().Result;
+            JObject o = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+            JArray a = (JArray)o["answers"];
+            var result = (string)o.SelectToken("['answers'][0]['answer']");
+            return result;
 
         }
 

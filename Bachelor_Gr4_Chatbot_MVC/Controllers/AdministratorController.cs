@@ -684,12 +684,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
             if (r)
             {
-                TempData["success"] = String.Format("QnA paret {0} er slettet", r);
+                TempData["success"] = String.Format("QnA paret {0} er slettet", id);
                 return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
             }
             else
             {
-                TempData["error"] = String.Format("Noe gikk galt..", r);
+                TempData["error"] = String.Format("Noe gikk galt..QnA paret {0} ble ikke slettet", id);
                 return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
             }
             
