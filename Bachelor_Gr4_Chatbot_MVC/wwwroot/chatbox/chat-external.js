@@ -28,50 +28,31 @@
     });
 })(jQuery);
 
-
-
-
-
-// Check if cookie with given cookieName exists
-function cookieExists(cookieName) {
-    if (document.cookie.indexOf(cookieName + "=") >= 0) {
-        return true;
-    }
-    return false;
-}
-
-function getSessionId() {
-    //https://blogs.msmvps.com/ricardoperes/2015/10/29/persisting-signalr-connections-across-page-reloads/
-    var sessionId = window.sessionStorage.sessionId;
-
-    if (!sessionId) {
-        sessionId = window.sessionStorage.sessionId = Date.Now();
-    }
-
-    return sessionId;
-}
+const RECEIVED_MESSAGE_POSISTION = " chatbox__body__message--left";
+const SENT_MESSAGE_POSITION = " chatbox__body__message--right";
+const NARVIK_KOMMUNE_IMAGE = "<img src='../images/narvik_kommune_small.jpg'/>";
+const USER_IMAGE = "<img src='../images/user.png'/>";
 
 // Get a random user id
+// Source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
 function getRandomUserId() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    )
 }
 
 // Set cookie used in signalr to map all users active connections. 
 function setSignalRCookie(cookieValue) {
     var cookieName = "SignalRCookie";
 
-    if (!cookieExists(cookieName)) {
+    // Set cookie if it does not exist
+    if (!(document.cookie.indexOf(cookieName + "=") >= 0)) {
         var cookieValue = cookieValue;
         var path = "/";
+        var expires = ""; // Cookie expire when browser is closed
 
-        //var domain = "testDomain.com";
-        //var path = "/path";
+        document.cookie = cookieName + "=" + cookieValue + ";expires=" + expires + ";path=" + path + ";";
 
-        // Cookie expire when browser is closed
-        document.cookie = cookieName + "=" + cookieValue + ";expires=;path=" + path + ";";
         console.log("Cookie set: " + document.cookie);
     } else {
         console.log("SignalRCookie exists: " + document.cookie);
@@ -98,7 +79,7 @@ function displaySentMessage(message) {
 
 }
 
-function displayReceivedMessage(message) {
+function displayReceivedMessage2(message) {
     // TODO: Html encode message.
     var encodedMsg = message;
     var time = new Date().toLocaleTimeString();
@@ -125,6 +106,74 @@ function displayReceivedMessage(message) {
         removeBlink();
     }
     
+}
+
+function displayConversation(conversation) {
+    var str = "";
+    $.each(conversation.messages, function (index, message) {
+        str += "<div class='container'>";
+        str += "<button class='btn btn-primary'";
+        str += "id = '" + queue.chatGroupId + "'>";
+        str += queue.chatGroupName;
+        str += "</button>";
+        str += "<p class='text-primary'>Antall brukere i kø: " + queue.count + "</p>";
+        str += "</div>";
+       // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
+    });
+    $("#chatbox__body").html(str);
+}
+
+function displayMessage(message, position, image) {
+    var time = new Date().toLocaleTimeString();
+    //var time = message.DateTime;
+
+    var str = "<div class='chatbox__body__message" + position + "'>";
+    str += image;
+    //str += "<p>" + message.content + "<br />" + time + "</p>";
+    str += "<p>" + message + "<br />" + time + "</p>";
+    str += "</div>";
+
+    $("#chatbox__body").append(str);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+    browserTabFlash();
+    // dummy element
+    var dummyEl = document.getElementById('message');
+    // check for focus
+    var isFocused = (document.activeElement === dummyEl);
+    if (isFocused === false) {
+        //addBlink();
+    }
+    else {
+        removeBlink();
+    }
+}
+
+function displayReceivedMessage(message) {
+    // TODO: Html encode message.
+    var encodedMsg = message;
+    var time = new Date().toLocaleTimeString();
+    // Add the received message to the page.
+    var str = "";
+    str += "<div class='chatbox__body__message chatbox__body__message--left'>";
+    str += "<img src='../images/narvik_kommune_small.jpg'/>";
+    str += "<p>" + encodedMsg + "<br />" + time + "</p>";
+    str += "</div>";
+
+    $("#chatbox__body").append(str);
+    document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
+
+    browserTabFlash();
+    // dummy element
+    var dummyEl = document.getElementById('message');
+    // check for focus
+    var isFocused = (document.activeElement === dummyEl);
+    if (isFocused === false) {
+        //addBlink();
+    }
+    else {
+        removeBlink();
+    }
 }
 
 
@@ -193,13 +242,13 @@ $(function () {
     var groupId = "";
     var conversationId = null;
     var chatBotToken = "";
-    var chatIsWithBot = false;
+    var chatIsWithBot = true;
     var conversationIdForResult = null;
 
 
     setSignalRCookie(getRandomUserId());
-    var connection = new signalR.HubConnection("chatHub");
-
+    //var connection = new signalR.HubConnection("https://allanarnesen.com/chathub");
+    var connection = new signalR.HubConnection("chathub");
     /// SignalR Client methods called from hub:
     connection.on('send', function (message, from) {
         groupId = from;
@@ -226,10 +275,12 @@ $(function () {
     connection.on('receiveMessage', function (groupFrom, message) {
         //groupId = groupFrom;
         displayReceivedMessage(message);
+        //displayMessage(message, RECEIVED_MESSAGE_POSITION, NARVIK_KOMMUNE_IMAGE);
     });
 
     connection.on('sendMessage', function (message) {
-        displaySentMessage(message);
+        //displaySentMessage(message);
+        displayMessage(message, SENT_MESSAGE_POSITION, USER_IMAGE);
     });
 
     connection.on('setConversationId', function (id) {
@@ -266,6 +317,18 @@ $(function () {
         messageInput.disabled = false;
     });
 
+    connection.on('displayConversation', function (conversation) {
+        console.log("displayConversation", conversation);
+        //$("#chatbox__body").html("test");
+        //displayReceivedMessage("test");
+
+        //displayConversation(conversation);
+    });
+
+    connection.on('alert', function (message) {
+        alert(message);
+    });
+
     // TODO: for 
     connection.on('displayPlaceInQueue', function (queNumber) {
         displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
@@ -275,6 +338,8 @@ $(function () {
     connection.start()
         .then(() => {
             console.log("Connection started");
+            connection.invoke('startConversationWithChatBot');
+            console.log("Conversation with chatbot started");
 
             // Functions used when sending data to chathub
             function sendMessage() {
@@ -331,6 +396,7 @@ $(function () {
 
 
         })
+        
         .catch(error => { console.log(error.message); });
 
 });
