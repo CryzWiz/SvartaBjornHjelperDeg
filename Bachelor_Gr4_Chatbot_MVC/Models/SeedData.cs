@@ -26,6 +26,12 @@ public class SeedData
         RoleManager<IdentityRole> roleManager, 
         IOptions<RoleOptions> roleOptions)
     {
+
+        if (!context.UserChatGroup.Any())
+        {
+            await CreateUserChatGroups(context);
+        }
+
         if (!context.Roles.Any())
         {
             await CreateRolesAsync(context, roleManager, roleOptions.Value);
@@ -61,6 +67,7 @@ public class SeedData
         {
             await AddKnowledgeBase(context);
         }
+
     }
 
     /// <summary>
@@ -144,6 +151,24 @@ public class SeedData
 
         await userManager.AddToRoleAsync(user2, roleOptions.ChatEmployeeRole);
         await context.SaveChangesAsync();
+    }
+
+    private static async Task CreateUserChatGroups(ApplicationDbContext context)
+    {
+        var adminGroup = new ChatGroup
+        {
+            ChatGroupName = "Admin"
+        };
+
+        var chatWorkerGroup = new ChatGroup
+        {
+            ChatGroupName = "Chat medarbeider"
+        };
+
+        var it = new ChatGroup
+        {
+            ChatGroupName = "IT"
+        };
     }
 
     private static async Task CreateOpeningHours(ApplicationDbContext context)

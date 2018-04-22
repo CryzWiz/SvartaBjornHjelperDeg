@@ -292,15 +292,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task EndConversationWithChatBot(int conversationId)
         {
-            try
-            {
-                await SaveConversationWithResultSetToTrue(conversationId);
-                // TODO: Trengs det "stenges" noe i ChatBot??
-            }
-            catch (Exception exception)
-            {
-                // TODO
-            }
             string userGroup = GetConnectionKey();
             await Clients.Group(userGroup).InvokeAsync("endBotConversation", "Samtale med ChatBot avsluttet.", conversationId);
         }
@@ -310,7 +301,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             Conversation conversation = null;
             try
             {
-                conversation = await SaveConversationWithResultSetToTrue(conversationId);
+                conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
+                conversation.EndTime = DateTime.Now;
+                conversation.Result = true;
+                await _chatRepository.UpdateConversationAsync(conversation);
             } catch (Exception e)
             {
                 // TODO
@@ -324,20 +318,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.Group(conversation.UserGroup2).InvokeAsync("conversationEnded", message, conversationId);
         }
 
-        public async Task<Conversation> SaveConversationWithResultSetToTrue(int conversationId)
+       /* public async Task<Conversation> SaveConversationWithGivenResult(int conversationId, bool result)
         {
             try
             {
-                Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
-                conversation.EndTime = DateTime.Now;
-                conversation.Result = true; // Standard result set to true, but user can modify
-                await _chatRepository.UpdateConversationAsync(conversation);
+
                 return conversation;
             } catch(Exception e)
             {
                 throw;
             }
-        }
+        }*/
 
         private async Task DisplayErrorMessageInChat(string userGroup, string message)
         {
@@ -400,7 +391,29 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await _chatRepository.UpdateConversationAsync(conversation);
         }
         
-        public async Task JoinQueue()
+
+        public async Task JoinQueue(Conversation conversation)
+        {
+            try
+            {
+                _queue.Enqueue(conversation.ConversationId);
+                if (_inQueue.TryAdd(conversation.UserGroup1, conversation.ConversationId))
+                {
+                    await DisplayQueueCount();
+                }
+
+                int placeInQueue = _inQueue.Count();
+                await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", placeInQueue);
+                await SetConversationId(conversation.UserGroup1, conversation.ConversationId);
+            }
+            catch (Exception exception)
+            {
+                await DisplayErrorMessageInChat(conversation.UserGroup1, "Feil under tilkobling av chat. "); // TODO: Error messages...
+            }
+
+        }
+
+        /*public async Task JoinQueue()
         {
             string userGroup = GetConnectionKey();
             //Create conversation
@@ -429,12 +442,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 int placeInQueue = _inQueue.Count();
                 await Clients.Group(userGroup).InvokeAsync("displayPlaceInQueue", placeInQueue);
                 await SetConversationId(userGroup, conversationId);
-
-            } catch (Exception exception)
+            }
+            catch (Exception exception)
             {
                 await DisplayErrorMessageInChat(userGroup, "Feil under tilkobling av chat. "); // TODO: Error messages...
             }
-        }
+
+        }*/
 
         public async Task JoinSpecificQueue(ChatQueue queue)
         {
@@ -471,11 +485,57 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             if(msg.Equals(Exit))
             {
+                try
+                {
+                    await EndConversationWithChatBot(conversationId);
+                    Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
+                    conversation.EndTime = DateTime.Now;
+                    conversation.Result = true;
+                    await _chatRepository.UpdateConversationAsync(conversation);
+                }
+                catch (Exception exception)
+                {
+                    // TODO
+                }
+                return true;
+            } else if (msg.Equals(RouteToChatWorker))
+            {
                 await EndConversationWithChatBot(conversationId);
+                await RedirectToChatWorker(conversationId);
                 return true;
             }
             return false;
         }
+
+        public async Task RedirectToChatWorker(int conversationId)
+        {
+            try
+            {
+                string userGroup = GetConnectionKey();
+
+                Conversation chatbotConversation = await _chatRepository.GetConversationByIdAsync(conversationId);
+                chatbotConversation.EndTime = DateTime.Now;
+                chatbotConversation.Result = false;
+                
+                Conversation chatWorkerConversation = new Conversation
+                {
+                    IsChatBot = false,
+                    StartTime = DateTime.Now,
+                    UserGroup1 = userGroup,
+                    LinkedConversation = chatbotConversation.ConversationId
+                };
+
+                int chatworkerConversationId = await _chatRepository.AddConversationAsync(chatWorkerConversation);
+
+                chatbotConversation.LinkedConversation = chatworkerConversationId;
+                await _chatRepository.UpdateConversationAsync(chatbotConversation);
+                await JoinQueue(chatWorkerConversation);
+            } catch (Exception e)
+            {
+                // TODO: 
+            }
+        }
+
 
         private int? Dequeue()
         {
@@ -488,7 +548,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                         return conversationId;
                     }
                 }
-
             }
             return null;
         }
@@ -816,6 +875,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
 
 
+        
 
 
 

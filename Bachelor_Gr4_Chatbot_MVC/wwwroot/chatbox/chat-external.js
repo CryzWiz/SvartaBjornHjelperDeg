@@ -42,12 +42,12 @@ function getRandomUserId() {
 }
 
 // Set cookie used in signalr to map all users active connections. 
-function setSignalRCookie(cookieValue) {
+function setSignalRCookie(value) {
     var cookieName = "SignalRCookie";
 
     // Set cookie if it does not exist
     if (!(document.cookie.indexOf(cookieName + "=") >= 0)) {
-        var cookieValue = cookieValue;
+        var cookieValue = value;
         var path = "/";
         var expires = ""; // Cookie expire when browser is closed
 
@@ -231,25 +231,32 @@ function displayConversationEnded(startMessage) {
 
     str += "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>";
     str += "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>";
-
-
+    
     displayReceivedMessage(str);
 }
 
-$(function () {
-    //document.addEventListener('DOMContentLoaded', function () {
+//$(function () {
+document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = null;
-    var chatBotToken = "";
+    var chatBotToken = ""; //TODO: SLETTES
     var chatIsWithBot = true;
     var conversationIdForResult = null;
 
+    function resetChatBotVariables(chatWithBot) {
+        chatIsWithBot = chatWithBot;
+        conversationId = null;
+        chatBotToken = "";
+    }
 
     setSignalRCookie(getRandomUserId());
     //var connection = new signalR.HubConnection("https://allanarnesen.com/chathub");
+
+    // Start connection
     var connection = new signalR.HubConnection("chathub");
-    /// SignalR Client methods called from hub:
+
+    /// SignalR Client functions that can be called from the hub
     connection.on('send', function (message, from) {
         groupId = from;
 
@@ -265,35 +272,42 @@ $(function () {
         document.getElementById('chatbox__body').appendChild(liElement);
         document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
         groupId = from;
+        console.log("connection on: send");
     });
 
     connection.on("returnConnectionId", function (connectionId) {
         console.log("returnConnectionId invoked");
         setSignalRCookie(connectionId);
+        console.log("connection on: returnConnectionId");
     });
 
     connection.on('receiveMessage', function (groupFrom, message) {
         //groupId = groupFrom;
         displayReceivedMessage(message);
+        console.log("connection on: receiveMessage");
         //displayMessage(message, RECEIVED_MESSAGE_POSITION, NARVIK_KOMMUNE_IMAGE);
     });
 
     connection.on('sendMessage', function (message) {
         //displaySentMessage(message);
         displayMessage(message, SENT_MESSAGE_POSITION, USER_IMAGE);
+        console.log("connection on: sendMessage");
     });
 
     connection.on('setConversationId', function (id) {
         conversationId = id;
+        console.log("connection on: setConversationId");
     });
 
     connection.on('setGroupId', function (id) {
         groupId = id;
+        console.log("connection on: setGroupId");
     });
 
     connection.on('setChatBotToken', function (token) {
         chatBotToken = token;
         chatIsWithBot = true;
+        console.log("connection on: setChatBotToken");
     });
 
     connection.on('errorMessage', function (message) {
@@ -301,7 +315,7 @@ $(function () {
     });
 
     connection.on('endBotConversation', function (message, id) {
-        resetChatBotVariables();
+        resetChatBotVariables(false);
         conversationIdForResult = id;
         displayConversationEnded(message);
     });
@@ -311,14 +325,16 @@ $(function () {
         conversationIdForResult = id;
         groupId = "";
         displayConversationEnded(message);
+        console.log("connection on: conversationEnded");
     });
 
     connection.on('enableInputField', function (test) {
         messageInput.disabled = false;
+        console.log("connection on: enableInputField");
     });
 
     connection.on('displayConversation', function (conversation) {
-        console.log("displayConversation", conversation);
+        console.log("connection on: displayConversation");
         //$("#chatbox__body").html("test");
         //displayReceivedMessage("test");
 
@@ -326,22 +342,24 @@ $(function () {
     });
 
     connection.on('alert', function (message) {
+        console.log("connection on: alert");
         alert(message);
     });
 
     // TODO: for 
     connection.on('displayPlaceInQueue', function (queNumber) {
         displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
+        console.log("connection on: displayPlaceInQueue");
     });
 
-    // Start connection
+    // Transport fallback
     connection.start()
         .then(() => {
             console.log("Connection started");
             connection.invoke('startConversationWithChatBot');
-            console.log("Conversation with chatbot started");
 
-            // Functions used when sending data to chathub
+            // Functions used to invoke methods in hub
+
             function sendMessage() {
                 if (messageInput.value.length > 0) { // if there is any input
                     if (chatIsWithBot) {
@@ -362,7 +380,7 @@ $(function () {
                     sendMessage();
                 }
             });
-
+            
             // Send message
             $("#sendmessage").click(function (event) {
                 sendMessage();

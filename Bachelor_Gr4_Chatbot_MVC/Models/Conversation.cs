@@ -11,9 +11,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         [Key]
         public int ConversationId { get; set; }
 
-        public string ConversationToken { get; set; }
+        //public string ConversationToken { get; set; }
 
-        // TODO: public int LinkedConversation { get; set; }
+        public int? LinkedConversation { get; set; }
 
         // User Group to the user initiating 
         public string UserGroup1 { get; set; }
