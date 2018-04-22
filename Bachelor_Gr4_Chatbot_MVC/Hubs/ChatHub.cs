@@ -245,12 +245,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task StartConversationWithChatBot()
         {
             string userGroup = GetConnectionKey();
+            var knowledgebase = await _chatBotRepository.GetActiveQnAKnowledgeBaseAsync();
+            var qnabase = await _chatBotRepository.GetActiveQnABaseClassAsync();
 
             Conversation conversation = new Conversation
             {
                 UserGroup1 = userGroup,
                 IsChatBot = true,
-                StartTime = DateTime.Now
+                StartTime = DateTime.Now,
+                KnowledgebaseId = knowledgebase.QnAKnowledgeBaseId,
+                QnABaseId = qnabase.QnAId
             };
 
             try

@@ -22,36 +22,25 @@
                     <thead>
                         <tr>
                             <th>
-                                QnAPairsId
-                                @*@Html.DisplayNameFor(model => model.QnAPairsId)*@
+                                Spørsmål
                             </th>
                             <th>
-                                Query
-                                @*@Html.DisplayNameFor(model => model.Query)*@
+                                Svar
                             </th>
                             <th>
-                                Answer
-                                @*@Html.DisplayNameFor(model => model.Answer)*@
+                                Område
                             </th>
                             <th>
-                                KnowledgeBaseId
-                                @*@Html.DisplayNameFor(model => model.KnowledgeBaseId)*@
+                                Trent
                             </th>
                             <th>
-                                Trained
-                                @*@Html.DisplayNameFor(model => model.Trained)*@
+                                Publisert
                             </th>
                             <th>
-                                Published
-                                @*@Html.DisplayNameFor(model => model.Published)*@
+                                Publisert dato
                             </th>
                             <th>
-                                PublishedDate
-                                @*@Html.DisplayNameFor(model => model.PublishedDate)*@
-                            </th>
-                            <th>
-                                TrainedDate
-                                @*@Html.DisplayNameFor(model => QnAPairs.TrainedDate)*@
+                                Trent dato
                             </th>
                             <th></th>
                         </tr>
@@ -61,16 +50,13 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.QnAPairsId)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.Query)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Answer)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.KnowledgeBaseId)
+                                    @Html.DisplayFor(modelItem => item.Dep)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Trained)
@@ -85,9 +71,8 @@
                                     @Html.DisplayFor(modelItem => item.TrainedDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                    @Html.ActionLink("Slett", "DeleteQnAPair", new { id = item.QnAPairsId }) | 
+                                    @Html.ActionLink("Endre", "EditQnAPair", new { id = item.QnAPairsId })
                                 </td>
                             </tr>
                         }

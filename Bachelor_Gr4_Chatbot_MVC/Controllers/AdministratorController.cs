@@ -15,6 +15,7 @@ using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel;
 using Bachelor_Gr4_Chatbot_MVC.Hubs;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
+using Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels;
 
 /// <summary>
 /// Controller holding all the Administrator functions / pages
@@ -672,6 +673,58 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 TempData["success"] = String.Format("{0} QnA par ble lagt til i databasen", r);
                 return RedirectToAction("QnABaseDetails", new { id = id });
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteQnAPair(int id)
+        {
+            var b = await chatbotRepository.GetKnowledgebaseIdToQnAPair(id);
+            var r = await chatbotRepository.DeleteQnAPair(id);
+            
+
+            if (r)
+            {
+                TempData["success"] = String.Format("QnA paret {0} er slettet", id);
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Noe gikk galt..QnA paret {0} ble ikke slettet", id);
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
+            }
+            
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditQnAPair(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewConversationsWithActiveBot()
+        {
+            var conversations = await chatbotRepository.GetConversationsWithActiveBotAsync();
+            return View(conversations);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewConversationDetails(int id)
+        {
+            var messages = await chatbotRepository.GetMessagesForConversationAsync(id);
+            var conversation = await chatbotRepository.GetConversationByIdAsync(id);
+
+            ViewMessagesForConversation viewmodel = new ViewMessagesForConversation
+            {
+                messages = messages,
+                conversation = conversation
+            };
+
+            return View(viewmodel);
         }
     }
 }

@@ -67,5 +67,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="knowledgebaseId"></param>
         /// <returns>(string) response</returns>
         Task<string> PostCommentToActiveKnowledgebase(string comment);
+
+        /// <summary>
+        /// Delete the given QnAPair from the knowledgebase it belongs to
+        /// </summary>
+        /// <param name="qnaPair">QnAPair to be deleted</param>
+        /// <returns><bool>True if ok, false if not</bool></returns>
+        Task<bool> DeleteSingleQnAPairAsync(QnAPairs qnaPair);
     }
 }

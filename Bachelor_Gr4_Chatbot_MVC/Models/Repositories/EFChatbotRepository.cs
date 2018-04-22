@@ -613,6 +613,69 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var response = await qnaRepository.PostCommentToActiveKnowledgebase(comment);
             return response;
         }
+
+        /// <summary>
+        /// Delete the given QnA pair from knowledgebase db. If it is published, delete it from the
+        /// QnAmake.ai base aswell.
+        /// </summary>
+        /// <param name="id">QnAPair to be deleted</param>
+        /// <returns>true if deleted, false if not</returns>
+        public async Task<bool> DeleteQnAPair(int id)
+        {
+            var qnaPair = await db.QnAPairs.FirstOrDefaultAsync(X => X.QnAPairsId == id);
+
+            if (qnaPair.Published)
+            {
+                var r = await qnaRepository.DeleteSingleQnAPairAsync(qnaPair);
+                if (r)
+                {
+                    db.Remove(qnaPair);
+                    int s = await db.SaveChangesAsync();
+                    if (s > 0) return true;
+                    else return false;
+                }
+                else return false;
+            }
+            else
+            {
+                db.Remove(qnaPair);
+                int r = await db.SaveChangesAsync();
+                if (r > 0) return true;
+                else return false;
+            }
+        }
+
+        /// <summary>
+        /// Fetch the id for the knowledgebase the QnAPair belongs to
+        /// </summary>
+        /// <param name="id"><int>id for qnapair</int></param>
+        /// <returns><int>knowledgebase id</int></returns>
+        public async Task<int> GetKnowledgebaseIdToQnAPair(int id)
+        {
+            var r = await db.QnAPairs.FirstOrDefaultAsync(x => x.QnAPairsId == id);
+            return r.KnowledgeBaseId;
+        }
+
+
+        public async Task<List<Conversation>> GetConversationsWithActiveBotAsync()
+        {
+            var knowledgebase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(x => x.IsActive == true);
+            var conversations = db.Conversations.Where(x => x.KnowledgebaseId == knowledgebase.QnAKnowledgeBaseId).ToList();
+
+            return conversations;
+        }
+
+        public async Task<List<Message>> GetMessagesForConversationAsync(int id)
+        {
+            var messages = await db.Messages.Where(x => x.ConversationId == id).ToListAsync();
+            return messages;
+        }
+
+        public async Task<Conversation> GetConversationByIdAsync(int id)
+        {
+            var conversation = await db.Conversations.FirstOrDefaultAsync(x => x.ConversationId == id);
+            return conversation;
+        }
     }
 
 }

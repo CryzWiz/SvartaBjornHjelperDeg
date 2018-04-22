@@ -146,6 +146,42 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         }
 
         /// <summary>
+        /// Delete the given QnAPair from the knowledgebase it belongs to
+        /// </summary>
+        /// <param name="qnaPair">QnAPair to be deleted</param>
+        /// <returns><bool>True if ok, false if not</bool></returns>
+        public async Task<bool> DeleteSingleQnAPairAsync(QnAPairs qnaPair)
+        {
+            var b = await Task.Run(() => db.QnAKnowledgeBase.FirstOrDefault(X => X.QnAKnowledgeBaseId == qnaPair.KnowledgeBaseId));
+            var c = await Task.Run(() => db.QnABaseClass.FirstOrDefault(X => X.QnAId == b.QnABotId));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", c.subscriptionKey);
+
+            string pair = "{'delete': {'qnaPairs': [{'answer': '" + qnaPair.Answer + "','question': '" + qnaPair.Query + "'}]},}";
+
+            HttpResponseMessage response;
+
+            var uri = b.AddQnAPairUrl;
+
+            var method = new HttpMethod("PATCH");
+            HttpContent content = new StringContent(pair, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(method, uri)
+            {
+                Content = content
+            };
+
+            response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else return false;
+
+        }
+
+        /// <summary>
         /// Publish given knowledgebase unpublished QnAPairs
         /// </summary>
         /// <param name="knowledgeBaseId">Id for knowledgebase at QnAMaker.ai</param>
@@ -318,9 +354,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 response = await client.PostAsync(uri, content);
             }
-
-            return response.Content.ReadAsStringAsync().Result;
+            JObject o = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+            JArray a = (JArray)o["answers"];
+            var result = (string)o.SelectToken("['answers'][0]['answer']");
+            return result;
 
         }
+
     }
 }

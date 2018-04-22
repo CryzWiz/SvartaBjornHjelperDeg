@@ -1,0 +1,89 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels.ViewMessagesForConversation
+
+@{
+    ViewData["Title"] = "ViewConversationDetails";
+}
+
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <h2>ViewConversationDetails</h2>
+
+                <p>
+                    <a asp-action="Create">Create New</a>
+                </p>
+            </div>
+            <hr />
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-1">
+                        <h4>Par</h4>
+                    </div>
+                    <div class="col-md-5">
+                        <h4>Spørsmål mottat</h4>
+                    </div>
+                    <div class="col-md-5">
+                        <h4>Svar sendt</h4>
+                    </div>
+                    <div class="col-md-1">
+
+                    </div>
+                </div>
+                <hr />
+
+                @if(Model.messages.Count() > 0)
+                            {
+                                var size = Model.messages.Count();
+                                int count = 0;
+                                for(int i = 0; i < size; i = i + 2)
+                                {
+                        <div class="panel-default">
+                            <div class="col-md-1">
+                                @if (count == 0)
+                                {
+                                    count = 1;
+
+                                }
+                                else
+                                {
+                                    count++;
+
+                                }
+                                @count
+                            </div>
+                            <div class="col-md-5">
+
+                                @Model.messages[i].Content
+
+                            </div>
+                            <div class="col-md-5">
+                                
+                                @Model.messages[i + 1].Content
+
+                            </div>
+                            <div class="col-md-1">
+                                @Html.ActionLink("Lagre", "Delete", new { /* id=item.PrimaryKey */ })
+                            </div>
+                        </div>
+                        
+                    }
+
+                }
+            </div>           
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}
