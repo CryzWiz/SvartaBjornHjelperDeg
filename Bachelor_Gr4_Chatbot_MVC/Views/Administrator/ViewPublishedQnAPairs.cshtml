@@ -22,28 +22,25 @@
                     <thead>
                         <tr>
                             <th>
-                                Query
-                                @*@Html.DisplayNameFor(model => model.Query)*@
+                                Spørsmål
                             </th>
                             <th>
-                                Answer
-                                @*@Html.DisplayNameFor(model => model.Answer)*@
+                                Svar
                             </th>
                             <th>
-                                Trained
-                                @*@Html.DisplayNameFor(model => model.Trained)*@
+                                Område
                             </th>
                             <th>
-                                Published
-                                @*@Html.DisplayNameFor(model => model.Published)*@
+                                Trent
                             </th>
                             <th>
-                                PublishedDate
-                                @*@Html.DisplayNameFor(model => model.PublishedDate)*@
+                                Publisert
                             </th>
                             <th>
-                                TrainedDate
-                                @*@Html.DisplayNameFor(model => QnAPairs.TrainedDate)*@
+                                Publisert dato
+                            </th>
+                            <th>
+                                Trent dato
                             </th>
                             <th></th>
                         </tr>
@@ -59,6 +56,9 @@
                                     @Html.DisplayFor(modelItem => item.Answer)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Dep)
+                                </td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Trained)
                                 </td>
                                 <td>
@@ -71,7 +71,8 @@
                                     @Html.DisplayFor(modelItem => item.TrainedDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Slett", "DeleteQnAPair", new { id = item.QnAPairsId })
+                                    @Html.ActionLink("Slett", "DeleteQnAPair", new { id = item.QnAPairsId }) | 
+                                    @Html.ActionLink("Endre", "EditQnAPair", new { id = item.QnAPairsId })
                                 </td>
                             </tr>
                         }

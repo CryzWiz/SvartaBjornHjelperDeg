@@ -153,5 +153,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="id"><int>id for qnapair</int></param>
         /// <returns><int>knowledgebase id</int></returns>
         Task<int> GetKnowledgebaseIdToQnAPair(int id);
+
+        Task<List<Conversation>> GetConversationsWithActiveBotAsync();
+
+        Task<List<Message>> GetMessagesForConversationAsync(int id);
+        Task<Conversation> GetConversationByIdAsync(int id);
     }
 }

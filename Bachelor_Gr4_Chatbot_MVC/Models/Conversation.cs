@@ -24,6 +24,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public bool Result { get; set; }
 
 
+        // Chatbot-info
+        public int KnowledgebaseId { get; set; }
+        public int QnABaseId { get; set; }
+
+
         public ICollection<Message> Messages { get; set; }
     }
 }
