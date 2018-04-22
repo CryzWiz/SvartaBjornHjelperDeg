@@ -613,6 +613,38 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var response = await qnaRepository.PostCommentToActiveKnowledgebase(comment);
             return response;
         }
+
+
+        public async Task<bool> DeleteQnAPair(int id)
+        {
+            var qnaPair = await db.QnAPairs.FirstOrDefaultAsync(X => X.QnAPairsId == id);
+
+            if (qnaPair.Published)
+            {
+                var r = await qnaRepository.DeleteSingleQnAPairAsync(qnaPair);
+                if (r)
+                {
+                    db.Remove(qnaPair);
+                    int s = await db.SaveChangesAsync();
+                    if (s > 0) return true;
+                    else return false;
+                }
+                else return false;
+            }
+            else
+            {
+                db.Remove(qnaPair);
+                int r = await db.SaveChangesAsync();
+                if (r > 0) return true;
+                else return false;
+            }
+        }
+
+        public async Task<int> GetKnowledgebaseIdToQnAPair(int id)
+        {
+            var r = await db.QnAPairs.FirstOrDefaultAsync(x => x.QnAPairsId == id);
+            return r.KnowledgeBaseId;
+        }
     }
 
 }

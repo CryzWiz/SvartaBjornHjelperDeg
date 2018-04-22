@@ -673,5 +673,26 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction("QnABaseDetails", new { id = id });
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteQnAPair(int id)
+        {
+            var b = await chatbotRepository.GetKnowledgebaseIdToQnAPair(id);
+            var r = await chatbotRepository.DeleteQnAPair(id);
+            
+
+            if (r)
+            {
+                TempData["success"] = String.Format("QnA paret {0} er slettet", r);
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Noe gikk galt..", r);
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = b });
+            }
+            
+        }
     }
 }

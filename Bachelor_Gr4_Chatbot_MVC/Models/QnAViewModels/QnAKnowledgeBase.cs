@@ -28,6 +28,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
 
 
         public virtual List<QnAPairs> QnAPairs  { get; set; }
+
+
+
         public int QnAPairsToPublish {
             get
             {
@@ -69,6 +72,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
             }
 
         }
+
         [DisplayName("Post spørsmål Url")]
         // requestUrl + /{knowledgeBaseID}/generateAnswer
         public string AskQuestionUrl {
@@ -77,6 +81,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}/generateAnswer", RequestUrl, KnowledgeBaseID);
             }
         }
+
         [DisplayName("Trenings Url")]
         // requestUrl + /{knowledgeBaseID}/train
         public string TrainknowledgeBaseUrl {
@@ -85,6 +90,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}/train", RequestUrl, KnowledgeBaseID);
             }
         }
+
         [DisplayName("Publiserings Url")]
         // requestUrl + /{knowledgeBaseID}
         public string PublishKnowledgeBaseUrl {
@@ -93,6 +99,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
             }
         }
+
         [DisplayName("Oppdaterings Url")]
         // requestUrl + /{knowledgeBaseID}
         public string UpdateKnowledgeBaseUrl {
@@ -101,6 +108,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
             }
         }
+
 
         [DisplayName("Lag Kunnskapsbase Url")]
         public string CreateNewQnAKnowledgeBase
@@ -128,6 +136,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
                 return String.Format("{0}/{1}", RequestUrl, KnowledgeBaseID);
             }
         }
+
         //public string contentType { get; set; }
     }
 }

@@ -132,7 +132,26 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>number of pairs added</returns>
         Task<int> VerifyLocalDbToPublishedDb(int id);
 
+        /// <summary>
+        /// Post a query to the qnabot and return the reply
+        /// </summary>
+        /// <param name="comment">query asked</param>
+        /// <returns><string>answer from active knowledgebase</string></returns>
         Task<string> PostToActiveKnowledgeBase(string comment);
 
+        /// <summary>
+        /// Delete the given QnA pair from knowledgebase db. If it is published, delete it from the
+        /// QnAmake.ai base aswell.
+        /// </summary>
+        /// <param name="id">QnAPair to be deleted</param>
+        /// <returns>true if deleted, false if not</returns>
+        Task<bool> DeleteQnAPair(int id);
+
+        /// <summary>
+        /// Fetch the id for the knowledgebase the QnAPair belongs to
+        /// </summary>
+        /// <param name="id"><int>id for qnapair</int></param>
+        /// <returns><int>knowledgebase id</int></returns>
+        Task<int> GetKnowledgebaseIdToQnAPair(int id);
     }
 }

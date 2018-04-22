@@ -22,20 +22,12 @@
                     <thead>
                         <tr>
                             <th>
-                                QnAPairsId
-                                @*@Html.DisplayNameFor(model => model.QnAPairsId)*@
-                            </th>
-                            <th>
                                 Query
                                 @*@Html.DisplayNameFor(model => model.Query)*@
                             </th>
                             <th>
                                 Answer
                                 @*@Html.DisplayNameFor(model => model.Answer)*@
-                            </th>
-                            <th>
-                                KnowledgeBaseId
-                                @*@Html.DisplayNameFor(model => model.KnowledgeBaseId)*@
                             </th>
                             <th>
                                 Trained
@@ -61,16 +53,10 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.QnAPairsId)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.Query)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Answer)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.KnowledgeBaseId)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Trained)
@@ -85,9 +71,7 @@
                                     @Html.DisplayFor(modelItem => item.TrainedDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                    @Html.ActionLink("Slett", "DeleteQnAPair", new { id = item.QnAPairsId })
                                 </td>
                             </tr>
                         }
