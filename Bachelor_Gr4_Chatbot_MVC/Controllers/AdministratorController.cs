@@ -58,6 +58,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             {
                 model.ChatbotName = c.chatbotName;
                 model.ChatbotId = c.QnAId;
+                model.UnPublishedQnAPairs = await chatbotRepository.GetPublishedQnAPairsToActiveBotAsync();
             }
             else
             {

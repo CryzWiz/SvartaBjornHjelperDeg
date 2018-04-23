@@ -435,7 +435,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                     KnowledgeBaseId = qna.KnowledgeBaseId,
                     Trained = true,
                     TrainedDate = DateTime.Now,
-                    Published = false
+                    Published = false,
+                    PublishingType = "add"
                 };
 
                 await db.AddAsync(pair);
@@ -444,6 +445,37 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 return true;
             }
             else return false;
+        }
+
+        /// <summary>
+        /// Delete the given QnA pair from knowledgebase db. If it is published, delete it from the
+        /// QnAmake.ai base aswell.
+        /// </summary>
+        /// <param name="id">QnAPair to be deleted</param>
+        /// <returns>true if deleted, false if not</returns>
+        public async Task<bool> DeleteQnAPair(int id)
+        {
+            var qnaPair = await db.QnAPairs.FirstOrDefaultAsync(X => X.QnAPairsId == id);
+
+            if (qnaPair.Published)
+            {
+                var r = await qnaRepository.DeleteSingleQnAPairAsync(qnaPair);
+                if (r)
+                {
+                    qnaPair.Published = false;
+                    qnaPair.PublishingType = "delete";
+                    db.Update(qnaPair);
+                    if (await db.SaveChangesAsync() > 0) return true;
+                    else return false;
+                }
+                else return false;
+            }
+            else
+            {
+                db.Remove(qnaPair);
+                if (await db.SaveChangesAsync() > 0) return true;
+                else return false;
+            }
         }
 
         /// <summary>
@@ -502,25 +534,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var r = await qnaRepository.PublishKnowledgeBase(knowledgebaseId);
             if (r)
             {
-                var qnaPairs = db.QnAPairs.Where(X => X.KnowledgeBaseId == knowledgebaseId);
+                var qnaPairs = db.QnAPairs.Where(X => X.KnowledgeBaseId == knowledgebaseId
+                && X.Published == false);
                 foreach (QnAPairs p in qnaPairs)
                 {
-                    if (p.Trained)
+                    if (p.PublishingType.Equals("add"))
                     {
                         p.Published = true;
                         p.PublishedDate = DateTime.Now;
-
-                        
+                        db.QnAPairs.Update(p);
                     }
-                    
+                    else
+                    {
+                        db.QnAPairs.Remove(p);
+                    }                  
                 }
-                db.QnAPairs.UpdateRange(qnaPairs);
                 await db.SaveChangesAsync();
 
                 var qbase = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == knowledgebaseId);
                 qbase.LastEdit = DateTime.Now;
                 db.QnAKnowledgeBase.Update(qbase);
-                await db.SaveChangesAsync();
+                db.SaveChanges();
 
                 return true;
             }
@@ -666,37 +700,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         }
 
         /// <summary>
-        /// Delete the given QnA pair from knowledgebase db. If it is published, delete it from the
-        /// QnAmake.ai base aswell.
-        /// </summary>
-        /// <param name="id">QnAPair to be deleted</param>
-        /// <returns>true if deleted, false if not</returns>
-        public async Task<bool> DeleteQnAPair(int id)
-        {
-            var qnaPair = await db.QnAPairs.FirstOrDefaultAsync(X => X.QnAPairsId == id);
-
-            if (qnaPair.Published)
-            {
-                var r = await qnaRepository.DeleteSingleQnAPairAsync(qnaPair);
-                if (r)
-                {
-                    db.Remove(qnaPair);
-                    int s = await db.SaveChangesAsync();
-                    if (s > 0) return true;
-                    else return false;
-                }
-                else return false;
-            }
-            else
-            {
-                db.Remove(qnaPair);
-                int r = await db.SaveChangesAsync();
-                if (r > 0) return true;
-                else return false;
-            }
-        }
-
-        /// <summary>
         /// Fetch the id for the knowledgebase the QnAPair belongs to
         /// </summary>
         /// <param name="id"><int>id for qnapair</int></param>
@@ -739,6 +742,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         {
             var conversation = await db.Conversations.FirstOrDefaultAsync(x => x.ConversationId == id);
             return conversation;
+        }
+
+        /// <summary>
+        /// Fetch the number of unpublished qnapairs to the active knowledgebase
+        /// </summary>
+        /// <returns><int>number of unpublished qnapairs</int></returns>
+        public async Task<int> GetPublishedQnAPairsToActiveBotAsync()
+        {
+            var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(x => x.IsActive == true);
+            var qna = db.QnAPairs.Where(x => x.Published == false && x.KnowledgeBaseId == b.QnAKnowledgeBaseId);
+            return qna.Count();
         }
     }
 
