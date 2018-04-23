@@ -45,7 +45,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         /// <summary>
-        /// Display the dashboard
+        /// Display the dashboard for the admin
         /// </summary>
         /// <returns>All users</returns>
         [HttpGet]
@@ -72,6 +72,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult MorrisCharts()
@@ -80,6 +84,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult FlotCharts()
@@ -135,6 +143,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult RegisterNewUser(string returnUrl = null)
@@ -144,6 +157,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="model">The user to be registered</param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserViewModel model, string returnUrl = null)
@@ -170,6 +189,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Deactivate useraccount
+        /// </summary>
+        /// <param name="username">username to deactivate</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeactivateUser(string username)
@@ -186,6 +210,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return RedirectToAction("Users");
         }
 
+        /// <summary>
+        /// Activate useraccount
+        /// </summary>
+        /// <param name="username">username to activate</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ActivateUser(string username)
@@ -440,12 +469,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
 
-
+        ///////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
-        /// Code below is for QnA bots
+        /// Fetch all the QnAbots in the database and display them
         /// </summary>
-     
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABots()
@@ -454,6 +483,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
         }
 
+        /// <summary>
+        /// Fetch details for QnABot and display them
+        /// </summary>
+        /// <param name="id">for QnABot</param>
+        /// <returns>View with QnABot details</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABotDetails(int id)
@@ -462,6 +496,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
         }
 
+        /// <summary>
+        /// Register a new chatbot view
+        /// </summary>
+        /// <returns>Register a new chatbotview</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult RegisterNewQnaBotAsync()
@@ -469,6 +507,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Register a new chatbot and return to QnABot View
+        /// </summary>
+        /// <param name="qnabot">QnABot to be registered</param>
+        /// <returns>QnAbot View</returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterNewQnABotAsync([FromForm][Bind("chatbotName", "subscriptionKey", "knowledgeBaseID")] QnABaseClass qnabot)
@@ -500,6 +543,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        /// <summary>
+        /// Fetch QnABase Details and return the view
+        /// </summary>
+        /// <param name="id"><int>id for QnABase</int></param>
+        /// <returns>View with QnADetails</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> QnABaseDetails(int id)
@@ -508,6 +556,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
         }
 
+        /// <summary>
+        /// Create a new knowledgebase
+        /// </summary>
+        /// <param name="id"><int>Id for QnABase the knowledgebase belongs to</int></param>
+        /// <returns>View for new knowledgebase</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult AddNewQnAKnowledgeBaseAsync(int id)
@@ -519,6 +572,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(q);
         }
 
+        /// <summary>
+        /// Add a new knowledgebase
+        /// </summary>
+        /// <param name="b"><QnAKnwoledgeBase>QnAKnowledgebase to add</QnAKnwoledgeBase></param>
+        /// <returns>Overview for QnABase</returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddNewQnAKnowledgeBaseAsync([FromForm][Bind("QnABotId", "QnAKnowledgeName")]QnAKnowledgeBase b)
@@ -537,6 +595,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             
         }
 
+        /// <summary>
+        /// Add a new QnApair to the active knowledgebase
+        /// </summary>
+        /// <returns>View for adding a new <QnAPair>qnapair</QnAPair></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddQnAPairsToBaseAsync()
@@ -556,6 +618,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
         }
 
+        /// <summary>
+        /// Add a new QnAPair to the active knowledgebase
+        /// </summary>
+        /// <param name="qna">QnAPair to be added</param>
+        /// <returns>view for adding a new <QnAPair>qnapair</QnAPair></returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddQnAPairsToBaseAsync([FromForm][Bind("Query", "Answer", "Dep", "SubscriptionKey", "KnowledgeBaseId", "QnABotName", "KnowledgeBaseName")] QnATrainBase qna)
@@ -573,6 +640,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete the given QnAKnowledgebase
+        /// </summary>
+        /// <param name="id"><int>Id for the knowledgebase to be deleted</int></param>
+        /// <returns>QnABot details view</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteQnAKnowledgeBaseByIdAsync(int id)
@@ -593,6 +665,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             
         }
 
+        /// <summary>
+        /// View all unpublished QnAPairs
+        /// </summary>
+        /// <param name="id"><int>id for QnAKnowledgeBase</int></param>
+        /// <returns>All unpublished QnAPairs</returns>
         [HttpGet]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ViewUnPublishedQnAPairs(int id)
@@ -612,6 +689,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(QnAPairs);
         }
 
+        /// <summary>
+        /// View published qnapairs 
+        /// </summary>
+        /// <param name="id"><int>id for QnAKnowledgebase</int></param>
+        /// <returns>All QnAPairs published for given knowledgebase</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ViewPublishedQnAPairs(int id)
@@ -631,6 +713,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(QnAPairs);
         }
 
+        /// <summary>
+        /// Publish all changes to the knowledgebase
+        /// </summary>
+        /// <param name="id"><int>Id for knowledgebase</int></param>
+        /// <returns>QnABaseDetails for knowledgebase</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PublishTrainedQnAPairs(int id)
@@ -650,6 +737,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        /// <summary>
+        /// Verify the local db QnAPairs to the QnAMaker.ai db and store the missing QnAPairs to the local db
+        /// </summary>
+        /// <param name="id"><int>id for knowledgebase to verify</int></param>
+        /// <returns>QnABaseDetails view</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> VerifyLocalKnowledgeBaseToOnlineKnowledgeBase(int id)
@@ -675,6 +767,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete the given QnAPair from local db and the QnAMaker.ai db
+        /// </summary>
+        /// <param name="id"><int>Id for QnAPair to delete</int></param>
+        /// <returns>ViewPublishedQnAPairs</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteQnAPair(int id)
@@ -696,6 +793,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             
         }
 
+        /// <summary>
+        /// Edit info for QnAPair
+        /// </summary>
+        /// <param name="id"><int>id for <QnAPair>QnaPair</QnAPair> to edit</int></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditQnAPair(int id)
@@ -703,6 +805,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// View all conversations with active bot
+        /// </summary>
+        /// <returns>ViewConversationWithActiveBotAsync</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ViewConversationsWithActiveBot()
@@ -711,6 +817,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             return View(conversations);
         }
 
+        /// <summary>
+        /// View all conversation details. That means all the messages
+        /// </summary>
+        /// <param name="id"><int>id for conversation to view</int></param>
+        /// <returns>ViewConversationDetails</returns>
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ViewConversationDetails(int id)

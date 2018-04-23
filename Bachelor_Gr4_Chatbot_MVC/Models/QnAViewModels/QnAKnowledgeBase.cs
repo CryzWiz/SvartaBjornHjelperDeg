@@ -35,14 +35,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
             get
             {
                 var UnPublished = 0;
-                foreach(QnAPairs i in QnAPairs)
+                if (QnAPairs != null)
                 {
-                    if (!i.Published)
+                    
+                    foreach (QnAPairs i in QnAPairs)
                     {
-                        UnPublished++;
+                        if (!i.Published)
+                        {
+                            UnPublished++;
+                        }
                     }
+                    return UnPublished;
                 }
-                return UnPublished;
+                else return UnPublished;
             }
         }
 
@@ -51,14 +56,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
             get
             {
                 var Published = 0;
-                foreach (QnAPairs i in QnAPairs)
+                if (QnAPairs != null)
                 {
-                    if (i.Published)
-                    {
-                        Published++;
+                    foreach(QnAPairs i in QnAPairs)
+                {
+                        if (i.Published)
+                        {
+                            Published++;
+                        }
                     }
+                    return Published;
                 }
-                return Published;
+                else return Published;
             }
         }
 
