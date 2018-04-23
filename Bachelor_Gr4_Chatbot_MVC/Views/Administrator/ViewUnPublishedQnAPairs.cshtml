@@ -1,7 +1,7 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairsView
 
 @{
-    ViewData["Title"] = "ViewUnPublishedQnAPairs";
+    ViewData["Title"] = "Svarta Bjørn | QnA par for kunnskapsbase " + @Model.QnAKnowledgeBaseName;
 }
 <div id="wrapper">
     @await Html.PartialAsync("_Navbar_admin")

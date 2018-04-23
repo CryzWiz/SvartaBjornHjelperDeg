@@ -590,29 +590,37 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             //}
             //return result;
             int number = 0;
+            bool present = false;
+
             if (localQnA.Count > 0)
             {
                 foreach (QnAPairs external_qna in onlineQnA)
                 {
-                    foreach (QnAPairs local_qna in localQnA)
+                    for(int i = 0; i < onlineQnA.Count(); i++)
                     {
-                        if (!external_qna.Query.Equals(local_qna.Query) && !external_qna.Answer.Equals(local_qna.Answer))
+                        if(external_qna.Answer.ToLower().Equals(onlineQnA[i].Answer.ToLower())
+                            && external_qna.Query.ToLower().Equals(onlineQnA[i].Query.ToLower()))
                         {
-                            var newQnA = new QnAPairs
-                            {
-                                Query = external_qna.Query,
-                                Answer = external_qna.Answer,
-                                KnowledgeBaseId = id,
-                                Trained = true,
-                                Published = true,
-                                PublishedDate = DateTime.Now,
-                                TrainedDate = DateTime.Now,
-                                Dep = "Web-sync - Må oppdateres"
-                            };
-                            await db.AddAsync(newQnA);
-                            await db.SaveChangesAsync();
-                            number++;
+                            present = true;
+                            break;
                         }
+                    }
+                    if (!present)
+                    {
+                        var newQnA = new QnAPairs
+                        {
+                            Query = external_qna.Query,
+                            Answer = external_qna.Answer,
+                            KnowledgeBaseId = id,
+                            Trained = true,
+                            Published = true,
+                            PublishedDate = DateTime.Now,
+                            TrainedDate = DateTime.Now,
+                            Dep = "Web-sync - Må oppdateres"
+                        };
+                        await db.AddAsync(newQnA);
+                        await db.SaveChangesAsync();
+                        number++;
                     }
                 }
             }
@@ -638,6 +646,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             }
             if (number > 0)
                 return number;
+            else if (number == 0)
+                return 0;
             else
                 return -1;
 

@@ -757,7 +757,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             }
             else if (r < 0)
             {
-                TempData["error"] = String.Format("Noe gikk galt..", r);
+                TempData["error"] = String.Format("Noe gikk galt eller ingen nye QnA par funnet.", r);
                 return RedirectToAction("QnABaseDetails", new { id = id });
             }
             else
