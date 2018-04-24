@@ -43,6 +43,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private readonly IChatBot _chatBot;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleOptions _roleOptions;
+        private readonly ChatbotKeywordOptions _keywordOptions;
 
         // Chat keyword constants
         private const string Exit = "avslutt";
@@ -90,13 +91,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             IChatbotRepository chatbotRepository,
             IChatBot chatBot, 
             UserManager<ApplicationUser> userManager,
-            IOptions<RoleOptions> roleOptions)
+            IOptions<RoleOptions> roleOptions,
+            IOptions<ChatbotKeywordOptions> keywordOptions)
         {
             _chatRepository = chatRepository;
             _chatBotRepository = chatbotRepository;
             _chatBot = chatBot;
             _userManager = userManager;
             _roleOptions = roleOptions.Value;
+            _keywordOptions = keywordOptions.Value;
         }
 
         public override async Task OnConnectedAsync()
@@ -195,7 +198,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <summary>
         /// Get key used to map connection in Single-user group and In-memory connection mapping. 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A key used to map the users connections</returns>
         private string GetConnectionKey()
         {
             string connectionId = Context.ConnectionId;
@@ -213,9 +216,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     connectionKey = signalRCookie;
                 }
             }
-
             return connectionKey;
-            //return (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : connectionId);
         }
 
         /// <summary>
@@ -232,7 +233,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 {
                     displayName = await _chatRepository.GetName(Context.User.Identity.Name);
                 } catch(Exception e) {
-                    displayName = "Chat-medarbeider";
+                    displayName = "Kundesenter";
                 }
             }
             return displayName;
@@ -261,8 +262,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 int conversationId = await _chatRepository.AddConversationAsync(conversation);
                 conversation.ConversationId = conversationId;
-            } catch
+            } catch (Exception e)
             {
+                string msg = e.Message;
                 await DisplayChatBotConnectionError(userGroup);
                 return;
             }
