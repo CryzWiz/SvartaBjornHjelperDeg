@@ -25,7 +25,7 @@
                                 <i class="fa fa-comments fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">@Html.DisplayFor(model => model.ChatQue)</div>
+                                <div class="huge" id="numberInQueue"></div>
                                 <div>personer i kø!</div>
                             </div>
                         </div>
@@ -268,19 +268,19 @@
                             <a href="#" class="list-group-item">
                                 <i class="fa fa-comment fa-fw"></i> Chat brukere
                                 <span class="pull-right text-muted small">
-                                    <em>@Html.DisplayFor(model => model.ChatUsers)</em>
+                                    <em id="chatUsersConnected"></em>
                                 </span>
                             </a>
                             <a href="#" class="list-group-item">
                                 <i class="fa fa-twitter fa-fw"></i> Chat arbeidere
                                 <span class="pull-right text-muted small">
-                                    <em>@Html.DisplayFor(model => model.ChatWorkers)</em>
+                                    <em id="chatWorkersConnected"></em>
                                 </span>
                             </a>
                             <a href="#" class="list-group-item">
                                 <i class="fa fa-envelope fa-fw"></i> Chat Kø
                                 <span class="pull-right text-muted small">
-                                    <em>@Html.DisplayFor(model => model.ChatQue)</em>
+                                    <em id="numberInQueue2"></em>
                                 </span>
                             </a>
                             @if (Model.ChatbotId > 0)
@@ -360,15 +360,18 @@
 </div>
 <!-- /#wrapper -->
 @section Scripts{
-<!-- Bootstrap Core JavaScript -->
-<script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
-<!-- Metis Menu Plugin JavaScript -->
-<script src="~/vendor/metisMenu/metisMenu.min.js"></script>
-<!-- Morris Charts JavaScript -->
-<script src="~/vendor/raphael/raphael.min.js"></script>
-<script src="~/vendor/morrisjs/morris.min.js"></script>
-<script src="~/data/morris-data.js"></script>
-<!-- Custom Theme JavaScript -->
-<script src="~/dist/js/sb-admin-2.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Morris Charts JavaScript -->
+    <script src="~/vendor/raphael/raphael.min.js"></script>
+    <script src="~/vendor/morrisjs/morris.min.js"></script>
+    <script src="~/data/morris-data.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
 
+    <!-- SignalR -->
+    <script src="~/scripts/signalr-client-1.0.0-alpha2-final.js"></script>
+    <script src="~/js/admin.js"></script>
 }

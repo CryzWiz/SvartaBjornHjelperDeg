@@ -65,11 +65,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 model.ChatbotId = 0;
             }
 
-            // Fetch chathub data
-            model.ChatWorkers = ChatHubHandler.ConnectedWorkers.Count;
-            model.ChatQue = ChatHubHandler.inQue;
-            model.ChatUsers = ChatHubHandler.ConnectedUsers.Count;
-
             return View(model);
         }
 

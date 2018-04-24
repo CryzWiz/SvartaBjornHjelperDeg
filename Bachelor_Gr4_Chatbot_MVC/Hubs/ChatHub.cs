@@ -23,16 +23,6 @@ using System.Web.Script.Serialization;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 {
-
-    public static class ChatHubHandler
-    {
-        public static HashSet<string> ConnectedUsers = new HashSet<string>();
-        public static HashSet<string> ConnectedWorkers = new HashSet<string>();
-        public static int inQue = 0;
-    }
-
-
-
     /// Referanser: 
     /// https://code.msdn.microsoft.com/ASPNET-CORE-20-uses-7a771742
     /// https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections
@@ -82,9 +72,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
 
-        // Move chat queue to a seperate file
-
-
         IEnumerable<ChatGroup> _allChatGroups;
        
         public ChatHub(IChatRepository chatRepository,
@@ -122,15 +109,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             //await AddEmployeeToWorkGroupsBasedOnRole();
             await DisplayAllChatQueues(); // TODO: LLLLL
 
-            // TODO: ChatHubHandler skal fjernes
-            if (key.Equals(connectionId))
-            {
-                ChatHubHandler.ConnectedUsers.Add(key);
-            }
-            else
-            {
-                ChatHubHandler.ConnectedWorkers.Add(key);
-            }
+
 
             // Add Chat-workers to list
             //if(Context.User.Identity.Name.)
@@ -150,6 +129,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             //await DisplayConnectedUsers();
             // await DisplayQueueCount();
+
+
+            // TODO: Testcode to be deleted: 
+            await Clients.Group(key).InvokeAsync("numberOfChatWorkersConnected", 2);
+            await Clients.Group(key).InvokeAsync("numberOfClientsConnected", 3);
+            await Clients.Group(key).InvokeAsync("numberInQueue", 5);
+
         }
 
 
@@ -367,14 +353,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
              */
             string key = GetConnectionKey();
             _connections.Remove(key, Context.ConnectionId);
-            if (key.Equals(Context.ConnectionId))
-            {
-                ChatHubHandler.ConnectedUsers.Remove(key);
-            }
-            else
-            {
-                ChatHubHandler.ConnectedWorkers.Remove(key);
-            }
+
+            // TODO: DISPLAY NUMBER OF USERS CONNECTED ETC; IN QUEUE FOR DASHBORD
+
             // TODO: Gjør endringer her!
             if(_inQueue.Remove(key, out int value))
             {
