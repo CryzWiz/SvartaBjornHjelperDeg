@@ -19,22 +19,81 @@
             </div>
             <hr />
 
+
+@if (Model.messages.Count() > 0)
+{
+    var size = Model.messages.Count();
+    int count = 0;
+
+
+    <!-- Chat vindu -->
+    <div class="col-sm-8 col-sm-offset-2">
+
+        <div class="panel panel-primary" style="display: flex; flex-direction: column;">
+            <div class="panel-heading clearfix">
+                <h3 class="panel-title pull-left">Aktiv chat</h3>
+                <div class="btn-group pull-right">
+                    <button id="endConversation" class="btn btn-default btn-sm">Avslutt samtale</button>
+                </div>
+            </div>
+
+            <div class="panel-body" id="chatbox__body" style="min-height: 500px; max-height: 500px;overflow-y: scroll;">
+
+
+                @for (int i = 0; i < size; i++)
+                {
+                    @if (Model.messages[i].IsChatBot)
+                    {
+                        <div class="row">
+                            <div style="float:left">
+                                @Html.Raw(Model.messages[i].Content)
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div style="float:right">
+                                @Html.Raw(Model.messages[i].Content)
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="panel-footer">
+                <div class="container-fluid">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+
+
+            
+
+
+            <hr />
             <div class="col-md-12">
                 @if (Model.messages.Count() > 0)
                 {
                     var size = Model.messages.Count();
                     int count = 0;
 
-                    <table>
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>
-                                    Nr
+                                <th  scope="col">
+                                    #
                                 </th>
-                                <th>
+                                <th  scope="col">
                                     Spørsmål
                                 </th>
-                                <th>
+                                <th  scope="col">
                                     Svar
                                 </th>
                                 <th></th>
@@ -55,10 +114,10 @@
 
                             }
                             <tr>
-                                <td>@count</td>
+                                <td  scope="row">@count</td>
                                 <td>@Html.Raw(Model.messages[i].Content)</td>
                                 <td>@Html.Raw(Model.messages[i + 1].Content)</td>
-                                <td>@Html.ActionLink("Lagre", "Delete", new { /* id=item.PrimaryKey */ })</td>
+                                <td>@Html.ActionLink("Lagre", "EditAndStoreMessagePairToBot", new { /*id=item.PrimaryKey */ })</td>
                             </tr>
 
                             }

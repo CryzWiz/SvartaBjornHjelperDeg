@@ -1,0 +1,71 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.Conversation
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="View">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ConversationId" class="control-label"></label>
+                <input asp-for="ConversationId" class="form-control" />
+                <span asp-validation-for="ConversationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkedConversation" class="control-label"></label>
+                <input asp-for="LinkedConversation" class="form-control" />
+                <span asp-validation-for="LinkedConversation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserGroup1" class="control-label"></label>
+                <input asp-for="UserGroup1" class="form-control" />
+                <span asp-validation-for="UserGroup1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserGroup2" class="control-label"></label>
+                <input asp-for="UserGroup2" class="form-control" />
+                <span asp-validation-for="UserGroup2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsChatBot" /> @Html.DisplayNameFor(model => model.IsChatBot)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartTime" class="control-label"></label>
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Result" /> @Html.DisplayNameFor(model => model.Result)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="KnowledgebaseId" class="control-label"></label>
+                <input asp-for="KnowledgebaseId" class="form-control" />
+                <span asp-validation-for="KnowledgebaseId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QnABaseId" class="control-label"></label>
+                <input asp-for="QnABaseId" class="form-control" />
+                <span asp-validation-for="QnABaseId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
