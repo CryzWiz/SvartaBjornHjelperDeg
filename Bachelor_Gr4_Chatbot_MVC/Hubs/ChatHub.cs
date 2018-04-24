@@ -100,8 +100,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             _connections.Add(key, connectionId);
 
 
-
-
+            await AddEmployeeToWorkGroupsBasedOnRole();
+            await AddEmployeeToCustomChatGroups();
 
             //TODO: DENNE SKAL FLYTTES
             await GetAllChatGroups();
@@ -130,12 +130,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             //await DisplayConnectedUsers();
             // await DisplayQueueCount();
 
+            await DisplayChatNumbersForAdmin();
+        }
 
-            // TODO: Testcode to be deleted: 
-            await Clients.Group(key).InvokeAsync("numberOfChatWorkersConnected", 2);
-            await Clients.Group(key).InvokeAsync("numberOfClientsConnected", 3);
-            await Clients.Group(key).InvokeAsync("numberInQueue", 5);
+        /// <summary>
+        /// Display for Admin how many users and chat workers are connected to the chat. 
+        /// </summary>
+        public async Task DisplayChatNumbersForAdmin()
+        {
+            string adminGroup = _roleOptions.AdminRole;
 
+            // TODO: Update numbers to be correct, this is wrong!!!!
+            await Clients.Group(adminGroup).InvokeAsync("numberOfChatWorkersConnected", 5);
+            await Clients.Group(adminGroup).InvokeAsync("numberOfClientsConnected", 4);
+            await Clients.Group(adminGroup).InvokeAsync("numberInQueue", 3);
         }
 
 
@@ -150,7 +158,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }
 
-        public async Task AddEmployeeToWorkGroupsBasedOnRole()
+
+        /// <summary>
+        /// Add employee to necessary groups based on their role. 
+        /// There are defined groups for Admin and ChatWorker. 
+        /// </summary>
+        private async Task AddEmployeeToWorkGroupsBasedOnRole()
         {
             if (Context.User.Identity.IsAuthenticated)
             {
@@ -162,6 +175,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
                     {
                         await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
+                        // TODO: SetChatEmployeeStatus
                         await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
                     }
 
@@ -178,7 +192,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
 
-
+        private async Task AddEmployeeToCustomChatGroups()
+        {
+            if (Context.User.Identity.IsAuthenticated) {
+                var groups = await _chatRepository.GetUsersChatGroups(Context.User.Identity.Name);
+            }
+        }
+        
 
 
         /// <summary>
@@ -362,7 +382,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayQueueCount();
             }
             //await DisplayConnectedUsers();
-
+            await DisplayChatNumbersForAdmin();
         }
 
         public string GetStandardChatBotHello()

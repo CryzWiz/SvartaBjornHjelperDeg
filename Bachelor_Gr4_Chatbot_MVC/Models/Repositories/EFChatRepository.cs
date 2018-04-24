@@ -104,5 +104,25 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                                                       }).ToListAsync();
             return chatQueues;
         }
+
+        public async Task<string> GetUsersChatGroups(string userName)
+        {
+            //List<ChatGroup> lst = await _db.ChatGroups.Where(x => x.GroupMembers.Any(y => y.UserId == userName)).ToListAsync();
+            throw new NotImplementedException();
+            //return "test";
+        }
+
+        /*
+        public async Task<ChatGroup> GetAdminGroup()
+        {
+            return await _db.ChatGroups.Where(x => x.IsAdminGroup == true).FirstOrDefaultAsync();
+        }
+
+        public async Task<ChatGroup> GetChatWorkerGroup()
+        {
+            return await _db.ChatGroups.Where(x => x.IsChatWorkerGroup == true).FirstOrDefaultAsync();
+        }*/
+
+        
     }
 }

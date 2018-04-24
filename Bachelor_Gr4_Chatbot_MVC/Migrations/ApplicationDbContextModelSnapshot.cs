@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace Bachelor_Gr4_Chatbot_MVC.Migrations
@@ -148,6 +146,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<int>("ConversationId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ConversationToken");
+
                     b.Property<DateTime>("EndTime");
 
                     b.Property<bool>("IsChatBot");
@@ -155,8 +155,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<int>("KnowledgebaseId");
 
                     b.Property<int>("QnABaseId");
-
-                    b.Property<int?>("LinkedConversation");
 
                     b.Property<bool>("Result");
 

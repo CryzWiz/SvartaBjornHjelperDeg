@@ -1,4 +1,5 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
+using Bachelor_Gr4_Chatbot_MVC.Migrations;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -155,20 +156,28 @@ public class SeedData
 
     private static async Task CreateUserChatGroups(ApplicationDbContext context)
     {
+        List<ChatGroup> chatGroups = new List<ChatGroup>();
+
         var adminGroup = new ChatGroup
         {
             ChatGroupName = "Admin"
         };
+        chatGroups.Add(adminGroup);
 
         var chatWorkerGroup = new ChatGroup
         {
             ChatGroupName = "Chat medarbeider"
         };
+        chatGroups.Add(chatWorkerGroup);
 
         var it = new ChatGroup
         {
             ChatGroupName = "IT"
         };
+        chatGroups.Add(it);
+
+        await context.AddRangeAsync(chatGroups);
+        await context.SaveChangesAsync();
     }
 
     private static async Task CreateOpeningHours(ApplicationDbContext context)

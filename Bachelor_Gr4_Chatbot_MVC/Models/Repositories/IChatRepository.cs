@@ -20,5 +20,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         Task UpdateConversationAsync(Conversation conversation);
         Task<IEnumerable<ChatGroup>> GetAllChatGroupsAsync();
         Task<IEnumerable<ChatQueue>> GetAllChatGroupsAsQueueAsync();
+        //Task<ChatGroup> GetAdminGroup();
+        //Task<ChatGroup> GetChatWorkerGroup();
+        Task<string> GetUsersChatGroups(string userName);
     }
 }
