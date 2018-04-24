@@ -153,10 +153,31 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="id"><int>id for qnapair</int></param>
         /// <returns><int>knowledgebase id</int></returns>
         Task<int> GetKnowledgebaseIdToQnAPair(int id);
-
+        
+        /// <summary>
+        /// Get all conversations with the active bot
+        /// </summary>
+        /// <returns>view over all conversations</returns>
         Task<List<Conversation>> GetConversationsWithActiveBotAsync();
 
+        /// <summary>
+        /// Get all the messages for a given conversation
+        /// </summary>
+        /// <param name="id"><int>id for conversation</int></param>
+        /// <returns>View over messages for given conversation</returns>
         Task<List<Message>> GetMessagesForConversationAsync(int id);
+
+        /// <summary>
+        /// Get conversation by id
+        /// </summary>
+        /// <param name="id"><int>id for conversation</int></param>
+        /// <returns><Conversation>found conversation</Conversation></returns>
         Task<Conversation> GetConversationByIdAsync(int id);
+
+        /// <summary>
+        /// Fetch the number of unpublished qnapairs to the active knowledgebase
+        /// </summary>
+        /// <returns><int>number of unpublished qnapairs</int></returns>
+        Task<int> GetPublishedQnAPairsToActiveBotAsync();
     }
 }

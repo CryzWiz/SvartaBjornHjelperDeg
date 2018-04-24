@@ -1,7 +1,7 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairsView
 
 @{
-    ViewData["Title"] = "ViewUnPublishedQnAPairs";
+    ViewData["Title"] = "Svarta Bjørn | QnA par for kunnskapsbase " + @Model.QnAKnowledgeBaseName;
 }
 <div id="wrapper">
     @await Html.PartialAsync("_Navbar_admin")
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-md-2">
                     <br /><br />
-                    @Html.ActionLink("Publiser", "PublishTrainedQnAPairs", "Administrator", new{ id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Publiser endringer", "PublishTrainedQnAPairs", "Administrator", new{ id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
                 </div>
 
             </div>
@@ -44,16 +44,8 @@
                                 @*@Html.DisplayNameFor(model => model.Answer)*@
                             </th>
                             <th>
-                                KnowledgeBaseId
+                                PublishingType
                                 @*@Html.DisplayNameFor(model => model.KnowledgeBaseId)*@
-                            </th>
-                            <th>
-                                Trained
-                                @*@Html.DisplayNameFor(model => model.Trained)*@
-                            </th>
-                            <th>
-                                Published
-                                @*@Html.DisplayNameFor(model => model.Published)*@
                             </th>
                             <th>
                                 PublishedDate
@@ -80,13 +72,7 @@
                                     @Html.DisplayFor(modelItem => item.Answer)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.KnowledgeBaseId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Trained)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Published)
+                                    @Html.DisplayFor(modelItem => item.PublishingType)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PublishedDate)

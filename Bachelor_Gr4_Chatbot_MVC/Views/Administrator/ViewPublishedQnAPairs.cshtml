@@ -1,7 +1,7 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairsView
 
 @{
-    ViewData["Title"] = "ViewPublishedQnAPairs";
+    ViewData["Title"] = "Svarta Bjørn | Se publiserte QnA Par";
 }
 
 <div id="wrapper">
@@ -11,8 +11,15 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <h2>QnA par for kunnskapsbase @Model.QnAKnowledgeBaseName</h2>
-                <h4>Alle publiserte QnA par</h4>
+                <div class="col-md-6">
+                    <h2>QnA par for kunnskapsbase @Model.QnAKnowledgeBaseName</h2>
+                    <h4>Alle publiserte QnA par</h4>
+                </div>
+                <div class="col-md-6">
+                    <br /><br />
+                    @Html.ActionLink("Verifiser kunnskapsbase", "VerifyLocalKnowledgeBaseToOnlineKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Tilbake til detaljer for kunnskapsbase", "QnABaseDetails", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-warning" })
+                </div>
             </div>
             <hr />
 

@@ -30,6 +30,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
         [DisplayName("Publisert")]
         public bool Published { set; get; }
 
+        [DisplayName("Publiserings type")]
+        public string PublishingType { get; set; }
+
         [DisplayName("Publisert Dato")]
         public DateTime PublishedDate { set; get; }
 

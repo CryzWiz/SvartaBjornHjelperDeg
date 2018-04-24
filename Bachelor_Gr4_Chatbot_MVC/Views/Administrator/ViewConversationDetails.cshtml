@@ -1,7 +1,7 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.ChatViewModels.ViewMessagesForConversation
 
 @{
-    ViewData["Title"] = "ViewConversationDetails";
+    ViewData["Title"] = "Svarta Bjørn | Se samtaledetaljer for samtale " + Model.conversation.ConversationId.ToString();
 }
 
 <div id="wrapper">
@@ -18,59 +18,52 @@
                 </p>
             </div>
             <hr />
+
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-1">
-                        <h4>Par</h4>
-                    </div>
-                    <div class="col-md-5">
-                        <h4>Spørsmål mottat</h4>
-                    </div>
-                    <div class="col-md-5">
-                        <h4>Svar sendt</h4>
-                    </div>
-                    <div class="col-md-1">
+                @if (Model.messages.Count() > 0)
+                {
+                    var size = Model.messages.Count();
+                    int count = 0;
 
-                    </div>
-                </div>
-                <hr />
-
-                @if(Model.messages.Count() > 0)
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Nr
+                                </th>
+                                <th>
+                                    Spørsmål
+                                </th>
+                                <th>
+                                    Svar
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(int i = 0; i < size; i = i + 2)
                             {
-                                var size = Model.messages.Count();
-                                int count = 0;
-                                for(int i = 0; i < size; i = i + 2)
-                                {
-                        <div class="panel-default">
-                            <div class="col-md-1">
-                                @if (count == 0)
-                                {
-                                    count = 1;
 
-                                }
-                                else
-                                {
-                                    count++;
+                            @if (count == 0)
+                            {
+                                count = 1;
 
-                                }
-                                @count
-                            </div>
-                            <div class="col-md-5">
+                            }
+                            else
+                            {
+                                count++;
 
-                                @Model.messages[i].Content
+                            }
+                            <tr>
+                                <td>@count</td>
+                                <td>@Html.Raw(Model.messages[i].Content)</td>
+                                <td>@Html.Raw(Model.messages[i + 1].Content)</td>
+                                <td>@Html.ActionLink("Lagre", "Delete", new { /* id=item.PrimaryKey */ })</td>
+                            </tr>
 
-                            </div>
-                            <div class="col-md-5">
-                                
-                                @Model.messages[i + 1].Content
-
-                            </div>
-                            <div class="col-md-1">
-                                @Html.ActionLink("Lagre", "Delete", new { /* id=item.PrimaryKey */ })
-                            </div>
-                        </div>
-                        
-                    }
+                            }
+                        </tbody>
+                    </table>
 
                 }
             </div>           

@@ -1,6 +1,6 @@
 ﻿@model Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel.AdministratorIndexViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Svarta Bjørn | Dashboard";
 }
 
 <div id="wrapper">
@@ -47,8 +47,8 @@
                                 <i class="fa fa-tasks fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">12</div>
-                                <div>Manuelle samtaler!</div>
+                                <div class="huge">@Html.DisplayFor(model => model.UnPublishedQnAPairs)</div>
+                                <div>QnA Par å publisere</div>
                             </div>
                         </div>
                     </div>
