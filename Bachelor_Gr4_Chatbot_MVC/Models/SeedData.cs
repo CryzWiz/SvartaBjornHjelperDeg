@@ -25,7 +25,8 @@ public class SeedData
     public static async Task InitializeAsync(ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager, 
-        IOptions<RoleOptions> roleOptions)
+        IOptions<RoleOptions> roleOptions,
+        IOptions<ChatbotKeywordOptions> keywordOptions)
     {
 
         if (!context.ChatGroups.Any())
@@ -67,6 +68,11 @@ public class SeedData
         if (!context.QnAKnowledgeBase.Any())
         {
             await AddKnowledgeBase(context);
+        }
+
+        if(!context.QnAKeywordPairs.Any())
+        {
+            await AddQnAKeywordPairs(context, keywordOptions.Value);
         }
 
     }
@@ -310,5 +316,47 @@ public class SeedData
         await context.SaveChangesAsync();
     }
 
+    private static async Task AddQnAKeywordPairs(ApplicationDbContext context, ChatbotKeywordOptions keywordOptions)
+    {
+        List<QnAKeywordPair> pairs = new List<QnAKeywordPair>();
+
+        QnAKeywordPair routeToChatWorker = new QnAKeywordPair
+        {
+            Query = "Jeg ønsker å settes over til et menneske",
+            Answer = keywordOptions.RouteToChatWorker
+        };
+        pairs.Add(routeToChatWorker);
+
+        QnAKeywordPair routeToChatWorker2 = new QnAKeywordPair
+        {
+            Query = "Jeg ønsker kontakt med kundesenter",
+            Answer = keywordOptions.RouteToChatWorker
+        };
+        pairs.Add(routeToChatWorker2);
+
+        QnAKeywordPair exit = new QnAKeywordPair
+        {
+            Query = "Forlat chat",
+            Answer = keywordOptions.Exit
+        };
+        pairs.Add(exit);
+
+        QnAKeywordPair exit2 = new QnAKeywordPair
+        {
+            Query = "Avslutt samtale",
+            Answer = keywordOptions.Exit
+        };
+        pairs.Add(exit2);
+
+        QnAKeywordPair exit3 = new QnAKeywordPair
+        {
+            Query = "Avslutt chatbot",
+            Answer = keywordOptions.Exit
+        };
+        pairs.Add(exit3);
+
+        await context.AddRangeAsync(pairs);
+        await context.SaveChangesAsync();
+    }
 
 }

@@ -27,6 +27,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Data
         public virtual DbSet<QnABaseClass> QnABaseClass { get; set; }
         public virtual DbSet<QnAKnowledgeBase> QnAKnowledgeBase { get; set; }
         public virtual DbSet<QnAPairs> QnAPairs { get; set; }
+        public virtual DbSet<QnAKeywordPair> QnAKeywordPairs { get; set; }
 
 
         // Chat Groups

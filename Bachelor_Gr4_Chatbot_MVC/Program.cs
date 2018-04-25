@@ -32,7 +32,8 @@ namespace Bachelor_Gr4_Chatbot_MVC
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     var roleOptions = services.GetRequiredService<IOptions<RoleOptions>>();
-                    SeedData.InitializeAsync(context, userManager, roleManager, roleOptions).Wait();
+                    var keywordOptions = services.GetRequiredService<IOptions<ChatbotKeywordOptions>>();
+                    SeedData.InitializeAsync(context, userManager, roleManager, roleOptions, keywordOptions).Wait();
                 }
                 catch (Exception ex)
                 {
