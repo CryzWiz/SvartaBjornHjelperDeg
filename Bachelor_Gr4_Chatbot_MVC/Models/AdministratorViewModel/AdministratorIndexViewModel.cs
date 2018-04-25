@@ -11,6 +11,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.AdministratorViewModel
 
         public int ChatbotId { get; set; }
 
+        public int KnowledgeBaseId { get; set; }
+
         public int UnPublishedQnAPairs { get; set; }
     }
 }

@@ -179,5 +179,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// </summary>
         /// <returns><int>number of unpublished qnapairs</int></returns>
         Task<int> GetPublishedQnAPairsToActiveBotAsync();
+
+        /// <summary>
+        /// Fetch a single message and return it
+        /// </summary>
+        /// <param name="q"><int>Message id</int></param>
+        /// <returns><Message>Message found</Message></returns>
+        Task<Message> GetSingleMessageByIdAsync(int q);
     }
 }

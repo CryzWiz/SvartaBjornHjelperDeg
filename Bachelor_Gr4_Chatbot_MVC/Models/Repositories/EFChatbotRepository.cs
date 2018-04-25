@@ -612,20 +612,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var onlineQnA = await qnaRepository.DownloadKnowledgeBase(id);
             var localQnA = await GetAllQnAPairsAsync(id);
 
-            string result = "";
-            //int size = onlineQnA.Count();
-            //int i = 2;
-            //while (i <= size - 2)
-            //{
-
-            //    result += i + ":" + onlineQnA[i] + " | " + (i+1) +":"+onlineQnA[i+1] + " | ";
-
-            //    i += 3;
-            //}
-            //return result;
             int number = 0;
             bool present = false;
-
+            // If we already have some QnAPairs in local db
             if (localQnA.Count > 0)
             {
                 foreach (QnAPairs external_qna in onlineQnA)
@@ -658,7 +647,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                     }
                 }
             }
-            else
+            else // Or if we dont have any in the local db
             {
                 foreach (QnAPairs external_qna in onlineQnA)
                 {
@@ -678,6 +667,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                     number++;
                 }
             }
+            //update last edit for knowledgebase
+            var b = await GetQnAKnowledgeBaseAsync(id);
+            b.LastEdit = DateTime.Now;
+            db.Update(b);
+            db.SaveChanges();
+            // Return result
             if (number > 0)
                 return number;
             else if (number == 0)
@@ -753,6 +748,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(x => x.IsActive == true);
             var qna = db.QnAPairs.Where(x => x.Published == false && x.KnowledgeBaseId == b.QnAKnowledgeBaseId);
             return qna.Count();
+        }
+
+        /// <summary>
+        /// Fetch a single message and return it
+        /// </summary>
+        /// <param name="q"><int>Message id</int></param>
+        /// <returns><Message>Message found</Message></returns>
+        public async Task<Message> GetSingleMessageByIdAsync(int q)
+        {
+            var m = await db.Messages.FirstOrDefaultAsync(x => x.MessageId == q);
+            return m;
         }
     }
 
