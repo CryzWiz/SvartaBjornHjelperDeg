@@ -105,11 +105,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return chatQueues;
         }
 
-        public async Task<string> GetUsersChatGroups(string userName)
+        public async Task<IEnumerable<string>> GetUsersChatGroups(string userName)
         {
-            //List<ChatGroup> lst = await _db.ChatGroups.Where(x => x.GroupMembers.Any(y => y.UserId == userName)).ToListAsync();
-            throw new NotImplementedException();
-            //return "test";
+            var test = userName;
+            List<string> lst = await (from chatGroup in _db.UserChatGroup
+                                       where chatGroup.UserId.Equals(userName)
+                                       select chatGroup.ChatGroupId).ToListAsync();
+             return lst;
+            
         }
 
         /*

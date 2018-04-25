@@ -28,9 +28,9 @@ public class SeedData
         IOptions<RoleOptions> roleOptions)
     {
 
-        if (!context.UserChatGroup.Any())
+        if (!context.ChatGroups.Any())
         {
-            await CreateUserChatGroups(context);
+            await CreateChatGroups(context);
         }
 
         if (!context.Roles.Any())
@@ -110,6 +110,22 @@ public class SeedData
 
         await userManager.AddToRoleAsync(admin, roleOptions.AdminRole);
         await context.SaveChangesAsync();
+
+        // Add admin to all chatgroups
+        List<ChatGroup> groups = context.ChatGroups.ToList();
+        List<UserChatGroup> adminChatGrups = new List<UserChatGroup>();
+        foreach(ChatGroup group in groups)
+        {
+            UserChatGroup gr = new UserChatGroup
+            {
+                UserId = admin.Email,
+                ChatGroupId = group.ChatGroupId
+            };
+            adminChatGrups.Add(gr);
+        }
+
+        await context.AddRangeAsync(adminChatGrups);
+        await context.SaveChangesAsync();
     }
 
 
@@ -154,7 +170,7 @@ public class SeedData
         await context.SaveChangesAsync();
     }
 
-    private static async Task CreateUserChatGroups(ApplicationDbContext context)
+    private static async Task CreateChatGroups(ApplicationDbContext context)
     {
         List<ChatGroup> chatGroups = new List<ChatGroup>();
 

@@ -99,14 +99,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
-
+            // Add Employee to necessary groups
             await AddEmployeeToWorkGroupsBasedOnRole();
             await AddEmployeeToCustomChatGroups();
+
+            // Add user to single-user group
+            await Groups.AddAsync(Context.ConnectionId, key);
+
+            // TODO: Map chat workers status
+
+            // TODO: When logged in, display chat workers queues
 
             //TODO: DENNE SKAL FLYTTES
             await GetAllChatGroups();
 
-            //await AddEmployeeToWorkGroupsBasedOnRole();
             await DisplayAllChatQueues(); // TODO: LLLLL
 
 
@@ -114,8 +120,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Add Chat-workers to list
             //if(Context.User.Identity.Name.)
 
-            // Add to single-user group
-            await Groups.AddAsync(Context.ConnectionId, key);
+
 
 
             // Check if user has active conversations and display conversation if it exists
@@ -192,15 +197,20 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
 
+        /// <summary>
+        /// Add employee to groups based on their group membership. 
+        /// </summary>
         private async Task AddEmployeeToCustomChatGroups()
         {
             if (Context.User.Identity.IsAuthenticated) {
                 var groups = await _chatRepository.GetUsersChatGroups(Context.User.Identity.Name);
+                foreach(string group in groups)
+                {
+                    await Groups.AddAsync(Context.ConnectionId, group);
+                }
             }
         }
         
-
-
         /// <summary>
         /// Get key used to map connection in Single-user group and In-memory connection mapping. 
         /// </summary>
