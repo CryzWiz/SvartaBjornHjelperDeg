@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Svarta Bjørn | Se publiserte QnA Par";
 }
-
+@section AddToHead{
+    <link href="@Url.Content("~/css/popupChat.css")" rel="stylesheet" type="text/css" />
+}
 <div id="wrapper">
     @await Html.PartialAsync("_Navbar_admin")
 
