@@ -53,11 +53,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<IActionResult> Index()
         {
             var c = await chatbotRepository.GetActiveQnABaseClassAsync();
+            var b = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
             var model = new AdministratorIndexViewModel();
             if(c != null)
             {
                 model.ChatbotName = c.chatbotName;
                 model.ChatbotId = c.QnAId;
+                model.KnowledgeBaseId = b.QnAKnowledgeBaseId;
                 model.UnPublishedQnAPairs = await chatbotRepository.GetPublishedQnAPairsToActiveBotAsync();
             }
             else
@@ -837,6 +839,65 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             };
 
             return View(viewmodel);
+        }
+
+        /// <summary>
+        /// Fetch and display a single message. Purpose is to add a desired answer to that question/message
+        /// and train it to the active bot
+        /// </summary>
+        /// <param name="q"><int>id for given message/question</int></param>
+        /// <returns>View with question</returns>
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditAndStoreMessagePairToBot(int q)
+        {
+            //var knowledgebase = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
+            var message = await chatbotRepository.GetSingleMessageByIdAsync(q);
+
+            var model = new QnAEditAndStoreMessagePairToBot
+            {
+                Question = message.Content,
+                Answer = "",
+                ConversationId = message.ConversationId
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Recive QnAPair from the Get EditAndStoreMessagePairToBot method and
+        /// store the QnAPair to the active knowledgebase
+        /// </summary>
+        /// <param name="q"><int>id for given message/question</int></param>
+        /// <returns>View with question</returns>
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditAndStoreMessagePairToBot([FromForm][Bind("Question", "Answer", "Dep", "ConversationId")] QnAEditAndStoreMessagePairToBot qna)
+        {
+            var knowledgebase = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
+            var qnabot = await chatbotRepository.GetActiveQnABaseClassAsync();
+            var QnA = new QnATrainBase
+            {
+                Query = qna.Question,
+                Answer = qna.Answer,
+                Dep = qna.Type,
+                QnABotName = qnabot.chatbotName,
+                KnowledgeBaseId = knowledgebase.QnAKnowledgeBaseId,
+                KnowledgeBaseName = knowledgebase.QnAKnowledgeName,
+                SubscriptionKey = qnabot.subscriptionKey
+            };
+            var message = await chatbotRepository.AddSingleQnAPairToBaseAsync(QnA);
+
+            if (message)
+            {
+                TempData["success"] = String.Format("QnA paret er lagt til kunnskapsbase {0}", knowledgebase.QnAKnowledgeName);
+                return RedirectToAction("ViewConversationDetails", new { id = qna.ConversationId });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Klarte ikke å legge QnA til kunnskapsbase {0}", knowledgebase.QnAKnowledgeName);
+                return RedirectToAction("ViewConversationDetails", new { id = qna.ConversationId });
+            }
         }
     }
 }

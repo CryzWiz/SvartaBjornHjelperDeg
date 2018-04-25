@@ -3,7 +3,10 @@
 @{
     ViewData["Title"] = "Svarta Bjørn | Se samtaledetaljer for samtale " + Model.conversation.ConversationId.ToString();
 }
+@section AddToHead{
+    <link href="@Url.Content("~/css/popupChat.css")" rel="stylesheet" type="text/css" />
 
+}
 <div id="wrapper">
     @await Html.PartialAsync("_Navbar_admin")
 
@@ -11,62 +14,153 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <h2>ViewConversationDetails</h2>
+                <h2>Se samtaledetaljer for samtale id:@Html.Raw(Model.conversation.ConversationId)</h2>
 
-                <p>
-                    <a asp-action="Create">Create New</a>
-                </p>
+                <p>Under ser du detaljene for samtalen. Du kan velge par fra tabellen til høyre og lagre disse til aktiv bot.</p>
             </div>
             <hr />
 
-            <div class="col-md-12">
-                @if (Model.messages.Count() > 0)
+
+@if (Model.messages.Count() > 0)
+{
+
+    var size = Model.messages.Count();
+    int count = 0;
+    <div class="col-md-4">
+        <div class="chatbox_ViewConversation">
+            <div class="chatbox_title_unconnected" id="chatbox__title">
+                <h5 id="chatbox__light" class=""><a href="#" id="chatbotHeaderLink">Svarta Bjørn</a></h5>
+            </div>
+            <div class="chatbox__body" id="chatbox__body">
+
+                @for (int i = 0; i < size; i++)
                 {
-                    var size = Model.messages.Count();
-                    int count = 0;
+                    @if (Model.messages[i].IsChatBot)
+                    {
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    Nr
-                                </th>
-                                <th>
-                                    Spørsmål
-                                </th>
-                                <th>
-                                    Svar
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for(int i = 0; i < size; i = i + 2)
-                            {
+                        <div class="chatbox__body__message chatbox__body__message--left">
+                            <img src="../../images/narvik_kommune_small.jpg" />
+                            <p>
+                                @Html.Raw(Model.messages[i].Content)<br />
+                                <small>@Html.Raw(Model.messages[i].DateTime)</small>
+                            </p>
+                        </div>
 
-                            @if (count == 0)
-                            {
-                                count = 1;
 
-                            }
-                            else
-                            {
-                                count++;
+                    }
+                    else
+                    {
 
-                            }
-                            <tr>
-                                <td>@count</td>
-                                <td>@Html.Raw(Model.messages[i].Content)</td>
-                                <td>@Html.Raw(Model.messages[i + 1].Content)</td>
-                                <td>@Html.ActionLink("Lagre", "Delete", new { /* id=item.PrimaryKey */ })</td>
-                            </tr>
+                        <div class="chatbox__body__message  chatbox__body__message--right">
+                            <img src="../../images/user.png" />
+                            <p>
+                                @Html.Raw(Model.messages[i].Content)<br />
+                                <small>@Html.Raw(Model.messages[i].DateTime)</small>
+                            </p>
+                        </div>
 
-                            }
-                        </tbody>
-                    </table>
+                    }
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        #
+                    </th>
+                    <th scope="col">
+                        Spørsmål
+                    </th>
+                    <th scope="col">
+                        Svar
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < size; i = i + 2)
+                {
+
+                    @if (count == 0)
+                    {
+                        count = 1;
+
+                    }
+                    else
+                    {
+                        count++;
+
+                    }
+                    <tr>
+                        <td scope="row">@count</td>
+                        <td>@Html.Raw(Model.messages[i].Content)</td>
+                        <td>@Html.Raw(Model.messages[i + 1].Content)</td>
+                        <td>@Html.ActionLink("Lagre", "EditAndStoreMessagePairToBot", new { q = Model.messages[i].MessageId })</td>
+                    </tr>
 
                 }
-            </div>           
+            </tbody>
+        </table>    
+    </div>
+
+    <!-- Chat vindu -->
+    @*<div class="col-sm-8 col-sm-offset-2">
+
+        <div class="panel panel-primary" style="display: flex; flex-direction: column;">
+            <div class="panel-heading clearfix">
+                <h3 class="panel-title pull-left">Aktiv chat</h3>
+                <div class="btn-group pull-right">
+                    <button id="endConversation" class="btn btn-default btn-sm">Avslutt samtale</button>
+                </div>
+            </div>
+
+            <div class="panel-body" id="chatbox__body" style="min-height: 500px; max-height: 500px;overflow-y: scroll;">
+
+
+                @for (int i = 0; i < size; i++)
+                {
+                    @if (Model.messages[i].IsChatBot)
+                    {
+                        
+                            <div class="chatbox__body__message chatbox__body__message--left">
+                                <img src="../../images/narvik_kommune_small.jpg" />
+                                <p>@Html.Raw(Model.messages[i].Content)<br />
+                                <small>@Html.Raw(Model.messages[i].DateTime)</small>
+                            </p>
+                            </div>
+                        
+
+                    }
+                    else
+                    {
+                        
+                            <div class="chatbox__body__message  chatbox__body__message--right">
+                                <img src="../../images/user.png" />
+                                <p>@Html.Raw(Model.messages[i].Content)<br />
+                                <small>@Html.Raw(Model.messages[i].DateTime)</small></p>
+                            </div>
+                        
+                    }
+                }
+            </div>
+            <div class="panel-footer">
+                <div class="container-fluid">
+
+                </div>
+            </div>
+        </div>
+
+    </div>*@
+
+}
+
+     
         </div>
     </div>
 </div>

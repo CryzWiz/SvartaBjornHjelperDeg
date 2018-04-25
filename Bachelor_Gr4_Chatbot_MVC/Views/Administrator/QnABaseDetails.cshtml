@@ -70,13 +70,13 @@
                         <form asp-action="QnABaseDetails">
                             <div class="form-group">
                                 <label asp-for="QnAKnowledgeName" class="control-label"></label>
-                                <input asp-for="QnAKnowledgeName" class="form-control" />
+                                <input asp-for="QnAKnowledgeName" class="form-control" disabled/>
                                 <span asp-validation-for="QnAKnowledgeName" class="text-danger"></span>
                             </div>
                         </form>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <input type="submit" value="Oppdater" class="btn btn-success" />
-                        </div>
+                        </div>*@
                     </div>
                 </div>
 
