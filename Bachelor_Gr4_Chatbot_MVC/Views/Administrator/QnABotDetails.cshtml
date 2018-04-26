@@ -14,12 +14,17 @@
 
         <div class="container-fluid">
             <div class="row">
-                <h2>Detaljer for Chatbot @Model.ChatbotName</h2>
+                <div class="col-md-10">
+                    <h2>Detaljer for Chatbot @Model.ChatbotName</h2>
 
 
-                <h4>Registrert: @Model.RegDate.ToString(string.Format("dd/MM/yyyy")) | Sist endret: @Model.LastEdit.ToString(string.Format("dd/MM/yyyy hh:mm"))</h4>
-                <hr />
+                    <h4>Registrert: @Model.RegDate.ToString(string.Format("dd/MM/yyyy")) | Sist endret: @Model.LastEdit.ToString(string.Format("dd/MM/yyyy hh:mm"))</h4>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
             </div>
+            <hr />
            <div class="row">
                <div class="col-md-6">
                    <dl class="dl-horizontal">

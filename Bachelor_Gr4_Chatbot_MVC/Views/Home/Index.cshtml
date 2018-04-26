@@ -2,7 +2,21 @@
     ViewData["Title"] = "Svarta Bjørn | Index";
 }
 
-<h1>Test-sider</h1>
+
+<div class="row" style="min-height:70vh; padding-top:5vh;">
+    <div class="col-md-2 col-md-offset-2">
+        <a asp-area="" asp-controller="Administrator" asp-action="Index">
+            <div type="button" class="btn btn-primary btn-lg active">Administrator</div>
+        </a>
+    </div>
+    <div class="col-md-2 col-md-offset-4">
+        <a asp-area="" asp-controller="Administrator" asp-action="Index">
+            <div type="button" class="btn btn-primary btn-lg active">Chat-medarbeider</div>
+        </a>
+    </div>
+</div>
+
+@*<h1>Test-sider</h1>
 <p>Flyttet over fra vanlig html til MVC løsning. Må enda tilpasses en del. Selve chatboksen hostes fra kark.uit.no da denne ligger utenfor MVC prosjektet.</p>
 <p>For å teste kan du logge inn med følgende brukere(du kan også registrere ny bruker):</p>
 <ul>
@@ -24,7 +38,7 @@
     <li><a asp-area="" asp-controller="Home" asp-action="Chat">Chat-test</a></li>
     <li><a asp-area="" asp-controller="Home" asp-action="Test">DirectLine API testarea</a></li>
     <li><a asp-area="" asp-controller="QnA" asp-action="Index">QnA test</a></li>
-</ul>
+</ul>*@
 
 
 

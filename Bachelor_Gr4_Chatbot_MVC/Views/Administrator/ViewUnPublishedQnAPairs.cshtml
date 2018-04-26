@@ -16,16 +16,17 @@
                     <h4>Alle trente QnA par som venter publisering</h4>
                 </div>
                 <div class="col-md-2">
-                    <br /><br />
-                    @Html.ActionLink("Publiser endringer", "PublishTrainedQnAPairs", "Administrator", new{ id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
                 </div>
-
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.ActionLink("Publiser endringer", "PublishTrainedQnAPairs", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+                </div>
             </div>
             <hr />
 
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
             @if (Model.QnAPairs.Count > 0)
             {
                 <table class="table">

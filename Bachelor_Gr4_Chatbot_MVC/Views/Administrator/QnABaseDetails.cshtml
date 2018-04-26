@@ -10,9 +10,15 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <h2>Detaljer for kunnskapsbase @Model.QnAKnowledgeName</h2>
+                <div class="col-md-10">
+                    <h2>Detaljer for kunnskapsbase @Model.QnAKnowledgeName</h2>
 
-                <h4>Registrert: @Model.RegDate.ToString(string.Format("dd/MM/yyyy")) | Sist endret: @Model.LastEdit.ToString(string.Format("dd/MM/yyyy hh:mm"))</h4>
+                    <h4>Registrert: @Model.RegDate.ToString(string.Format("dd/MM/yyyy")) | Sist endret: @Model.LastEdit.ToString(string.Format("dd/MM/yyyy hh:mm"))</h4>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
+                
             </div>
             <hr />
             <div class="row">
@@ -66,7 +72,7 @@
 
 
 
-                    <div class="col-md-12">
+                    @*<div class="col-md-12">
                         <form asp-action="QnABaseDetails">
                             <div class="form-group">
                                 <label asp-for="QnAKnowledgeName" class="control-label"></label>
@@ -74,12 +80,12 @@
                                 <span asp-validation-for="QnAKnowledgeName" class="text-danger"></span>
                             </div>
                         </form>
-                        @*<div class="form-group">
+                        <div class="form-group">
                             <input type="submit" value="Oppdater" class="btn btn-success" />
-                        </div>*@
-                    </div>
+                        </div>
+                    </div>*@
                 </div>
-
+            <hr />
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Kunnskapsbase id hos QnAMaker.ai</h3>

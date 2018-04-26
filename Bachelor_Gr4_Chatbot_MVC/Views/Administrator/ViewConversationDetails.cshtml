@@ -14,9 +14,14 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <h2>Se samtaledetaljer for samtale id:@Html.Raw(Model.conversation.ConversationId)</h2>
+                <div class="col-md-10">
+                    <h2>Se samtaledetaljer for samtale id:@Html.Raw(Model.conversation.ConversationId)</h2>
 
-                <p>Under ser du detaljene for samtalen. Du kan velge par fra tabellen til høyre og lagre disse til aktiv bot.</p>
+                    <p>Under ser du detaljene for samtalen. Du kan velge par fra tabellen til høyre og lagre disse til aktiv bot.</p>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
             </div>
             <hr />
 
