@@ -408,7 +408,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 int? placeInQueue = ChatQueue.Enqueue(conversation.ConversationId, conversation.UserGroup1);
                 if(placeInQueue != null)
                 {
-                    await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", placeInQueue);
+                    string chatGroupsString = "IT, Bygg"; // TODO: FJERN HARDKODING, hent fra liste
+                    string message = String.Format("Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: {0}." +
+                        "<br /> Gjelder din henvendelse et av følgende tema: {1}?" +
+                        "<br /> Skriv inn ønsket tema så havner du til rett kundebehandler og vi kan behandle spørsmålet ditt raskerer." +
+                        "<br /> Dersom ingen tema passer kan du vente på svar så vil første ledige kundebehandler ta kontakt.", placeInQueue, chatGroupsString);
+                    await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", message);
+                    //await Clients.Group(conversation.UserGroup1).InvokeAsync("setChatGroupsQuestionBool", true);
                     await SetConversationId(conversation.UserGroup1, conversation.ConversationId);
                 }
                 /*_queue.Enqueue(conversation.ConversationId);
@@ -425,6 +431,47 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 await DisplayErrorMessageInChat(conversation.UserGroup1, "Feil under tilkobling av chat. "); // TODO: Error messages...
             }
+
+        }
+
+        /// <summary>
+        /// Method invoked from client to add to specific chat-queue. 
+        /// Check if given ChatQueue name exists and call JoinSpecificQueue
+        /// to add user to the correct queue. 
+        /// </summary>
+        /// <param name="queueName"></param>
+        public async Task JoinSpecificChatQueue(string queueName)
+        {
+            string name = queueName.ToLower();
+            
+            try
+            {
+                // For queue in queues, check if match
+                IEnumerable<ChatQueue> queues = await _chatRepository.GetAllChatGroupsAsQueueAsync();
+                ChatQueue joinQueue = null;
+                foreach(ChatQueue queue in queues)
+                {
+                    if((queue.ChatGroupName.ToLower()).Equals(name))
+                    {
+                        joinQueue = queue;
+                    }
+                }
+                // Get queue from active queues
+
+                // JoinSpecificQueue
+                if(joinQueue != null)
+                {
+                    await JoinSpecificQueue(joinQueue);
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO: 
+            }
+        }
+
+        public async Task JoinSpecificQueue(ChatQueue chatQueue)
+        {
 
         }
 
@@ -465,18 +512,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }*/
 
-      /*  public async Task JoinSpecificQueue(ChatQueue queue, int conversationId)
-        {
-            string userGroup = GetConnectionKey();
-           // int? placeInQueue = queue.Enqueue(conversationId, userGroup);
-            if(placeInQueue != null)
-            {
-                await DisplayQueueCount();
-            }
-        
+        /*  public async Task JoinSpecificQueue(ChatQueue queue, int conversationId)
+          {
+              string userGroup = GetConnectionKey();
+             // int? placeInQueue = queue.Enqueue(conversationId, userGroup);
+              if(placeInQueue != null)
+              {
+                  await DisplayQueueCount();
+              }
 
-        }*/
-        
+
+          }*/
+
         /*public async Task<bool> MessageIsKeyword(string message, int conversationId)
         {
             string msg = message.ToLower();
@@ -506,13 +553,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }*/
 
 
+
         /// <summary>
         /// Check response message from chatbot to see if it contains keyword defined 
         /// to change chat logic. 
         /// If a keyword is found, the change in logic is implemented. 
         /// </summary>
-        /// <param name="response"></param>
-        /// <param name="conversationId"></param>
+        /// <param name="response">Response message returned by chatbot</param>
+        /// <param name="conversationId">Conversation ID for active conversation</param>
         /// <returns>true if keyword is found, false otherwise</returns>
         public async Task<bool> ResponseIsKeyword(string response, int conversationId)
         {
@@ -544,6 +592,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             return true;
         }
 
+
+        /// <summary>
+        /// Redirect conversation from chatbot to a chat with chat-worker. 
+        /// Conversation with chatbot is ended and stored in the database with negative result. 
+        /// JoinQueue is called to add user to chat queue. 
+        /// </summary>
+        /// <param name="conversationId">Conversation ID</param>
         public async Task RedirectToChatWorker(int conversationId)
         {
             try
@@ -572,6 +627,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 // TODO: 
             }
         }
+
 
 
         private int? Dequeue()

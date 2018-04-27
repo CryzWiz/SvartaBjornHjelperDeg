@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var chatBotToken = ""; //TODO: SLETTES
     var chatIsWithBot = true;
     var conversationIdForResult = null;
+    var messageIsChatGroup = false;
 
     function resetChatBotVariables(chatWithBot) {
         chatIsWithBot = chatWithBot;
@@ -340,14 +341,15 @@ document.addEventListener('DOMContentLoaded', function () {
         //displayConversation(conversation);
     });
 
+    // TODO: Testcode, should be deleted
     connection.on('alert', function (message) {
         console.log("connection on: alert");
         alert(message);
     });
 
     // TODO: for 
-    connection.on('displayPlaceInQueue', function (queNumber) {
-        displayReceivedMessage('Du er nå lagt i kø, en medarbeider vil svare deg så raskt som mulig. Din plass i køen er: ' + queNumber);
+    connection.on('displayPlaceInQueue', function (message) {
+        displayReceivedMessage(message);
         console.log("connection on: displayPlaceInQueue");
     });
 
@@ -360,7 +362,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Functions used to invoke methods in hub
             function sendMessage() {
                 if (messageInput.value.length > 0) { // if there is any input
-                    if (chatIsWithBot) {
+                    if (messageIsChatGroup) {
+                        connection.invoke('joinSpecificChatQueue', messageInput.value);
+                    }
+                    else if (chatIsWithBot) {
                         connection.invoke('sendToChatBot', conversationId, chatBotToken, messageInput.value);
                     } else {
                         connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
