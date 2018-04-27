@@ -9,9 +9,16 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <h2>Legg til spørsmål og svar par til chatbot @Html.DisplayName(Model.QnABotName)</h2>
+            <div class="row">
+                <div class="col-md-10">
+                    <h2>Legg til spørsmål og svar par til chatbot @Html.DisplayName(Model.QnABotName)</h2>
 
-            <h4>Aktiv base er: @Html.DisplayName(Model.KnowledgeBaseName)</h4>
+                    <h4>Aktiv base er: @Html.DisplayName(Model.KnowledgeBaseName)</h4>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
+            </div>
             <hr />
             <div class="row">
                 <div class="col-md-4">
@@ -56,6 +63,10 @@
                             <input type="submit" value="Save" class="btn btn-default" />
                         </div>
                     </form>
+                </div>
+                <div class="col-md-6 col-md-offset-2">
+                    <p><span class="glyphicon glyphicon-info-sign"> </span>QnAParret legges til den kunnskapsbasen som er aktiv pr nå.</p>
+                    <p><span class="glyphicon glyphicon-info-sign"> </span>Område er valgfritt. Du kan benytte dette feltet om du ønsker informasjon om hvilket området dette QnAParret tilhører. Feks "Teknisk"</p>
                 </div>
             </div>
 

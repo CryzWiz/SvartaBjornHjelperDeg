@@ -84,63 +84,56 @@
                         <h3 class="panel-title">Kunnskapsbaser for denne chatboten</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="well well-sm">
-                            <div class="form-group">
-                                
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Kunnskapsbase Navn
-                                            </th>
-                                            <th>
-                                                Registrert Dato
-                                            </th>
-                                            <th>
-                                                Sist Oppdatert
-                                            </th>
-                                            <th>
-                                                aktive
-                                            </th>
-                                            <th>
-                                                Kunnskapsbase Id
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Kunnskapsbase Navn
+                                    </th>
+                                    <th>
+                                        Registrert Dato
+                                    </th>
+                                    <th>
+                                        Sist Oppdatert
+                                    </th>
+                                    <th>
+                                        aktive
+                                    </th>
+                                    <th>
+                                        Kunnskapsbase Id
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                        @foreach (var i in Model.KnowledgeBases)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    @i.QnAKnowledgeName
-                                                </td>
-                                                <td>
-                                                    @i.RegDate
-                                                </td>
-                                                <td>
-                                                    @i.LastEdit
-                                                </td>
-                                                <td>
-                                                    @i.IsActive
-                                                </td>
-                                                <td>
-                                                    @i.KnowledgeBaseID
-                                                </td>
-                                                <td>
-                                                    @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId }) |
-                                                    @Html.ActionLink("Slett", "DeleteQnAKnowledgeBaseByIdAsync", new { id = i.QnAKnowledgeBaseId })
-                                                </td>
-                                            </tr>
+                                @foreach (var i in Model.KnowledgeBases)
+                                {
+                                    <tr>
+                                        <td>
+                                            @i.QnAKnowledgeName
+                                        </td>
+                                        <td>
+                                            @i.RegDate
+                                        </td>
+                                        <td>
+                                            @i.LastEdit
+                                        </td>
+                                        <td>
+                                            @i.IsActive
+                                        </td>
+                                        <td>
+                                            @i.KnowledgeBaseID
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId }) |
+                                            @Html.ActionLink("Slett", "DeleteQnAKnowledgeBaseByIdAsync", new { id = i.QnAKnowledgeBaseId })
+                                        </td>
+                                    </tr>
 
-                                        }
-                                    </tbody>
-                                </table>
-
-
-                            </div>
-                        </div>
+                                }
+                            </tbody>
+                        </table>                          
                     </div>
                 </div>
             </div>
@@ -148,7 +141,6 @@
                 @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
                 <a asp-action="QnaBots">Tilbake til listen</a>
             </div>
-
 
         </div>
     </div>
