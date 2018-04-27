@@ -10,7 +10,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
     {
         // Keep track of all users in queue to chat with a chat-worker
         // This mapping is for ALL groups
-        private static ConcurrentQueue<int> _fullQueue = new ConcurrentQueue<int>();
+        private static ConcurrentQueue<QueueItem> _fullQueue = new ConcurrentQueue<QueueItem>();
         private static ConcurrentDictionary<string, int> _inFullQueue = new ConcurrentDictionary<string, int>();
         private static int _fullWaitTimeCounter = 0;
         private static TimeSpan _fullWaitTimeSum;
@@ -54,7 +54,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
 
             try
             {
-                _fullQueue.Enqueue(conversationId);
+                _fullQueue.Enqueue(new QueueItem { ConversationId = conversationId, TimeAddedToQueue = DateTime.Now });
 
                 if (_inFullQueue.TryAdd(userGroup, conversationId))
                 {
@@ -98,11 +98,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         {
             while (!_fullQueue.IsEmpty)
             {
-                if (_fullQueue.TryDequeue(out int conversationId))
+                if (_fullQueue.TryDequeue(out QueueItem queueItem))
                 {
-                    if (_inFullQueue.Values.Contains(conversationId))
+                    if (_inFullQueue.Values.Contains(queueItem.ConversationId))
                     {
-                        return conversationId;
+                        return queueItem.ConversationId;
                     }
                 }
 
@@ -136,6 +136,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         }
 
 
-
+        public static string GetFirstInQueuesWaitTimeAsString()
+        {
+            if(_fullQueue.TryPeek(out QueueItem queueItem)) {
+                DateTime from = queueItem.TimeAddedToQueue;
+                TimeSpan span = DateTime.Now - from;
+                return String.Format("{0} minutter, {1} sekunder", (int)span.TotalMinutes, span.Seconds);
+            }
+            return null;
+        }
     }
 }
