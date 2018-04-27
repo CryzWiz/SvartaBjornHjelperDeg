@@ -115,6 +115,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             
         }
 
+        public async Task<IEnumerable<ChatQueue>> GetUsersChatGroupsAsQueueAsync(string userName)
+        {
+            IEnumerable<ChatQueue> chatQueues = await (from userChatGroup in _db.UserChatGroup
+                                                       join chatGroup in _db.ChatGroups on userChatGroup.ChatGroupId equals chatGroup.ChatGroupId
+                                                      select new ChatQueue
+                                                      {
+                                                          ChatGroupId = chatGroup.ChatGroupId,
+                                                          ChatGroupName = chatGroup.ChatGroupName
+                                                      }).ToListAsync();
+            return chatQueues;
+        }
+
         /*
         public async Task<ChatGroup> GetAdminGroup()
         {
@@ -126,6 +138,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return await _db.ChatGroups.Where(x => x.IsChatWorkerGroup == true).FirstOrDefaultAsync();
         }*/
 
-        
+
     }
 }

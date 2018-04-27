@@ -76,7 +76,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
         */
 
-        private static ChatQueue _fullChatQueue = new ChatQueue();
+        //private static ChatQueue _fullChatQueue = new ChatQueue();
 
         IEnumerable<ChatGroup> _allChatGroups;
        
@@ -105,30 +105,29 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string key = GetConnectionKey();
             _connections.Add(key, connectionId);
 
-            // Add Employee to necessary groups
-            await AddEmployeeToWorkGroupsBasedOnRole();
-            await AddEmployeeToCustomChatGroups();
-
             // Add user to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
 
+            // Add Employee to necessary groups
+
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                await AddEmployeeToWorkGroupsBasedOnRole();
+                await AddEmployeeToCustomChatGroups();
+                await DisplayUsersChatQueues();
+
+                //TODO: DENNE SKAL FLYTTES
+                //await GetAllChatGroups();
+                //await DisplayAllChatQueues();
+            }
+            
             // TODO: Map chat workers status
 
             // TODO: When logged in, display chat workers queues
 
-            //TODO: DENNE SKAL FLYTTES
-            await GetAllChatGroups();
-
-            await DisplayAllChatQueues(); // TODO: LLLLL
-
-
-
             // Add Chat-workers to list
             //if(Context.User.Identity.Name.)
-
-
-
-
+            
             // Check if user has active conversations and display conversation if it exists
             if (_activeConversations.TryGetValue(key, out int conversationId))
             {
@@ -176,30 +175,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// </summary>
         private async Task AddEmployeeToWorkGroupsBasedOnRole()
         {
-            if (Context.User.Identity.IsAuthenticated)
+            try
             {
-                try
+                ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
+
+                // Chat employee groups
+                if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
                 {
-                    ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
-
-                    // Chat employee groups
-                    if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
-                    {
-                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
-                        // TODO: SetChatEmployeeStatus
-                        await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
-                    }
-
-                    // Administrator groups
-                    if (await _userManager.IsInRoleAsync(user, _roleOptions.AdminRole))
-                    {
-                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
-                    }
+                    await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
+                    // TODO: SetChatEmployeeStatus
+                    await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
                 }
-                catch (Exception e)
+
+                // Administrator groups
+                if (await _userManager.IsInRoleAsync(user, _roleOptions.AdminRole))
                 {
-
+                    await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
                 }
+            }
+            catch (Exception e)
+            {
+
             }
         }
 
@@ -208,12 +204,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// </summary>
         private async Task AddEmployeeToCustomChatGroups()
         {
-            if (Context.User.Identity.IsAuthenticated) {
-                var groups = await _chatRepository.GetUsersChatGroups(Context.User.Identity.Name);
-                foreach(string group in groups)
-                {
-                    await Groups.AddAsync(Context.ConnectionId, group);
-                }
+            var groups = await _chatRepository.GetUsersChatGroups(Context.User.Identity.Name);
+            foreach(string group in groups)
+            {
+                await Groups.AddAsync(Context.ConnectionId, group);
             }
         }
         
@@ -393,7 +387,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // TODO: DISPLAY NUMBER OF USERS CONNECTED ETC; IN QUEUE FOR DASHBORD
 
             // TODO: Gjør endringer her!
-            if(_inQueue.Remove(key, out int value))
+            if(ChatQueue.RemoveFromFullQueue(key))
             {
                 await DisplayQueueCount();
             }
@@ -419,7 +413,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             try
             {
-                int? placeInQueue = _fullChatQueue.Enqueue(conversation.ConversationId, conversation.UserGroup1);
+                int? placeInQueue = ChatQueue.Enqueue(conversation.ConversationId, conversation.UserGroup1);
                 if(placeInQueue != null)
                 {
                     await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", placeInQueue);
@@ -479,17 +473,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }*/
 
-        public async Task JoinSpecificQueue(ChatQueue queue, int conversationId)
+      /*  public async Task JoinSpecificQueue(ChatQueue queue, int conversationId)
         {
             string userGroup = GetConnectionKey();
-            int? placeInQueue = queue.Enqueue(conversationId, userGroup);
+           // int? placeInQueue = queue.Enqueue(conversationId, userGroup);
             if(placeInQueue != null)
             {
                 await DisplayQueueCount();
             }
         
 
-        }
+        }*/
         
         /*public async Task<bool> MessageIsKeyword(string message, int conversationId)
         {
@@ -587,27 +581,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private int? Dequeue()
         {
-            return _fullChatQueue.Dequeue();
-
-            /*while (!_queue.IsEmpty)
-            {
-                if(_queue.TryDequeue(out int conversationId))
-                {
-                    if(_inQueue.Values.Contains(conversationId))
-                    {
-                        return conversationId;
-                    }
-                }
-            }
-            return null;*/
+            return ChatQueue.Dequeue();
         }
-
-        public async Task PickFromSpecificQueue(string queueId)
+        
+        /*public async Task PickFromSpecificQueue(string queueId)
         {
 
             ChatQueue queue = new ChatQueue(); // TODO: DENNE MÅ HENTES FRA ET ANNET STED
             string chatWorkerId = GetConnectionKey();
-            int? conversationId = queue.Dequeue();
+            //int? conversationId = queue.Dequeue();
             if (conversationId != null)
             {
                 string displayName = await GetDisplayName();
@@ -628,7 +610,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     await SetGroupId(chatWorkerId, conversation.UserGroup1);
                     await SetGroupId(conversation.UserGroup1, chatWorkerId);
 
-                    _inQueue.Remove(conversation.UserGroup1, out int value);
+                    //_inQueue.Remove(conversation.UserGroup1, out int value);
                     ChatQueue.RemoveFromFullQueue(conversation.UserGroup1, (int)conversationId);
                     await SetConversationId(chatWorkerId, conversationId);
                     await DisplayMessage(conversation.UserGroup1, chatWorkerId, message);
@@ -645,7 +627,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 await DisplayErrorMessageInChat(chatWorkerId, "Køen er tom ");
             }
-        }
+        }*/
 
         public async Task PickFromQueue()
         {
@@ -663,9 +645,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                     AddConversationToActiveConversations(conversation.UserGroup1, (int)conversationId);
 
+
                     TimeSpan thisWaitTime = DateTime.Now - conversation.StartTime;
-                    _waitTimeSum += thisWaitTime;
-                    _waitTimeCounter += 1;
+                    ChatQueue.AddFullWaitTime(thisWaitTime);
 
                     await DisplayWaitTime();
                     conversation.UserGroup2 = chatWorkerId;
@@ -675,7 +657,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     await SetGroupId(chatWorkerId, conversation.UserGroup1);
                     await SetGroupId(conversation.UserGroup1, chatWorkerId);
 
-                    _inQueue.Remove(conversation.UserGroup1, out int value);
+                    bool removed = ChatQueue.RemoveFromFullQueue(conversation.UserGroup1);
                     await SetConversationId(chatWorkerId, conversationId);
                     await DisplayMessage(conversation.UserGroup1, chatWorkerId, message);
                     await Clients.Group(conversation.UserGroup1).InvokeAsync("enableInputField", "hei");
@@ -719,15 +701,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private async Task DisplayWaitTime()
         {
-            int avrageWaitTime = (int)_waitTimeSum.TotalSeconds / _waitTimeCounter;
-            TimeSpan span = new TimeSpan(0, 0, avrageWaitTime);
-            _currentWaitTime = String.Format("{0}:{1:00}", (int)span.TotalMinutes, span.Seconds);
-            await Clients.All.InvokeAsync("displayWaitTime", _currentWaitTime);
+            await Clients.All.InvokeAsync("displayWaitTime", ChatQueue.FullWaitTime);
         }
 
         public IEnumerable<int> GetQueue()
         {
-            return _queue.ToArray();
+            return null;
+            //return _queue.ToArray();
         }
 
 
@@ -874,8 +854,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task DisplayQueueCount()
         {
-            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayQueueCount", _inQueue.Count);
-            await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayQueueCount", _inQueue.Count);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayQueueCount", ChatQueue.FullQueueCount);
+            await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayQueueCount", ChatQueue.FullQueueCount);
         }
         public async Task SetChatBotToken(string userGroup, string token)
         {
@@ -920,6 +900,22 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             IEnumerable<ChatQueue> queues = await _chatRepository.GetAllChatGroupsAsQueueAsync();
             await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayAllChatQueues", queues);
             await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayAllChatQueues", queues);
+        }
+
+        public async Task DisplayUsersChatQueues()
+        {
+            string key = GetConnectionKey();
+            try
+            {
+                IEnumerable<ChatQueue> queues = await _chatRepository.GetUsersChatGroupsAsQueueAsync(Context.User.Identity.Name);
+                await Clients.Group(key).InvokeAsync("displayAllChatQueues", queues);
+                await Clients.Group(key).InvokeAsync("displayAllChatQueues", queues);
+            } catch
+            {
+                // TODO
+            }
+           
+
         }
     }
 }

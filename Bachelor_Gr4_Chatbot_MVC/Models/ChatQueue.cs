@@ -15,6 +15,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         private static int _fullWaitTimeCounter = 0;
         private static TimeSpan _fullWaitTimeSum;
         public static string FullWaitTime { get; set; }
+        public static int FullQueueCount { get { return _inFullQueue.Count; } }
 
         // Keep track of specified chatgroup queue
         public string ChatGroupName { get; set; }
@@ -48,17 +49,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         /// <param name="userGroup"></param>
         /// <returns>Queuenumber (place in queue) if conversation was added to the queue successfully;
         /// null if the conversation alredy exists in queue</returns>
-        public int? Enqueue(int conversationId, string userGroup)
+        public static int? Enqueue(int conversationId, string userGroup)
         {
 
             try
             {
-                _queue.Enqueue(conversationId);
+                _fullQueue.Enqueue(conversationId);
 
-                if (_inQueue.TryAdd(userGroup, conversationId))
+                if (_inFullQueue.TryAdd(userGroup, conversationId))
                 {
 
-                    return _inQueue.Count();
+                    return _inFullQueue.Count();
                 }
 
             } catch (ArgumentNullException anex) {
@@ -73,25 +74,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return null;
         }
 
-        public static void RemoveFromFullQueue(string userGroup, int conversationId)
+        public static bool RemoveFromFullQueue(string userGroup)
         {
-            if(_inFullQueue.Values.Contains(conversationId))
+           /* if(_inFullQueue.Values.Contains(conversationId))
             {
                 _inFullQueue.Remove(userGroup, out int value);
+                return true;
             }
+            return false;*/
+
+            if(_inFullQueue.Remove(userGroup, out int value))
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
         /// Dequeu
         /// </summary>
         /// <returns>ConversationID if success, null otherwise</returns>
-        public int? Dequeue()
+        public static int? Dequeue()
         {
-            while (!_queue.IsEmpty)
+            while (!_fullQueue.IsEmpty)
             {
-                if (_queue.TryDequeue(out int conversationId))
+                if (_fullQueue.TryDequeue(out int conversationId))
                 {
-                    if (_inQueue.Values.Contains(conversationId))
+                    if (_inFullQueue.Values.Contains(conversationId))
                     {
                         return conversationId;
                     }
@@ -117,7 +126,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             CurrentWaitTime = String.Format("{0}:{1:00}", (int)span.TotalMinutes, span.Seconds);
         }
 
-        
+        public static void AddFullWaitTime(TimeSpan thisWaitTime)
+        {
+            _fullWaitTimeSum += thisWaitTime;
+            _fullWaitTimeCounter++;
+            int avrageWaitTime = (int)_fullWaitTimeSum.TotalSeconds / _fullWaitTimeCounter;
+            TimeSpan span = new TimeSpan(0, 0, avrageWaitTime);
+            FullWaitTime = String.Format("{0}:{1:00}", (int)span.TotalMinutes, span.Seconds);
+        }
+
+
 
     }
 }
