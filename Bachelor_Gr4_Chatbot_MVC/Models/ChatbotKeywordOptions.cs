@@ -12,10 +12,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             Yes = "ja";
             No = "nei";
             RouteToChatWorker = "routeToChatWorker";
-            Exit = "avslutt";
+            Exit = "exit";
             SatisfiedQuestion = "Fikk du svar på det du lurte på?";
             TalkToChatWorkerQuestion = "Ønsker du å snakke med kundesenter?";
             Stop = "stop";
+            NoMatch = "No good match found in the KB";
         }
 
         public string Yes { get; }
@@ -26,5 +27,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public string SatisfiedQuestion { get; }
         public string TalkToChatWorkerQuestion { get; }
         public string Stop { get; }
+        public string NoMatch { get; }
     }
 }

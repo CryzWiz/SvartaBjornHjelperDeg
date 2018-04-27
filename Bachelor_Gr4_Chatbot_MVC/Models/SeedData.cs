@@ -334,6 +334,13 @@ public class SeedData
         };
         pairs.Add(routeToChatWorker2);
 
+        QnAKeywordPair routeToChatWorker3 = new QnAKeywordPair
+        {
+            Query = "Jeg vil snakke med en person",
+            Answer = keywordOptions.RouteToChatWorker
+        };
+        pairs.Add(routeToChatWorker3);
+
         QnAKeywordPair exit = new QnAKeywordPair
         {
             Query = "Forlat chat",

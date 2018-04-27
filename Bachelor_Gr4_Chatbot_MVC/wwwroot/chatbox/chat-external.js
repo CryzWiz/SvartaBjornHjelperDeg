@@ -284,14 +284,14 @@ document.addEventListener('DOMContentLoaded', function () {
     connection.on('receiveMessage', function (groupFrom, message) {
         //groupId = groupFrom;
         displayReceivedMessage(message);
-        console.log("connection on: receiveMessage");
+        console.log("connection on: receiveMessage: " + message);
         //displayMessage(message, RECEIVED_MESSAGE_POSITION, NARVIK_KOMMUNE_IMAGE);
     });
 
     connection.on('sendMessage', function (message) {
-        //displaySentMessage(message);
-        displayMessage(message, SENT_MESSAGE_POSITION, USER_IMAGE);
-        console.log("connection on: sendMessage");
+        displaySentMessage(message);
+        //displayMessage(message, SENT_MESSAGE_POSITION, USER_IMAGE);
+        console.log("connection on: sendMessage: " + message);
     });
 
     connection.on('setConversationId', function (id) {
@@ -314,10 +314,9 @@ document.addEventListener('DOMContentLoaded', function () {
         displayReceivedMessage(message);
     });
 
-    connection.on('endBotConversation', function (message, id) {
+    connection.on('endBotConversation', function (id) {
         resetChatBotVariables(false);
         conversationIdForResult = id;
-        displayConversationEnded(message);
     });
 
     connection.on('conversationEnded', function (message, id) {
@@ -359,7 +358,6 @@ document.addEventListener('DOMContentLoaded', function () {
             connection.invoke('startConversationWithChatBot');
 
             // Functions used to invoke methods in hub
-
             function sendMessage() {
                 if (messageInput.value.length > 0) { // if there is any input
                     if (chatIsWithBot) {
@@ -374,18 +372,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            // Send message
             document.querySelector('#message').addEventListener('keypress', function (e) {
                 var key = e.which || e.keyCode;
                 if (key === 13) { // 13 is enter
                     sendMessage();
                 }
             });
-            
-            // Send message
+           
             $("#sendmessage").click(function (event) {
                 sendMessage();
             });
 
+
+
+            // FØLGENDE SKAL SLETTES
             // Start chat by joining queue
             $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
                 if (chatIsWithBot) {
@@ -410,9 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 connection.invoke('registerConversationResult', conversationIdForResult, false);
                 displayReceivedMessage("Takk for din tilbakemelding!");
             });
-
-
-
+            
         })
         
         .catch(error => { console.log(error.message); });

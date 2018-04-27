@@ -311,7 +311,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
 
 
-
+        // HELE DENNE SKAL SLETTES!!!
         public async Task EndConversationWithChatBot(int conversationId)
         {
             string userGroup = GetConnectionKey();
@@ -496,7 +496,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
         }
         
-        public async Task<bool> MessageIsKeyword(string message, int conversationId)
+        /*public async Task<bool> MessageIsKeyword(string message, int conversationId)
         {
             string msg = message.ToLower();
 
@@ -522,6 +522,42 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 return true;
             }
             return false;
+        }*/
+
+
+        /// <summary>
+        /// Check response message from chatbot to see if it contains keyword defined 
+        /// to change chat logic. 
+        /// If a keyword is found, the change in logic is implemented. 
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="conversationId"></param>
+        /// <returns>true if keyword is found, false otherwise</returns>
+        public async Task<bool> ResponseIsKeyword(string response, int conversationId)
+        {
+            if (response.Equals(_keywordOptions.Exit))
+            {
+                try
+                {
+                    await EndConversationWithChatBot(conversationId);
+                    Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
+                    conversation.EndTime = DateTime.Now;
+                    conversation.Result = false;
+                    await _chatRepository.UpdateConversationAsync(conversation);
+                } catch (Exception e)
+                {
+                    // TODO
+                }
+            } else if(response.Equals(_keywordOptions.RouteToChatWorker))
+            {
+                string userGroup = GetConnectionKey();
+                await Clients.Group(userGroup).InvokeAsync("endBotConversation", conversationId);
+                await RedirectToChatWorker(conversationId);
+            } else
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task RedirectToChatWorker(int conversationId)
@@ -752,50 +788,51 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
             if(Int32.TryParse(conversationId, out int id))
             {
-                if (! await MessageIsKeyword(message, id))
+
+                Message msg = new Message
                 {
-                   
-                    Message msg = new Message
+                    ConversationId = id,
+                    To = ChatBot,
+                    From = from,
+                    DisplayName = await GetDisplayName(),
+                    Content = message,
+                    IsChatBot = false,
+                    IsChatWorker = false,
+                    DateTime = DateTime.Now
+                };
+
+                messages.Add(msg);
+
+                try
+                {
+
+                    string response = await _chatBotRepository.PostToActiveKnowledgeBase(message);
+
+                    Message responseMsg = new Message
                     {
                         ConversationId = id,
-                        To = ChatBot,
-                        From = from,
-                        DisplayName = await GetDisplayName(),
-                        Content = message,
-                        IsChatBot = false,
+                        From = ChatBot,
+                        DisplayName = ChatBot,
+                        Content = response,
+                        IsChatBot = true,
                         IsChatWorker = false,
                         DateTime = DateTime.Now
                     };
 
-                    messages.Add(msg);
+                        
+                    messages.Add(responseMsg);
 
-                    try
+                    if(! await ResponseIsKeyword(response, id))
                     {
-
-                        string response = await _chatBotRepository.PostToActiveKnowledgeBase(message);
-
-                        Message responseMsg = new Message
-                        {
-                            ConversationId = id,
-                            From = ChatBot,
-                            DisplayName = ChatBot,
-                            Content = response,
-                            IsChatBot = true,
-                            IsChatWorker = false,
-                            DateTime = DateTime.Now
-                        };
-
-                        messages.Add(responseMsg);
-
                         // Display response message
                         await DisplayMessage(from, ChatBot, response);
-
-                    }
-                    catch (Exception exception)
-                    {
-                        await DisplayChatBotConnectionError(from);
                     }
                 }
+                catch (Exception exception)
+                {
+                    await DisplayChatBotConnectionError(from);
+                }
+
             } else
             {
                 await DisplayChatBotConnectionError(from);
@@ -840,7 +877,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public async Task DisplayQueueCount()
         {
-            await Clients.All.InvokeAsync("displayQueueCount", _inQueue.Count);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayQueueCount", _inQueue.Count);
+            await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayQueueCount", _inQueue.Count);
         }
         public async Task SetChatBotToken(string userGroup, string token)
         {
@@ -883,22 +921,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task DisplayAllChatQueues()
         {
             IEnumerable<ChatQueue> queues = await _chatRepository.GetAllChatGroupsAsQueueAsync();
-            await Clients.All.InvokeAsync("displayAllChatQueues", queues);
+            await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayAllChatQueues", queues);
+            await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayAllChatQueues", queues);
         }
-
-        public async Task Test()
-        {
-            await Clients.All.InvokeAsync("test2", "test melding fra chathub");
-        }
-
-
-        
-
-
-
-
-
-
 
 
 
