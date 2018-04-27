@@ -310,14 +310,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             _activeConversations.TryRemove(connectionKey, out int conversationId);
         }
 
-
-        // HELE DENNE SKAL SLETTES!!!
-        public async Task EndConversationWithChatBot(int conversationId)
-        {
-            string userGroup = GetConnectionKey();
-            await Clients.Group(userGroup).InvokeAsync("endBotConversation", "Samtale med ChatBot avsluttet.", conversationId);
-        }
-
         public async Task EndConversation(int conversationId, string groupTo)
         {
             Conversation conversation = null;
@@ -524,11 +516,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /// <returns>true if keyword is found, false otherwise</returns>
         public async Task<bool> ResponseIsKeyword(string response, int conversationId)
         {
-            if (response.Equals(_keywordOptions.Exit))
-            {
+            if (response.Equals(_keywordOptions.Exit))// TODO: ER DENNE NØDVENDIG?
+            { 
                 try
                 {
-                    await EndConversationWithChatBot(conversationId);
+                    
+                    string userGroup = GetConnectionKey();
+                    await Clients.Group(userGroup).InvokeAsync("endBotConversation", conversationId);
+
                     Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
                     conversation.EndTime = DateTime.Now;
                     conversation.Result = false;
