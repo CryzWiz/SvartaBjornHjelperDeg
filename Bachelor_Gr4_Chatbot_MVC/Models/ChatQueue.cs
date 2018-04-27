@@ -27,6 +27,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         private TimeSpan _waitTimeSum;
         public string CurrentWaitTime { get; set; }
 
+       
+
+
         public ChatQueue()
         {
 

@@ -58,19 +58,25 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             Disconnected
         };
 
+        /*
         // Wait time in queue
         private static int _waitTimeCounter = 0;
         private static TimeSpan _waitTimeSum;
         private static string _currentWaitTime;
+        */
 
         // Keep track of all Chat-employees connected to the hub
         // ConcurrentDictionary<UserGroup, Status>
         //public readonly static ConnectionMapping<string> _chatWorkers = new ConnectionMapping<string>();
         private static ConcurrentDictionary<string, int> _chatEmployeeStatus = new ConcurrentDictionary<string, int>();
 
+        /*
         // Keep track of all users in queue to chat with a chat-worker
         private static ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
         private static ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
+        */
+
+        private static ChatQueue _fullChatQueue = new ChatQueue();
 
         IEnumerable<ChatGroup> _allChatGroups;
        
@@ -413,7 +419,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             try
             {
-                _queue.Enqueue(conversation.ConversationId);
+                int? placeInQueue = _fullChatQueue.Enqueue(conversation.ConversationId, conversation.UserGroup1);
+                if(placeInQueue != null)
+                {
+                    await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", placeInQueue);
+                    await SetConversationId(conversation.UserGroup1, conversation.ConversationId);
+                }
+                /*_queue.Enqueue(conversation.ConversationId);
                 if (_inQueue.TryAdd(conversation.UserGroup1, conversation.ConversationId))
                 {
                     await DisplayQueueCount();
@@ -421,7 +433,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 int placeInQueue = _inQueue.Count();
                 await Clients.Group(conversation.UserGroup1).InvokeAsync("displayPlaceInQueue", placeInQueue);
-                await SetConversationId(conversation.UserGroup1, conversation.ConversationId);
+                await SetConversationId(conversation.UserGroup1, conversation.ConversationId);*/
             }
             catch (Exception exception)
             {
@@ -467,33 +479,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }*/
 
-        public async Task JoinSpecificQueue(ChatQueue queue)
+        public async Task JoinSpecificQueue(ChatQueue queue, int conversationId)
         {
             string userGroup = GetConnectionKey();
-            //Create conversation
-            Conversation conversation = new Conversation
+            int? placeInQueue = queue.Enqueue(conversationId, userGroup);
+            if(placeInQueue != null)
             {
-                IsChatBot = false,
-                StartTime = DateTime.Now,
-                UserGroup1 = userGroup
-            };
-
-            try
-            {
-                int conversationId = await _chatRepository.AddConversationAsync(conversation);
-
-                int? placeInQueue = queue.Enqueue(conversationId, userGroup);
-                if(placeInQueue != null)
-                {
-                    await DisplayQueueCount();
-                }
-                await Clients.Group(userGroup).InvokeAsync("displayPlaceInQueue", placeInQueue);
-                await SetConversationId(userGroup, conversationId);
+                await DisplayQueueCount();
             }
-            catch (Exception exception)
-            {
-                await DisplayErrorMessageInChat(userGroup, "Feil under tilkobling av chat. "); // TODO: Error messages...
-            }
+        
+
         }
         
         /*public async Task<bool> MessageIsKeyword(string message, int conversationId)
@@ -592,7 +587,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         private int? Dequeue()
         {
-            while (!_queue.IsEmpty)
+            return _fullChatQueue.Dequeue();
+
+            /*while (!_queue.IsEmpty)
             {
                 if(_queue.TryDequeue(out int conversationId))
                 {
@@ -602,7 +599,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     }
                 }
             }
-            return null;
+            return null;*/
         }
 
         public async Task PickFromSpecificQueue(string queueId)
