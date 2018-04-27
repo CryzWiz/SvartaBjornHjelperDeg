@@ -924,56 +924,5 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             await Clients.Group(_roleOptions.AdminRole).InvokeAsync("displayAllChatQueues", queues);
             await Clients.Group(_roleOptions.ChatEmployeeRole).InvokeAsync("displayAllChatQueues", queues);
         }
-
-
-
-
-
-
-        // UNUSED CODE -- TO BE DELETED: 
-
-
-        /*
-        // This method is copied from: 
-        // https://stackoverflow.com/questions/5177755/how-to-get-get-a-c-sharp-enumeration-in-javascript
-        private void ExportEnum<T>()
-        {
-            var type = typeof(T);
-            var values = Enum.GetValues(type).Cast<T>();
-            var dictionary = values.ToDictionary(x => x.ToString(), x => Convert.ToInt32(x));
-            var json = new JavaScriptSerializer().Serialize(dictionary);
-            var script = string.Format("{0}={1};", type.Name, json);
-            //System.Web.UI.ScriptManager.RegistertStartupScripts(this, GetType(), "")
-
-        }
-
-        /// <summary>
-        /// Display a list of all connected users
-        /// </summary>
-        public async Task DisplayConnectedUsers()
-        {
-            // Display all current users
-            // TODO: TESTCODE: This needs to be updated to only be shown inside Chat-workers sites
-            IEnumerable<string> keys = _connections.GetConnectionKeys();
-            await Clients.All.InvokeAsync("displayConnections", keys);
-
-        }
-
-        public async Task JoinChat(string groupName) {
-            // TODO: Skal ikke hardkodes men hentes fra databasen: Denne meldingen hører hjemme i pickfromque, ikke joinchat
-            string displayName = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : "Kundesenter");
-            string message = String.Format("Hei! Mitt navn er {0}, hva kan jeg hjelpe deg med?", displayName);
-
-
-            /*Message msg = new Message
-            {
-                Content = "test",
-                From = "fra meg"
-            };
-            string from = (Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : Context.ConnectionId);
-
-            await DisplayMessage(groupName, from, message);
-        }*/
-
     }
 }

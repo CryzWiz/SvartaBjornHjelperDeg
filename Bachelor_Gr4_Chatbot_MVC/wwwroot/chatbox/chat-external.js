@@ -418,49 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-/*
-    var messageInput = document.getElementById('message');
-    var groupId = "";
-    var conversationId = null;
-    var chatBotToken = "";
-    var chatIsWithBot = false;
-    var conversationIdForResult = null;
 
-    // Set initial focus to message input box.
-    messageInput.focus();
-
-    function resetChatBotVariables() {
-        chatIsWithBot = false;
-        conversationId = null;
-        chatBotToken = "";
-    }
-
-    document.cookie = "SignalRCookieTEST=TEST;expires=;path=/;";
-    setSignalRCookie("TestCookieValue");
-
-    //$("#connectToSignalR").click(function () {
-        // Start the connection.
-    startConnection('/chathub', function (connection) {
-        // Create a function that the hub can call to broadcast messages.
-        /*connection.on('broadcastMessage', function (message) {
-            // TODO: Html encode display name and message.
-            //var encodedName = name;
-            var encodedMsg = message;
-            // Add the message to the page.
-            var liElement = document.createElement('div');
-            liElement.className += "chatbox__body__message";
-            liElement.className += " chatbox__body__message--left";
-            liElement.innerHTML += '<img src="../images/narvik_kommune_small.jpg"/>';
-            liElement.innerHTML += '<p>' + encodedMsg + '</p>';
-            document.getElementById('chatbox__body').appendChild(liElement);
-            document.getElementById('chatbox__body').scrollTop = document.getElementById('chatbox__body').scrollHeight;
-
-        });*/
-
-
-        
-
-    //});
 
 
 
