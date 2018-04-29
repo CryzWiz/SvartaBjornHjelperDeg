@@ -426,6 +426,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     //await Clients.Group(conversation.UserGroup1).InvokeAsync("setChatGroupsQuestionBool", true);
                     await SetConversationId(conversation.UserGroup1, conversation.ConversationId);
                 }
+                await DisplayChatNumbersForAdmin();
                 /*_queue.Enqueue(conversation.ConversationId);
                 if (_inQueue.TryAdd(conversation.UserGroup1, conversation.ConversationId))
                 {
