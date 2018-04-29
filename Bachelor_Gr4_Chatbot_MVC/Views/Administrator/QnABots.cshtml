@@ -68,7 +68,7 @@
                                                 @Html.DisplayFor(modelItem => item.subscriptionKey)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Detaljer", "QnABotDetails", new { id = item.QnAId })
+                                                @Html.ActionLink("Detaljer", "QnABotDetails", "Administrator", new { id = item.QnAId }, new { @class = "btn btn-success btn-large" })
                                             </td>
                                         </tr>
 }

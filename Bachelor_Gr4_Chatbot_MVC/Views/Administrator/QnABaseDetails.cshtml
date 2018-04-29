@@ -87,13 +87,13 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 text-center">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#activateModal">
-                        Aktiver Chatbot
+                        Aktiver Kunnskapsbase
                     </button>
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#verifyDbModal">
-                        Verifiser kunnskapsbase
+                        Verifiser Kunnskapsbase
                     </button>                   
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
-                        Slett Chatbot
+                        Slett Kunnskapsbase
                     </button>
                     @Html.ActionLink("Tilbake til bot-detaljer", "QnABotDetails", new { id = Model.QnABotId }, new { @class = "btn btn-warning btn-large" })
                 </div>
@@ -233,7 +233,7 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
-                    @Html.ActionLink("Aktiver QnABase", "RegisterNewQnaBotAsync", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-success btn-large" })
+                    @Html.ActionLink("Aktiver QnABase", "ActivateQnAKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-success btn-large" })
                 </div>
             </div>
         </div>

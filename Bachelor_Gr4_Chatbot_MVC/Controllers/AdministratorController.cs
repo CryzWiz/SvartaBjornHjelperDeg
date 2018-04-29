@@ -736,6 +736,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
             {
                 QnAId = b.QnABotId,
                 QnAKnowledgeBaseId = id,
+                IsActive = b.IsActive,
                 QnAKnowledgeBaseName = b.QnAKnowledgeName,
                 QnAPairs = p
             };

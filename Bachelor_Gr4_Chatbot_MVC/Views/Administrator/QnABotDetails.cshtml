@@ -68,7 +68,7 @@
                </div>
 
                <div class="col-md-6 text-center">
-                   @Html.ActionLink("Legg til ny kunnskapsbase", "AddNewQnAKnowledgeBaseAsync", "Administrator", new { id = Model.QnAId }, new { @class = "btn btn-info" })
+                   @Html.ActionLink("Legg til ny kunnskapsbase", "AddNewQnAKnowledgeBaseAsync", "Administrator", new { id = Model.QnAId }, new { @class = "btn btn-success" })
                </div>
             </div>
 
@@ -123,8 +123,7 @@
                                             @i.KnowledgeBaseID
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Detaljer", "QnABaseDetails", new { id = i.QnAKnowledgeBaseId }) |
-                                            @Html.ActionLink("Slett", "DeleteQnAKnowledgeBaseByIdAsync", new { id = i.QnAKnowledgeBaseId })
+                                            @Html.ActionLink("Detaljer", "QnABaseDetails", "Administrator", new { id = i.QnAKnowledgeBaseId }, new { @class = "btn btn-success" })
                                         </td>
                                     </tr>
 
@@ -134,8 +133,7 @@
                     </div>
                 </div>
             </div>
-            <div>
-                @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+            <div>                
                 <a asp-action="QnaBots">Tilbake til listen</a>
             </div>
 

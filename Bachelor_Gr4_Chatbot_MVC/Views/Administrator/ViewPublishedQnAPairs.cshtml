@@ -24,10 +24,16 @@
             </div>
             <hr />
             <div class="row">
-                <div class="col-md-12 text-center">
-                    @Html.ActionLink("Aktiver kunnskapsbase", "ActivateQnAKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-success" })
-                    @Html.ActionLink("Verifiser kunnskapsbase", "VerifyLocalKnowledgeBaseToOnlineKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
-                    @Html.ActionLink("Slett kunnskapsbase", "DeleteQnAKnowledgeBaseByIdAsync", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-danger" })
+                <div class="col-lg-12 col-md-12 text-center">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#activateModal">
+                        Aktiver Kunnskapsbase
+                    </button>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#verifyDbModal">
+                        Verifiser Kunnskapsbase
+                    </button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                        Slett Kunnskapsbase
+                    </button>
                     @Html.ActionLink("Tilbake til detaljer for kunnskapsbase", "QnABaseDetails", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-warning" })
                 </div>
             </div>
@@ -107,10 +113,147 @@
     </div>
 </div>
 
-@section Scripts{
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+
+@if (Model.IsActive)
+{
+
+    <!-- Modal Activate if active -->
+    <div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="activateModalLabel">
+                        Er du sikker?
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Denne kunnskapsbasen er allerede aktiv og benyttes av chatboten!
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete if active-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteModalLabel">
+                        Er du sikker?
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Denne kunnskapsbasen er i bruk og du kan derfor ikke slette den. Ønsker du å slette denne kunnskapsbasen må du først
+                    aktivere en annen kunnskapsbase som kan besvare chat.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                    @Html.ActionLink("Aktiver en annen kunnskapsbase", "QnABotDetails", "Administrator", new { id = Model.QnAId }, new { @class = "btn btn-warning btn-large" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <!-- Modal Activate -->
+    <div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="activateModalLabel">
+                        Er du sikker?
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Om du aktiverer denne chatboten vil alle chat-samtaler bli routet til denne chatboten. Er du sikker på at det er det du ønsker?
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                    @Html.ActionLink("Aktiver QnABase", "ActivateQnAKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-success btn-large" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteModalLabel">
+                        Er du sikker?
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Om du velger å slette denne chatboten vil all data slettes.
+                    Dette inkluderer spørsmål og svar som er lagret og data fra samtaler gjennomført med denne kunnskapsbasen.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                    @Html.ActionLink("Slett QnA Base", "DeleteQnAKnowledgeBaseByIdAsync", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-danger btn-large" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<!-- Modal Verify Db -->
+<div class="modal fade" id="verifyDbModal" tabindex="-1" role="dialog" aria-labelledby="verifyDbModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="verifyDbModalLabel">
+                    Er du sikker?
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                Ønsker du å verifisere databasen? Det som da skjer er at vi kontakter chatboten og henter alle spørsmål og svar par som er i bruk.
+                Disse matches så mot det som er lagret i lokal database. De parrene som mangler legges så til.
+                Denne funksjonen finnes grunnet det kan legges til par gjennom QnAMaker.ai sin side også.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Avbryt</button>
+                @Html.ActionLink("Verifiser kunnskapsbase", "VerifyLocalKnowledgeBaseToOnlineKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Scripts{
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
