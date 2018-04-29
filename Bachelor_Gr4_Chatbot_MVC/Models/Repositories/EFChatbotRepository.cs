@@ -609,7 +609,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>number of pairs added</returns>
         public async Task<int> VerifyLocalDbToPublishedDb(int id)
         {
+            // Fetch all QnAPairs active in the knowledgbase
             var onlineQnA = await qnaRepository.DownloadKnowledgeBase(id);
+            // If no where found, return -1. Something is wrong
+            if(onlineQnA == null) return -1;
+            // Fetch local QnA
             var localQnA = await GetAllQnAPairsAsync(id);
 
             int number = 0;
@@ -647,7 +651,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                     }
                 }
             }
-            else // Or if we dont have any in the local db
+            else // Or if we dont have any in the local db, just store them all. No need to check them
             {
                 foreach (QnAPairs external_qna in onlineQnA)
                 {
