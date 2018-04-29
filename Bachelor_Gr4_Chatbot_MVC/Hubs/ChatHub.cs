@@ -405,7 +405,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         {
             try
             {
-                int? placeInQueue = ChatQueue.Enqueue(conversation.ConversationId, conversation.UserGroup1);
+                int? placeInQueue = ChatQueue.EnqueueFullQueue(conversation.ConversationId, conversation.UserGroup1);
                 if(placeInQueue != null)
                 {
                     string chatGroupsString = "IT, Bygg"; // TODO: FJERN HARDKODING, hent fra liste
@@ -626,6 +626,11 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 // TODO: 
             }
+        }
+
+        public async Task DisplayQueuesAwailable()
+        {
+            
         }
 
 

@@ -49,7 +49,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         /// <param name="userGroup"></param>
         /// <returns>Queuenumber (place in queue) if conversation was added to the queue successfully;
         /// null if the conversation alredy exists in queue</returns>
-        public static int? Enqueue(int conversationId, string userGroup)
+        public static int? EnqueueFullQueue(int conversationId, string userGroup)
         {
 
             try
