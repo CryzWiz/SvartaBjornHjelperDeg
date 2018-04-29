@@ -136,7 +136,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
                 //TODO: DENNE SKAL FLYTTES
                 //await GetAllChatGroups();
-                //await DisplayAllChatQueues();
+                await DisplayAllChatQueues();
             } else
             {
                 _connectedUsers.Add(key, connectionId); // In-memory connection mapping
@@ -593,8 +593,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             } else if(response.Equals(_keywordOptions.RouteToChatWorker))
             {
                 string userGroup = GetConnectionKey();
-                await Clients.Group(userGroup).InvokeAsync("endBotConversation", conversationId);
-                await RedirectToChatWorker(conversationId);
+                if (_connectedChatWorkers.Count > 0)
+                {
+                    await Clients.Group(userGroup).InvokeAsync("endBotConversation", conversationId);
+
+                    await RedirectToChatWorker(conversationId);
+                } else
+                {
+                    await SendToGroup(userGroup, "Det er ingen chat medarbeidere tilgjengelig, men du kan fortsatt be chatboten om hjelp. ", conversationId.ToString());
+                }
+
             } else
             {
                 return false;
@@ -604,7 +612,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
 
         /// <summary>
-        /// Redirect conversation from chatbot to a chat with chat-worker. 
+        /// Redirect conversation from chatbot to a chat with chat-worker-
         /// Conversation with chatbot is ended and stored in the database with negative result. 
         /// JoinQueue is called to add user to chat queue. 
         /// </summary>
@@ -637,13 +645,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 // TODO: 
             }
         }
-
-        public async Task DisplayQueuesAwailable()
-        {
-            
-        }
-
-
 
         private int? Dequeue()
         {
@@ -728,7 +729,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                     await DisplayMessage(conversation.UserGroup1, chatWorkerId, message);
                     await Clients.Group(conversation.UserGroup1).InvokeAsync("enableInputField", "hei");
                     await DisplayQueueCount();
-
+                    await DisplayChatNumbersForAdmin();
                 } catch (Exception e)
                 {
                     await DisplayErrorMessageInChat(chatWorkerId, "Feil under henting fra kø. ");

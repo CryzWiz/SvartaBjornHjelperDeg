@@ -7,6 +7,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
 {
     public class ChatPredefinedMessages
     {
-
+        public string NoChatWorkerAvailable { get; set; }
     }
 }

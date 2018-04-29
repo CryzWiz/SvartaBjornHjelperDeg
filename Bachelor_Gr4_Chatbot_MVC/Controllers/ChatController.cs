@@ -46,7 +46,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, ChatEmployee")]
+        [Authorize(Roles = "ChatEmployee")]
         public IActionResult Index()
         {
             /*ChatIndexViewModel model = new ChatIndexViewModel
