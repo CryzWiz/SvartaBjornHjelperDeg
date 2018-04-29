@@ -71,7 +71,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Demo
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -83,7 +83,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Demo
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -468,6 +468,28 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
 
 
         ///////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// Activate the given QnAKnowledgebase
+        /// </summary>
+        /// <param name="id"><int>id for given knowledgebase</int></param>
+        /// <returns>True if activated, false if not</returns>
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateQnAKnowledgeBase(int id)
+        {
+            var r = await chatbotRepository.ActivateQnAKnowledgeBaseAsync(id);
+            var b = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
+            if (r)
+            {
+                TempData["success"] = String.Format("Kunnskapsbase {0} er nå aktiv", b.QnAKnowledgeName);
+                return RedirectToAction("QnABotDetails", new { id = b.QnABotId });
+            }
+            else
+            {
+                TempData["error"] = String.Format("Kunnskapsbase {0} er fortsatt aktiv. Aktivering feilet!", b.QnAKnowledgeName);
+                return RedirectToAction("QnABotDetails", new { id = b.QnABotId });
+            }
+        }
 
         /// <summary>
         /// Fetch all the QnAbots in the database and display them
@@ -648,18 +670,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         public async Task<IActionResult> DeleteQnAKnowledgeBaseByIdAsync(int id)
         {
             var b = await chatbotRepository.GetQnAKnowledgeBaseAsync(id);
-            var r = await chatbotRepository.DeleteQnAKnowledgeBaseByIdAsync(id);
-            if (r)
+            if (!b.IsActive)
             {
+                var r = await chatbotRepository.DeleteQnAKnowledgeBaseByIdAsync(id);
+                if (r)
+                {
 
-                TempData["success"] = String.Format("Kunnskapsbase med navn {0} er slettet!", b.QnAKnowledgeName);
-                return RedirectToAction("QnABots", new { id = b.QnABotId });
+                    TempData["success"] = String.Format("Kunnskapsbase med navn {0} er slettet!", b.QnAKnowledgeName);
+                    return RedirectToAction("QnABots", new { id = b.QnABotId });
+                }
+                else
+                {
+                    TempData["error"] = String.Format("Kunnskapsbase med navn {0} er ikke slettet da noe gikk galt!", b.QnAKnowledgeName);
+                    return RedirectToAction("QnABots", new { id = b.QnABotId });
+                }
             }
             else
             {
-                TempData["error"] = String.Format("Kunnskapsbase med navn {0} er ikke slettet!", b.QnAKnowledgeName);
+                TempData["error"] = String.Format("Kunnskapsbase med navn {0} er ikke slettet siden den er aktiv!", b.QnAKnowledgeName);
                 return RedirectToAction("QnABots", new { id = b.QnABotId });
             }
+            
             
         }
 

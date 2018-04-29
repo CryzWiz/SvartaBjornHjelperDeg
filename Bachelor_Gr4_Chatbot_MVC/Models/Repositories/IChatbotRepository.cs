@@ -186,5 +186,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="q"><int>Message id</int></param>
         /// <returns><Message>Message found</Message></returns>
         Task<Message> GetSingleMessageByIdAsync(int q);
+
+        /// <summary>
+        /// Activate the given knowledgebase and return the result
+        /// </summary>
+        /// <param name="id"><int>id for knowledgebase</int></param>
+        /// <returns>true if activated, false if not</returns>
+        Task<bool> ActivateQnAKnowledgeBaseAsync(int id);
     }
 }

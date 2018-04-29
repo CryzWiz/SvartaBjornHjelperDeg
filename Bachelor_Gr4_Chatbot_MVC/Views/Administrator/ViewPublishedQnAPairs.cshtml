@@ -24,8 +24,10 @@
             </div>
             <hr />
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12 text-center">
+                    @Html.ActionLink("Aktiver kunnskapsbase", "ActivateQnAKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-success" })
                     @Html.ActionLink("Verifiser kunnskapsbase", "VerifyLocalKnowledgeBaseToOnlineKnowledgeBase", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Slett kunnskapsbase", "DeleteQnAKnowledgeBaseByIdAsync", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-danger" })
                     @Html.ActionLink("Tilbake til detaljer for kunnskapsbase", "QnABaseDetails", "Administrator", new { id = Model.QnAKnowledgeBaseId }, new { @class = "btn btn-warning" })
                 </div>
             </div>

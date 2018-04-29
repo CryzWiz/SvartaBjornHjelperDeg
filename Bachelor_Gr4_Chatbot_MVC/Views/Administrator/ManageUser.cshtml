@@ -10,30 +10,79 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h2 class="page-header">Behandle bruker @Model.Username</h2>
-                        </div>
-                        <!-- /.col-md-6 -->
-                        <div class="col-md-6">
-                            @if (Model.Active)
-                            {
-                                <p style="color:green;">Konto er aktiv!</p>
-
-                            }
-                            else
-                            {
-                                <p style="color:red;">Denne kontoen er deaktivert!</p>
-                            }
-                        </div>
-                        <!-- /.col-md-6 -->
-                    </div>
-                    <!-- /.row -->
+                <div class="col-md-10">
+                    <h2>Behandle bruker @Model.Username</h2>
+                    <h4>Under vises all relevant informasjon om @Model.Username</h4>
                 </div>
-                <!-- /.col-lg-12 -->
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
             </div>
-            <!-- /.row -->
+
+            <hr />
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div style="display:inline-block;">
+                        @Html.ActionLink("Deaktiver konto", "", "Administrator", new { id = Model.Username }, new { @class = "btn btn-danger" })
+
+                        @Html.ActionLink("Gi admin rettigheter", "", "Administrator", new { id = Model.Username }, new { @class = "btn btn-success" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><i class="fa fa-user fa-fw"></i> Bruker-detaljer</div>
+                        <div class="panel-body">
+                            <div class="col-md-10">
+                                <dl class="dl-horizontal">
+                                    <dt>
+                                        @Html.DisplayNameFor(model => model.Username)
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Username)
+                                    </dd>
+                                    <dt>
+                                        @Html.DisplayNameFor(model => model.Email)
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Email)
+                                    </dd>
+                                    <dt>
+                                        @Html.DisplayNameFor(model => model.Active)
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Active)
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-2">
+                                <p>@Html.ActionLink("Deaktiver konto", "", "Administrator", new { id = Model.Username }, new { @class = "btn btn-danger" })</p>
+
+                                <p>@Html.ActionLink("Gi admin rettigheter", "", "Administrator", new { id = Model.Username }, new { @class = "btn btn-success" })</p>
+                            </div>                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr />
+
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Something something</div>
+                        <div class="panel-body">
+                            Panel content
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <hr />
             <div class="row">
                 <div class="col-md-8">
                     <form asp-action="ManageUser">
@@ -61,10 +110,6 @@
         </div>
         <!-- /.container-fluid -->
     </div>
-    <!-- /#page-wrapper -->
-
-</div>
-<!-- /#wrapper -->
 
 @section Scripts{
     <!-- Metis Menu Plugin JavaScript -->
