@@ -42,13 +42,17 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         // ChatBot user constant
         private const string ChatBot = "ChatBot";
 
-        // Keep track of all SignalR Connections made towards the hub
-        public readonly static ConnectionMapping<string> _connections =
+        // Keep track of all SignalR Connections made towards the hub using in-memory connection mapping
+        public readonly static ConnectionMapping<string> _connectedUsers =
+            new ConnectionMapping<string>();
+
+        public readonly static ConnectionMapping<string> _connectedChatWorkers =
             new ConnectionMapping<string>();
 
         // Keep track of all active conversations
         public readonly static ConcurrentDictionary<string, int> _activeConversations 
             = new ConcurrentDictionary<string, int>();
+
 
         // ChatWorkers status
         public enum LogInStatus
@@ -97,29 +101,46 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            /*
-             * Map connections using in-memory connection mapping
-             * for keeping track of all active connections. 
-             */
             string connectionId = Context.ConnectionId;
             string key = GetConnectionKey();
-            _connections.Add(key, connectionId);
-
+            
             // Add user to single-user group
             await Groups.AddAsync(Context.ConnectionId, key);
 
             // Add Employee to necessary groups
-
             if (Context.User.Identity.IsAuthenticated)
             {
-                await AddEmployeeToWorkGroupsBasedOnRole();
-                await AddEmployeeToCustomChatGroups();
-                await DisplayUsersChatQueues();
+                try
+                {
+                    ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
+                    // Chat Worker
+                    if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
+                    {
+                        _connectedChatWorkers.Add(key, connectionId); // In-memory connection mapping
+                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
+                        // TODO: SetChatEmployeeStatus
+                        await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
+                    }
+
+                    // Administrator
+                    if (await _userManager.IsInRoleAsync(user, _roleOptions.AdminRole))
+                    {
+                        await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
+                    }
+                    await AddEmployeeToCustomChatGroups();
+                    await DisplayUsersChatQueues();
+                } catch {
+
+                }
+
 
                 //TODO: DENNE SKAL FLYTTES
                 //await GetAllChatGroups();
                 //await DisplayAllChatQueues();
-            }
+            } else
+            {
+                _connectedUsers.Add(key, connectionId); // In-memory connection mapping
+            } 
             
             // TODO: Map chat workers status
 
@@ -151,9 +172,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string adminGroup = _roleOptions.AdminRole;
 
             // TODO: Update numbers to be correct, this is wrong!!!!
-            await Clients.Group(adminGroup).InvokeAsync("numberOfChatWorkersConnected", 5);
-            await Clients.Group(adminGroup).InvokeAsync("numberOfClientsConnected", 4);
-            await Clients.Group(adminGroup).InvokeAsync("numberInQueue", 3);
+            await Clients.Group(adminGroup).InvokeAsync("numberOfChatWorkersConnected", _connectedChatWorkers.Count);
+            await Clients.Group(adminGroup).InvokeAsync("numberOfClientsConnected", _connectedUsers.Count);
+            await Clients.Group(adminGroup).InvokeAsync("numberInQueue", ChatQueue.FullQueueCount);
         }
 
 
@@ -168,36 +189,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         }
 
-
-        /// <summary>
-        /// Add employee to necessary groups based on their role. 
-        /// There are defined groups for Admin and ChatWorker. 
-        /// </summary>
-        private async Task AddEmployeeToWorkGroupsBasedOnRole()
-        {
-            try
-            {
-                ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
-
-                // Chat employee groups
-                if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
-                {
-                    await Groups.AddAsync(Context.ConnectionId, _roleOptions.ChatEmployeeRole);
-                    // TODO: SetChatEmployeeStatus
-                    await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);
-                }
-
-                // Administrator groups
-                if (await _userManager.IsInRoleAsync(user, _roleOptions.AdminRole))
-                {
-                    await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
 
         /// <summary>
         /// Add employee to groups based on their group membership. 
@@ -369,17 +360,35 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            /*
-             * Map connections using in-memory connection mapping
-             * for keeping track of all active connections. 
-             */
             string key = GetConnectionKey();
-            _connections.Remove(key, Context.ConnectionId);
+            
+            // Remove from in-memory connection mapping
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                try
+                {
+                    ApplicationUser user = await _userManager.FindByEmailAsync(Context.User.Identity.Name);
+                    // Chat Worker
+                    if (await _userManager.IsInRoleAsync(user, _roleOptions.ChatEmployeeRole))
+                    {
+                        _connectedChatWorkers.Remove(key, Context.ConnectionId); // In-memory connection mapping
+                    }
+                }
+                catch
+                {
+                    // TODO
+                }
+            }
+            else
+            {
+                _connectedUsers.Remove(key, Context.ConnectionId); // In-memory connection mapping
+            }
+
 
             // TODO: DISPLAY NUMBER OF USERS CONNECTED ETC; IN QUEUE FOR DASHBORD
 
             // TODO: Gjør endringer her!
-            if(ChatQueue.RemoveFromFullQueue(key))
+            if (ChatQueue.RemoveFromFullQueue(key))
             {
                 await DisplayQueueCount();
             }
