@@ -367,6 +367,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
                         //displaySentMessage(messageInput.value);
                     }
+
+                    // Clear text box and reset focus for next comment.
                     messageInput.value = '';
                     messageInput.focus();
                     event.preventDefault();

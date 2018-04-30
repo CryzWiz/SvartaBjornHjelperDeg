@@ -140,6 +140,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 {
                     if (_inFullQueue.Values.Contains(queueItem.ConversationId))
                     {
+                        RemoveFromFullQueue(queueItem.Key);
                         return queueItem.ConversationId;
                     }
                 }

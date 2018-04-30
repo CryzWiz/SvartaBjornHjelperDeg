@@ -322,15 +322,29 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('connection started'); // TODO:
             connection.invoke('displayQueueCount');
 
-            // Send message
-            $("#sendmessage").click(function (event) {
-                connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
+            function sendMessage() {
+                if (messageInput.value.length > 0) { // if there is any input
+                    connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
 
-                // Clear text box and reset focus for next comment.
-                messageInput.value = '';
-                messageInput.focus();
-                event.preventDefault();
+                    // Clear text box and reset focus for next comment.
+                    messageInput.value = '';
+                    messageInput.focus();
+                    event.preventDefault();
+                }
+            }
+
+            // Send message
+            document.querySelector('#message').addEventListener('keypress', function (e) {
+                var key = e.which || e.keyCode;
+                if (key === 13) { // 13 is enter
+                    sendMessage();
+                }
             });
+
+            $("#sendmessage").click(function (event) {
+                sendMessage();
+            });
+
 
             // Join Chat-Group 
             /*
