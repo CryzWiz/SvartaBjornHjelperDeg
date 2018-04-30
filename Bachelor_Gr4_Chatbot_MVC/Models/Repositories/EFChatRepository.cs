@@ -111,7 +111,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             List<string> lst = await (from chatGroup in _db.UserChatGroup
                                        where chatGroup.UserId.Equals(userName)
                                        select chatGroup.ChatGroupId).ToListAsync();
-             return lst;
+            return lst;
             
         }
 

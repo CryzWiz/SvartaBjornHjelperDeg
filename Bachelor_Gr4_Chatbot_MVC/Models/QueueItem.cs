@@ -10,5 +10,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public int ConversationId { get; set; }
         public DateTime TimeAddedToQueue { get; set; }
 
+        public string Key { get; set; }
+
     }
 }

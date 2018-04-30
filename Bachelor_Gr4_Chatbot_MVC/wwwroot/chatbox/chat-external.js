@@ -305,6 +305,11 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("connection on: setGroupId");
     });
 
+    connection.on('setMessageIsChatGroup', function (value) {
+        messageIsChatGroup = value;
+        console.log("connection on: setMessageIsChatGroup: ", value);
+    });
+
     connection.on('setChatBotToken', function (token) {
         chatBotToken = token;
         chatIsWithBot = true;
@@ -363,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
             function sendMessage() {
                 if (messageInput.value.length > 0) { // if there is any input
                     if (messageIsChatGroup) {
-                        connection.invoke('joinSpecificChatQueue', messageInput.value);
+                        connection.invoke('selectChatGroup', conversationId, messageInput.value);
                     }
                     else if (chatIsWithBot) {
                         connection.invoke('sendToChatBot', conversationId, chatBotToken, messageInput.value);
@@ -393,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // FØLGENDE SKAL SLETTES
             // Start chat by joining queue
-            $("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
+            /*$("#chatbox_placeholder").on('click', "button[id='startChat']", function (event) {
                 if (chatIsWithBot) {
                     connection.invoke('endConversationWithChatBot', conversationId)
                     resetChatBotVariables();
@@ -415,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#chatbox_placeholder").on('click', "button[id='resultNo']", function (event) {
                 connection.invoke('registerConversationResult', conversationIdForResult, false);
                 displayReceivedMessage("Takk for din tilbakemelding!");
-            });
+            });*/
             
         })
         

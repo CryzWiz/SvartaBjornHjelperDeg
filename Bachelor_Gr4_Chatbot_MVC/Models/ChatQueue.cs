@@ -20,7 +20,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         // Keep track of specified chatgroup queue
         public string ChatGroupName { get; set; }
         public string ChatGroupId { get; set; }
-        private readonly ConcurrentQueue<int> _queue = new ConcurrentQueue<int>();
+        private readonly ConcurrentQueue<QueueItem> _queue = new ConcurrentQueue<QueueItem>();
         private readonly ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
         public int Count { get { return _inQueue.Count; } }
 
@@ -54,7 +54,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
 
             try
             {
-                _fullQueue.Enqueue(new QueueItem { ConversationId = conversationId, TimeAddedToQueue = DateTime.Now });
+                _fullQueue.Enqueue(new QueueItem { ConversationId = conversationId, TimeAddedToQueue = DateTime.Now, Key = userGroup });
 
                 if (_inFullQueue.TryAdd(userGroup, conversationId))
                 {
@@ -74,6 +74,34 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return null;
         }
 
+        public int? Enqueue(int conversationId, string userGroup)
+        {
+            try
+            {
+                QueueItem item = new QueueItem { ConversationId = conversationId, TimeAddedToQueue = DateTime.Now, Key = userGroup };
+                _queue.Enqueue(item);
+                _fullQueue.Enqueue(item);
+                if(_inQueue.TryAdd(userGroup, conversationId) 
+                    && _inFullQueue.TryAdd(userGroup, conversationId))
+                {
+                    return _inFullQueue.Count();
+                }
+            }
+            catch (ArgumentNullException anex)
+            {
+
+            }
+            catch (OverflowException ofex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+        }
+
         public static bool RemoveFromFullQueue(string userGroup)
         {
            /* if(_inFullQueue.Values.Contains(conversationId))
@@ -84,6 +112,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return false;*/
 
             if(_inFullQueue.Remove(userGroup, out int value))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool RemoveFromQueue(string userGroup)
+        {
+            if(_inQueue.Remove(userGroup, out int value)
+                && _inFullQueue.Remove(userGroup, out int value2))
             {
                 return true;
             }
@@ -110,10 +148,19 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return null;
         }
 
-        public int? DequeFromGroup()
+        public int? DequeFromSpecifiedQueue()
         {
-            // Remove from group queue and inqueue
-            // remove from full inque 
+            while(!_queue.IsEmpty)
+            {
+                if(_queue.TryDequeue(out QueueItem queueItem))
+                {
+                    if (_inQueue.Values.Contains(queueItem.ConversationId))
+                    {
+                        this.RemoveFromQueue(queueItem.Key);
+                        return queueItem.ConversationId;
+                    }
+                }
+            }
             return null;
         }
 
