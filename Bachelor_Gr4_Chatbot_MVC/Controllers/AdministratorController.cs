@@ -843,18 +843,18 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditQnAPair([FromForm][Bind("QnAPairsId", "Query", "Answer", "Dep", "KnowledgeBaseId", "Trained", "Published", "PublishingType", "PublishedDate", "TrainedDate")]QnAPairs qna)
+        public async Task<IActionResult> EditQnAPair([FromForm][Bind("QnAPairsId", "Query", "Answer", "Dep", "KnowledgeBaseId")]QnAPairs qna)
         {
             var m = await chatbotRepository.UpdateQnAPairAsync(qna);
-            if (m)
+            if (ModelState.IsValid)
             {
                 TempData["success"] = String.Format("QnA par ble oppdatert");
-                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.QnAPairsId });
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.KnowledgeBaseId });
             }
             else
             {
                 TempData["error"] = String.Format("QnA par ble ikke oppdatert");
-                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.QnAPairsId });
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.KnowledgeBaseId });
             }
         }
 

@@ -23,19 +23,19 @@
                 <div class="col-md-4">
                     <form asp-action="EditQnAPair">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group" hidden>
+                        <div class="form-group">
                             <label asp-for="QnAPairsId" class="control-label"></label>
-                            <input asp-for="QnAPairsId" class="form-control" />
+                            <input asp-for="QnAPairsId" class="form-control"/>
                             <span asp-validation-for="QnAPairsId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Query" class="control-label"></label>
-                            <input asp-for="Query" class="form-control" disabled/>
+                            <input asp-for="Query" class="form-control"/>
                             <span asp-validation-for="Query" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Answer" class="control-label"></label>
-                            <input asp-for="Answer" class="form-control" disabled/>
+                            <input asp-for="Answer" class="form-control"/>
                             <span asp-validation-for="Answer" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -43,40 +43,12 @@
                             <input asp-for="Dep" class="form-control" />
                             <span asp-validation-for="Dep" class="text-danger"></span>
                         </div>
-                        <div class="form-group" hidden>
+                        <div class="form-group">
                             <label asp-for="KnowledgeBaseId" class="control-label"></label>
-                            <input asp-for="KnowledgeBaseId" class="form-control" />
+                            <input asp-for="KnowledgeBaseId" class="form-control"/>
                             <span asp-validation-for="KnowledgeBaseId" class="text-danger"></span>
                         </div>
-                        <div class="form-group" hidden>
-                            <div class="checkbox">
-                                <label>
-                                    <input asp-for="Trained" /> @Html.DisplayNameFor(model => model.Trained)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group" hidden>
-                            <div class="checkbox">
-                                <label>
-                                    <input asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group" hidden>
-                            <label asp-for="PublishingType" class="control-label"></label>
-                            <input asp-for="PublishingType" class="form-control" />
-                            <span asp-validation-for="PublishingType" class="text-danger"></span>
-                        </div>
-                        <div class="form-group" hidden>
-                            <label asp-for="PublishedDate" class="control-label"></label>
-                            <input asp-for="PublishedDate" class="form-control" />
-                            <span asp-validation-for="PublishedDate" class="text-danger"></span>
-                        </div>
-                        <div class="form-group" hidden>
-                            <label asp-for="TrainedDate" class="control-label"></label>
-                            <input asp-for="TrainedDate" class="form-control" />
-                            <span asp-validation-for="TrainedDate" class="text-danger"></span>
-                        </div>
+                        
                         <div class="form-group">
                             <input type="submit" value="Save" class="btn btn-default" />
                         </div>

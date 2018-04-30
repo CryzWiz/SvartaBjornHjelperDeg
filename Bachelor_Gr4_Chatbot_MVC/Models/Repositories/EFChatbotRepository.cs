@@ -855,7 +855,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <returns>true if updated, false if not</returns>
         public async Task<bool> UpdateQnAPairAsync(QnAPairs qna)
         {
-            db.Update(qna);
+            var q = await db.QnAPairs.FirstOrDefaultAsync(x => x.QnAPairsId == qna.QnAPairsId);
+            q.Dep = qna.Dep;
+            db.Update(q);
             if(await db.SaveChangesAsync() > 0)
             {
                 return true;
