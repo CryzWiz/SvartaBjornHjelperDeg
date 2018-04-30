@@ -240,7 +240,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageInput = document.getElementById('message');
     var groupId = "";
     var conversationId = null;
-    var chatBotToken = ""; //TODO: SLETTES
     var chatIsWithBot = true;
     var conversationIdForResult = null;
     var messageIsChatGroup = false;
@@ -248,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetChatBotVariables(chatWithBot) {
         chatIsWithBot = chatWithBot;
         conversationId = null;
-        chatBotToken = "";
     }
 
     setSignalRCookie(getRandomUserId());
@@ -308,12 +306,6 @@ document.addEventListener('DOMContentLoaded', function () {
     connection.on('setMessageIsChatGroup', function (value) {
         messageIsChatGroup = value;
         console.log("connection on: setMessageIsChatGroup: ", value);
-    });
-
-    connection.on('setChatBotToken', function (token) {
-        chatBotToken = token;
-        chatIsWithBot = true;
-        console.log("connection on: setChatBotToken");
     });
 
     connection.on('errorMessage', function (message) {
