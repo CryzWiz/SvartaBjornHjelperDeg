@@ -60,6 +60,8 @@ function setSignalRCookie(value) {
 }
 
 
+
+
 function displaySentMessage(message) {
     /*var str = "<div class='chatbox__body__message chatbox__body__message--left'>";
     str += "<img src='~/images/narvik_kommune_small.jpg' alt='Picture'>";
@@ -107,8 +109,20 @@ function displayReceivedMessage2(message) {
     }
 
 }
+function displayConversation(messages) {
+    $.each(messages, function (index, message) {
+        if (message.isChatBot) {
+            displayReceivedMessage(message.content);
+        } else if (message.isChatWorker) {
+            displayReceivedMessage(message.content);
+        } else {
+            displaySentMessage(message.content);
+        }
+    });
 
-function displayConversation(conversation) {
+}
+
+function displayConversation2(conversation) {
     var str = "";
     $.each(conversation.messages, function (index, message) {
         str += "<div class='container'>";
@@ -242,11 +256,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var chatIsWithBot = true;
     var conversationIdForResult = null;
     var messageIsChatGroup = false;
+    var firstConnection = false;
 
     function resetChatBotVariables(chatWithBot) {
         chatIsWithBot = chatWithBot;
         conversationId = null;
     }
+
+    if (!(document.cookie.indexOf("SignalRCookie" + "=") >= 0)) {
+        firstConnection = true;
+    } 
 
     setSignalRCookie(getRandomUserId());
     
@@ -329,8 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("connection on: enableInputField");
     });
 
-    connection.on('displayConversation', function (conversation) {
-        console.log("connection on: displayConversation");
+    connection.on('displayConversation', function (messages) {
+        console.log("connection on: displayConversation", messages);
+        displayConversation(messages);
         //$("#chatbox__body").html("test");
         //displayReceivedMessage("test");
 
@@ -353,7 +373,14 @@ document.addEventListener('DOMContentLoaded', function () {
     connection.start()
         .then(() => {
             console.log("Connection started");
-            connection.invoke('startConversationWithChatBot');
+
+            if (firstConnection) {
+                connection.invoke('startConversationWithChatBot');
+                console.log("startConversationWithChatBot initiated");
+            } 
+
+            
+
 
             // Functions used to invoke methods in hub
             function sendMessage() {

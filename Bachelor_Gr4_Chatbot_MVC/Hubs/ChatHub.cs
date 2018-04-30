@@ -133,13 +133,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                         await Groups.AddAsync(Context.ConnectionId, _roleOptions.AdminRole);
                     }
                     await AddEmployeeToCustomChatGroups();
-                    await DisplayUsersChatQueues();
+                    //await DisplayUsersChatQueues();
                 } catch {
 
                 }
-                
-                //TODO: DENNE SKAL FLYTTES
-                await DisplayAllChatQueues();
             } else
             {
                 _connectedUsers.Add(key, connectionId); // In-memory connection mapping
@@ -152,15 +149,13 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             // Check if user has active conversations and display conversation if it exists
             if (_activeConversations.TryGetValue(key, out int conversationId))
             {
-                // TODO: Testcode, replace with functional code
                 Conversation conversation = await _chatRepository.GetConversationByIdAsync(conversationId);
-                await Clients.Client(Context.ConnectionId).InvokeAsync("displayConversation", conversation);
-
+                if(conversation.Messages.Count > 0) 
+                    await Clients.Client(Context.ConnectionId).InvokeAsync("displayConversation", conversation.Messages);
+                await SetConversationId(key, conversation.ConversationId);
             }
-
-            //await DisplayConnectedUsers();
-            // await DisplayQueueCount();
-
+            await DisplayAllChatQueues();
+            await DisplayQueueCount();
             await DisplayChatNumbersForAdmin();
         }
 
@@ -191,19 +186,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
 
             // Check if user is in any queues and remove from queue
-            ChatQueue.RemoveFromFullQueue(key);
-
-            /*foreach (ChatQueue queue in _allChatQueues)
+            if(ChatQueue.RemoveFromFullQueue(key))
             {
-                if (queue.RemoveFromQueue(key))
-                {
-                    await DisplayQueueCount();
-                    break;
-                }
-            }*/
-
-            //await DisplayConnectedUsers();
+                // Display queue information for admin and chatworkers
+                await DisplayAllChatQueues();
+                await DisplayQueueCount();
+            }
             await DisplayChatNumbersForAdmin();
+
         }
 
 
@@ -231,32 +221,40 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         public async Task StartConversationWithChatBot()
         {
             string userGroup = GetConnectionKey();
-            var knowledgebase = await _chatBotRepository.GetActiveQnAKnowledgeBaseAsync();
-            var qnabase = await _chatBotRepository.GetActiveQnABaseClassAsync();
-
-            Conversation conversation = new Conversation
+            if (!_activeConversations.TryRemove(userGroup, out int id))
             {
-                UserGroup1 = userGroup,
-                IsChatBot = true,
-                StartTime = DateTime.Now,
-                KnowledgebaseId = knowledgebase.QnAKnowledgeBaseId,
-                QnABaseId = qnabase.QnAId
-            };
+                var knowledgebase = await _chatBotRepository.GetActiveQnAKnowledgeBaseAsync();
+                var qnabase = await _chatBotRepository.GetActiveQnABaseClassAsync();
+                int conversationId;
+                Conversation conversation = new Conversation
+                {
+                    UserGroup1 = userGroup,
+                    IsChatBot = true,
+                    StartTime = DateTime.Now,
+                    KnowledgebaseId = knowledgebase.QnAKnowledgeBaseId,
+                    QnABaseId = qnabase.QnAId
+                };
 
-            try
-            {
-                int conversationId = await _chatRepository.AddConversationAsync(conversation);
-                conversation.ConversationId = conversationId;
+                try
+                {
+                    conversationId = await _chatRepository.AddConversationAsync(conversation);
+                    conversation.ConversationId = conversationId;
+                }
+                catch (Exception e)
+                {
+                    string msg = e.Message;
+                    await DisplayChatBotConnectionError(userGroup);
+                    return;
+                }
+
+                // Add to active conversation
+                _activeConversations.TryAdd(userGroup, conversationId);
+
+                await SetConversationId(userGroup, conversation.ConversationId);
+                await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
             }
-            catch (Exception e)
-            {
-                string msg = e.Message;
-                await DisplayChatBotConnectionError(userGroup);
-                return;
-            }
 
-            await SetConversationId(userGroup, conversation.ConversationId);
-            await DisplayMessage(userGroup, ChatBot, GetStandardChatBotHello());
+
         }
 
         /// <summary>
@@ -379,6 +377,10 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 chatbotConversation.LinkedConversation = chatworkerConversationId;
                 await _chatRepository.UpdateConversationAsync(chatbotConversation);
                 await Clients.Group(userGroup).InvokeAsync("endBotConversation", conversationId);
+
+                // Update active conversations
+                _activeConversations.TryUpdate(userGroup, conversationId, chatworkerConversationId);
+
                 await JoinQueue(chatWorkerConversation, queue);
             }
             catch (Exception e)
@@ -386,6 +388,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 // TODO: 
             }
         }
+
         /*public async Task PickFromSpecificQueue(string queueId)
         {
 
@@ -459,6 +462,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 }
 
                 await DisplayChatNumbersForAdmin();
+                await DisplayAllChatQueues();
+                await DisplayQueueCount();
+
                 /*_queue.Enqueue(conversation.ConversationId);
                 if (_inQueue.TryAdd(conversation.UserGroup1, conversation.ConversationId))
                 {
@@ -475,8 +481,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
 
         }
-
-      
 
         public async Task PickFromQueue()
         {
@@ -552,7 +556,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 {
                     Conversation conversation = await _chatRepository.GetConversationByIdAsync((int)conversationId);
 
-                    AddConversationToActiveConversations(conversation.UserGroup1, (int)conversationId);
+                    //AddConversationToActiveConversations(conversation.UserGroup1, (int)conversationId);
 
                     TimeSpan thisWaitTime = DateTime.Now - conversation.StartTime;
                     ChatQueue.AddFullWaitTime(thisWaitTime);
@@ -602,7 +606,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             string user = GetConnectionKey();
             string displayName = await GetDisplayName();
             string message = displayName + " forlot samtalen. ";
-            RemoveConversationFromActiveConversations(user);
+
+            // Remove from active conversations
+            _activeConversations.TryRemove(user, out int id);
 
             await Clients.Group(conversation.UserGroup1).InvokeAsync("conversationEnded", message, conversationId);
             await Clients.Group(conversation.UserGroup2).InvokeAsync("conversationEnded", message, conversationId);
@@ -655,12 +661,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         }
         public async Task SendToChatBot(string conversationId, string message)
         {
+
             List<Message> messages = new List<Message>();
             string from = GetConnectionKey();
             await DisplayMessage(ChatBot, from, message);
 
+
+
             if (Int32.TryParse(conversationId, out int id))
             {
+
 
                 Message msg = new Message
                 {
@@ -905,28 +915,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
         /*
          * Code below is unused for now, not finished implementing 
          */
-    
-        /// <summary>
-        /// Add conversation to list over all active conversations. 
-        /// </summary>
-        /// <param name="connectionKey"></param>
-        /// <param name="conversationId"></param>
-        public void AddConversationToActiveConversations(string connectionKey, int conversationId)
-        {
-            _activeConversations.TryAdd(connectionKey, conversationId);
-        }
-
-        /// <summary>
-        /// Remove conversation from list over all active conversations. 
-        /// </summary>
-        /// <param name="connectionKey"></param>
-        /// <param name="conversationId"></param>
-        public void RemoveConversationFromActiveConversations(string connectionKey)
-        {
-            _activeConversations.TryRemove(connectionKey, out int conversationId);
-        }
-
-
+   
         private async Task LogIn()
         {
             await SetChatEmployeeStatus(GetConnectionKey(), (int)LogInStatus.Available);

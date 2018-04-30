@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public DateTime DateTime { get; set; }
 
         public int ConversationId { get; set; }
+        [JsonIgnore]
         public Conversation Conversation { get; set; }
 
     }
