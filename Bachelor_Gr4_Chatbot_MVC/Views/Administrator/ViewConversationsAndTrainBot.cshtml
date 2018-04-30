@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Bachelor_Gr4_Chatbot_MVC.Models.Conversation>
+
+@{
+    ViewData["Title"] = "ViewConversationsAndTrainBot";
+}
+
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h2>Samtaler med aktiv chatbot</h2>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ConversationId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LinkedConversation)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.UserGroup1)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.UserGroup2)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IsChatBot)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartTime)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EndTime)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Result)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.KnowledgebaseId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.QnABaseId)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                    {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ConversationId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LinkedConversation)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserGroup1)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserGroup2)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsChatBot)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartTime)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndTime)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Result)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.KnowledgebaseId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.QnABaseId)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Se samtalen", "ViewConversationDetails", new { id = item.ConversationId })
+                                </td>
+                            </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+         </div>
+     </div>
+</div>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}

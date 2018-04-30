@@ -1,0 +1,75 @@
+﻿@model Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels.QnAPairs
+
+@{
+    ViewData["Title"] = "EditQnAPair";
+}
+<div id="wrapper">
+    @await Html.PartialAsync("_Navbar_admin")
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h2>EditQnAPair</h2>
+                    <h4>QnAPairs</h4>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="EditQnAPair">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="QnAPairsId" class="control-label"></label>
+                            <input asp-for="QnAPairsId" class="form-control"/>
+                            <span asp-validation-for="QnAPairsId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Query" class="control-label"></label>
+                            <input asp-for="Query" class="form-control"/>
+                            <span asp-validation-for="Query" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Answer" class="control-label"></label>
+                            <input asp-for="Answer" class="form-control"/>
+                            <span asp-validation-for="Answer" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Dep" class="control-label"></label>
+                            <input asp-for="Dep" class="form-control" />
+                            <span asp-validation-for="Dep" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="KnowledgeBaseId" class="control-label"></label>
+                            <input asp-for="KnowledgeBaseId" class="form-control"/>
+                            <span asp-validation-for="KnowledgeBaseId" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/dist/js/sb-admin-2.js"></script>
+
+}

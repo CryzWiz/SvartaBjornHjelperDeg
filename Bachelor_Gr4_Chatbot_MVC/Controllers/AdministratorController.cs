@@ -832,7 +832,30 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditQnAPair(int id)
         {
-            throw new NotImplementedException();
+            var m = await chatbotRepository.GetSingleQnAPairAsync(id);
+            return View(m);
+        }
+
+        /// <summary>
+        /// Edit info for QnAPair
+        /// </summary>
+        /// <param name="id"><int>id for <QnAPair>QnaPair</QnAPair> to edit</int></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditQnAPair([FromForm][Bind("QnAPairsId", "Query", "Answer", "Dep", "KnowledgeBaseId")]QnAPairs qna)
+        {
+            var m = await chatbotRepository.UpdateQnAPairAsync(qna);
+            if (ModelState.IsValid)
+            {
+                TempData["success"] = String.Format("QnA par ble oppdatert");
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.KnowledgeBaseId });
+            }
+            else
+            {
+                TempData["error"] = String.Format("QnA par ble ikke oppdatert");
+                return RedirectToAction("ViewPublishedQnAPairs", new { id = qna.KnowledgeBaseId });
+            }
         }
 
         /// <summary>
@@ -901,8 +924,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditAndStoreMessagePairToBot([FromForm][Bind("Question", "Answer", "Dep", "ConversationId")] QnAEditAndStoreMessagePairToBot qna)
         {
-            var knowledgebase = await chatbotRepository.GetActiveQnAKnowledgeBaseAsync();
-            var qnabot = await chatbotRepository.GetActiveQnABaseClassAsync();
+            var c = await chatbotRepository.GetConversationByIdAsync(qna.ConversationId);
+            var knowledgebase = await chatbotRepository.GetQnAKnowledgeBaseAsync(c.KnowledgebaseId);
+            var qnabot = await chatbotRepository.GetQnABaseClassById(knowledgebase.QnABotId);
             var QnA = new QnATrainBase
             {
                 Query = qna.Question,
@@ -926,5 +950,15 @@ namespace Bachelor_Gr4_Chatbot_MVC.Controllers
                 return RedirectToAction("ViewConversationDetails", new { id = qna.ConversationId });
             }
         }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewConversationsAndTrainBot(int id)
+        {
+            List<Conversation> conversations = await chatbotRepository.GetAllConversationsForKnowledgeBase(id);
+            return View(conversations);
+        }
+
     }
 }

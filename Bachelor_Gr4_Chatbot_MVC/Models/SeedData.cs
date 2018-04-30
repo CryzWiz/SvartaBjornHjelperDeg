@@ -1,5 +1,4 @@
 ﻿using Bachelor_Gr4_Chatbot_MVC.Data;
-using Bachelor_Gr4_Chatbot_MVC.Migrations;
 using Bachelor_Gr4_Chatbot_MVC.Models;
 using Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels;
 using Microsoft.AspNetCore.Identity;

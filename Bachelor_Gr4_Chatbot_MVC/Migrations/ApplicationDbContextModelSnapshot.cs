@@ -258,6 +258,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Migrations
                     b.Property<int>("QnAKnowledgeBaseId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("ConversationCount");
+
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("KnowledgeBaseID");
