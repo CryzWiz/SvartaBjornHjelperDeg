@@ -650,7 +650,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
                 await DisplayErrorMessageInChat(from, "Sending av melding feilet, du er ikke koblet på noen chat");
             }           
         }
-        public async Task SendToChatBot(string conversationId, string conversationToken, string message)
+        public async Task SendToChatBot(string conversationId, string message)
         {
             List<Message> messages = new List<Message>();
             string from = GetConnectionKey();

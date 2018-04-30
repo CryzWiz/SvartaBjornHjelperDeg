@@ -23,7 +23,7 @@
             // Just placed here for now.
             $chatboxTitle.removeClass('chatbox_title_unconnected');
             $chatboxTitle.addClass('chatbox_title_connected');
-            
+
         });
     });
 })(jQuery);
@@ -100,12 +100,12 @@ function displayReceivedMessage2(message) {
     var isFocused = (document.activeElement === dummyEl);
     if (isFocused === false) {
         //addBlink();
-        
+
     }
     else {
         removeBlink();
     }
-    
+
 }
 
 function displayConversation(conversation) {
@@ -118,7 +118,7 @@ function displayConversation(conversation) {
         str += "</button>";
         str += "<p class='text-primary'>Antall brukere i kø: " + queue.count + "</p>";
         str += "</div>";
-       // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
+        // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
     });
     $("#chatbox__body").html(str);
 }
@@ -186,8 +186,7 @@ function browserTabFlash() {
         document.title = (document.title == newTitle ? title : newTitle);
 
         // Stop blinking
-        if (document.hasFocus())
-        {
+        if (document.hasFocus()) {
             document.title = title;
             clearInterval(timeout);
         }
@@ -221,7 +220,7 @@ function removeBlink() {
 
 
 function displayConversationEnded(startMessage) {
-    var str = startMessage; 
+    var str = startMessage;
     str += "Fikk du svar på det du lurte på? ";
     str += "<div class='btn-group' aria-label='Fikk du svar?'>";
     str += "<button type='button' class='btn btn-primary' id='resultYes'>Ja</button>";
@@ -231,7 +230,7 @@ function displayConversationEnded(startMessage) {
 
     str += "<button id='startChat' class='btn btn-success btn-block'> Start Chat</button>";
     str += "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>";
-    
+
     displayReceivedMessage(str);
 }
 
@@ -250,10 +249,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     setSignalRCookie(getRandomUserId());
-    //var connection = new signalR.HubConnection("https://allanarnesen.com/chathub");
-
+    
     // Start connection
     var connection = new signalR.HubConnection("chathub");
+    //var connection = new signalR.HubConnection("https://allanarnesen.com/chathub");
 
     /// SignalR Client functions that can be called from the hub
     connection.on('send', function (message, from) {
@@ -363,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         connection.invoke('selectChatGroup', conversationId, messageInput.value);
                     }
                     else if (chatIsWithBot) {
-                        connection.invoke('sendToChatBot', conversationId, chatBotToken, messageInput.value);
+                        connection.invoke('sendToChatBot', conversationId, messageInput.value);
                     } else {
                         connection.invoke('sendToGroup', groupId, messageInput.value, conversationId);
                         //displaySentMessage(messageInput.value);
@@ -381,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     sendMessage();
                 }
             });
-           
+
             $("#sendmessage").click(function (event) {
                 sendMessage();
             });
@@ -413,9 +412,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 connection.invoke('registerConversationResult', conversationIdForResult, false);
                 displayReceivedMessage("Takk for din tilbakemelding!");
             });*/
-            
+
         })
-        
+
         .catch(error => { console.log(error.message); });
 
 });
