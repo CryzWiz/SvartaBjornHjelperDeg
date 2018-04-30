@@ -10,6 +10,10 @@
     <Compile Remove="Hubs\IChatHub.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Views\Administrator\EditQnAPair.cshtml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.3.1" />

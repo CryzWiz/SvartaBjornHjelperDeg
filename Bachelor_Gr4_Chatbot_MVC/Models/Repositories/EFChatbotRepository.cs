@@ -308,7 +308,8 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             QnAKnowledgeBase q = await db.QnAKnowledgeBase.FirstOrDefaultAsync(X => X.QnAKnowledgeBaseId == id);
             List<QnAPairs> qPairs = await db.QnAPairs.Where(X => X.KnowledgeBaseId == q.QnAKnowledgeBaseId).ToListAsync();
             q.QnAPairs = qPairs;
-
+            var conversationCount = await Task.Run(() => db.Conversations.Count(x => x.KnowledgebaseId == q.QnAKnowledgeBaseId));
+            q.ConversationCount = conversationCount;
             return q;
         }
 
@@ -743,6 +744,12 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             return conversation;
         }
 
+
+        public async Task<List<Conversation>> GetAllConversationsForKnowledgeBase(int id)
+        {
+            var c = await Task.Run(() => db.Conversations.Where(x => x.KnowledgebaseId == id).ToList());
+            return c;
+        }
         /// <summary>
         /// Fetch the number of unpublished qnapairs to the active knowledgebase
         /// </summary>
@@ -814,6 +821,46 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
                 }
             }
             else // Knowledgebase is already active, return fail.
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get QnABaseClass by id
+        /// </summary>
+        /// <param name="id"><int>id for QnABaseClass</int></param>
+        /// <returns><QnABaseClass>qnabase object found</QnABaseClass></returns>
+        public async Task<QnABaseClass> GetQnABaseClassById(int id)
+        {
+            var qnaBase = await db.QnABaseClass.FirstOrDefaultAsync(x => x.QnAId == id);
+            return qnaBase;
+        }
+
+        /// <summary>
+        /// Fetch a single QnAPair from the db
+        /// </summary>
+        /// <param name="id"><int>id for given QnAPair</int></param>
+        /// <returns><QnAPair>QnAPair found</QnAPair></returns>
+        public async Task<QnAPairs> GetSingleQnAPairAsync(int id)
+        {
+            var qna = await db.QnAPairs.FirstOrDefaultAsync(x => x.QnAPairsId == id);
+            return qna;
+        }
+
+        /// <summary>
+        /// Update a single QnAPair
+        /// </summary>
+        /// <param name="qna">QnA to update</param>
+        /// <returns>true if updated, false if not</returns>
+        public async Task<bool> UpdateQnAPairAsync(QnAPairs qna)
+        {
+            db.Update(qna);
+            if(await db.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            else
             {
                 return false;
             }

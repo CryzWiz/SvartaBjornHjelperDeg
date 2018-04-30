@@ -25,7 +25,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.QnAViewModels
         [DisplayName("Abonnements-nøkkel")]
         public string KnowledgeBaseID { get; set; }
 
-
+        public virtual int ConversationCount { get; set; }
 
         public virtual List<QnAPairs> QnAPairs  { get; set; }
 

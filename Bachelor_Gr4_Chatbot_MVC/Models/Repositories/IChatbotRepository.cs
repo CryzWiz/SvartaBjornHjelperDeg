@@ -193,5 +193,33 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
         /// <param name="id"><int>id for knowledgebase</int></param>
         /// <returns>true if activated, false if not</returns>
         Task<bool> ActivateQnAKnowledgeBaseAsync(int id);
+
+        /// <summary>
+        /// Get all conversations for a given knowledgebase
+        /// </summary>
+        /// <param name="id"><int>id for knowledgebase</int></param>
+        /// <returns>List<Conversation>allConversationsFound</Conversation></returns>
+        Task<List<Conversation>> GetAllConversationsForKnowledgeBase(int id);
+
+        /// <summary>
+        /// Get QnABaseClass by id
+        /// </summary>
+        /// <param name="id"><int>id for QnABaseClass</int></param>
+        /// <returns><QnABaseClass>qnabase object found</QnABaseClass></returns>
+        Task<QnABaseClass> GetQnABaseClassById(int id);
+
+        /// <summary>
+        /// Fetch a single QnAPair from the db
+        /// </summary>
+        /// <param name="id"><int>id for given QnAPair</int></param>
+        /// <returns><QnAPair>QnAPair found</QnAPair></returns>
+        Task<QnAPairs> GetSingleQnAPairAsync(int id);
+
+        /// <summary>
+        /// Update a single QnAPair
+        /// </summary>
+        /// <param name="qna">QnA to update</param>
+        /// <returns>true if updated, false if not</returns>
+        Task<bool> UpdateQnAPairAsync(QnAPairs qna);
     }
 }
