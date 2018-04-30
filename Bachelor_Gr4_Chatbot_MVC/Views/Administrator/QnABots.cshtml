@@ -27,9 +27,7 @@
                     </div>
                     <hr />
                     <div class="row">
-                        <div class="col-md-8">
-                        </div>
-                        <div class="col-md-2 col-md-offset-2">
+                        <div class="col-md-12 text-center">
                             @Html.ActionLink("Registrer ny QnAbot", "RegisterNewQnaBotAsync", "Administrator", null, new { @class = "btn btn-success btn-large" })
                         </div>
                     </div>
@@ -70,7 +68,7 @@
                                                 @Html.DisplayFor(modelItem => item.subscriptionKey)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Detaljer", "QnABotDetails", new { id = item.QnAId })
+                                                @Html.ActionLink("Detaljer", "QnABotDetails", "Administrator", new { id = item.QnAId }, new { @class = "btn btn-success btn-large" })
                                             </td>
                                         </tr>
 }

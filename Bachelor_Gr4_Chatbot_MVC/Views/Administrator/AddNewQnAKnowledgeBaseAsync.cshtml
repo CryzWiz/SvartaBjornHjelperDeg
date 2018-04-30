@@ -9,9 +9,14 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <h2>AddNewQnAKnowledgeBaseAsync</h2>
-
-            <h4>QnAKnowledgeBase</h4>
+            <div class="row">
+                <div class="col-md-10">
+                    <h2>Legg til en ny kunnskapsbase</h2>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/bot-help.jpg" style="float:right;max-height:100px;max-width:100px;" />
+                </div>
+            </div>
             <hr />
             <div class="row">
                 <div class="col-md-4">
@@ -43,8 +48,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <!-- Bootstrap Core JavaScript -->
-    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->

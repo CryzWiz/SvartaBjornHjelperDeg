@@ -760,6 +760,60 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models.Repositories
             var m = await db.Messages.FirstOrDefaultAsync(x => x.MessageId == q);
             return m;
         }
+
+        /// <summary>
+        /// Activate the given knowledgebase and return the result
+        /// </summary>
+        /// <param name="id"><int>id for knowledgebase</int></param>
+        /// <returns>true if activated, false if not</returns>
+        public async Task<bool> ActivateQnAKnowledgeBaseAsync(int id)
+        {
+            QnABaseClass q_active;
+            QnAKnowledgeBase b_active;
+
+            var b = await db.QnAKnowledgeBase.FirstOrDefaultAsync(x => x.QnAKnowledgeBaseId == id);
+            if (!b.IsActive)
+            {
+                // Find the active knowledgebase and set it to un-active
+                b_active = await db.QnAKnowledgeBase.FirstOrDefaultAsync(x => x.IsActive == true);
+                b_active.IsActive = false;
+                db.Update(b_active);
+                await db.SaveChangesAsync();
+
+                // Find the active baseclass (chatbot)
+                q_active = await db.QnABaseClass.FirstOrDefaultAsync(x => x.isActive == true);
+
+                // If the QnABotId the knowledgebase belongs to does not match the QnABotId for active bot
+                if(b.QnABotId != q_active.QnAId)
+                {
+                    // Set the active bot to not active
+                    q_active.isActive = false;
+                    db.Update(q_active);
+                    await db.SaveChangesAsync();
+                    // find the correct QnABaseclass and set it to active
+                    var q = await db.QnABaseClass.FirstOrDefaultAsync(x => x.QnAId == b.QnABotId);
+                    q.isActive = true;
+                    db.Update(q);
+                    await db.SaveChangesAsync();
+                }
+                // Finally we update the correct knowledgebase with status active
+                b.IsActive = true;
+                db.Update(b);
+                if(await db.SaveChangesAsync() > 0)
+                {
+                    // All is fine, return true
+                    return true;
+                }
+                else // something failed, and we could not update db. Return false
+                {
+                    return false;
+                }
+            }
+            else // Knowledgebase is already active, return fail.
+            {
+                return false;
+            }
+        }
     }
 
 }
