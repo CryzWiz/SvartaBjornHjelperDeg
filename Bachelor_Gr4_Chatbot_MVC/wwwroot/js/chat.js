@@ -133,14 +133,32 @@ function displaySentMessage(message) {
 function displayChatQueueButtons(queues) {
     var str = "";
     $.each(queues, function (index, queue) {
-        str += "<div class='container'>";
         str += "<button class='btn btn-primary'";
         str += "id = '" + queue.chatGroupId + "'>";
         str += queue.chatGroupName;
         str += "</button>";
-        str += "<p class='text-primary'>Antall brukere i kø: " + queue.count + "</p>";
-        str += "</div>";
+        str += "<p>Tid i kø: " + queue.activeWaitTime + "<br />";
+        str += "Gjennomsnittlig ventetid: " + queue.currentWaitTime + "<br />";
+        str += "</p>";
        // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
+    });
+    $("#queueContainer").html(str);
+}
+
+// Display queue
+function displayChatQueues(queues) {
+    var str = "";
+    str += "<h5>Chat-grupper: </h5>";
+    $.each(queues, function (index, queue) {
+        //str += "<div class='container'>";
+
+        str += "<p class='text-primary'>";
+        str += queue.chatGroupName + "</p>";
+        str += "<p>Tid i kø: " + queue.activeWaitTime + "<br />";
+        str += "Gjennomsnittlig ventetid: " + queue.currentWaitTime + "<br />";
+        str += "</p>";
+        //str += "</div>";
+        // str += "<p class='text-primary' id='waitTime'>Ventetid: " + queue.currentWaitTime + "</p>";
     });
     $("#queueContainer").html(str);
 }
@@ -312,6 +330,8 @@ document.addEventListener('DOMContentLoaded', function () {
         connection.on('displayAllChatQueues', function (queues) {
             console.log("displayAllChatQueues", queues);
             displayChatQueueButtons(queues);
+            //
+            //displayChatQueues(queues);
         });
 
 

@@ -191,14 +191,16 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
 
             // Check if user is in any queues and remove from queue
-            foreach (ChatQueue queue in _allChatQueues)
+            ChatQueue.RemoveFromFullQueue(key);
+
+            /*foreach (ChatQueue queue in _allChatQueues)
             {
                 if (queue.RemoveFromQueue(key))
                 {
                     await DisplayQueueCount();
                     break;
                 }
-            }
+            }*/
 
             //await DisplayConnectedUsers();
             await DisplayChatNumbersForAdmin();
@@ -538,12 +540,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             {
                 QueueItem item = ChatQueue.Dequeue();
                 conversationId = item.ConversationId;
-                ChatQueue.RemoveFromFullQueue(item.Key);
-                foreach(ChatQueue q in _allChatQueues)
-                {
-                    if (q.RemoveFromQueue(item.Key))
-                        break;
-                }
             }
 
 

@@ -21,25 +21,27 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         public string ChatGroupName { get; set; }
         public string ChatGroupId { get; set; }
         private readonly ConcurrentQueue<QueueItem> _queue = new ConcurrentQueue<QueueItem>();
-        private readonly ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
-        public int Count { get { return _inQueue.Count; } }
+        //private readonly ConcurrentDictionary<string, int> _inQueue = new ConcurrentDictionary<string, int>();
+       // public int Count { get { return _inQueue.Count; } }
 
         private int _waitTimeCounter = 0;
         private TimeSpan _waitTimeSum;
         public string CurrentWaitTime { get; set; }
 
+        public string ActiveWaitTime { get { return GetFirstInQueuesWaitTimeAsString(); } }
        
 
 
         public ChatQueue()
         {
-
+            CurrentWaitTime = "-";
         }
 
         public ChatQueue(string chatGroupName, string chatGroupId)
         {
             ChatGroupName = chatGroupName;
             ChatGroupId = chatGroupId;
+            CurrentWaitTime = "-";
         }
 
         /// <summary>
@@ -81,8 +83,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 QueueItem item = new QueueItem { ConversationId = conversationId, TimeAddedToQueue = DateTime.Now, Key = userGroup };
                 _queue.Enqueue(item);
                 _fullQueue.Enqueue(item);
-                if(_inQueue.TryAdd(userGroup, conversationId) 
-                    && _inFullQueue.TryAdd(userGroup, conversationId))
+                if(_inFullQueue.TryAdd(userGroup, conversationId))
                 {
                     return _inFullQueue.Count();
                 }
@@ -104,13 +105,6 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
 
         public static bool RemoveFromFullQueue(string userGroup)
         {
-           /* if(_inFullQueue.Values.Contains(conversationId))
-            {
-                _inFullQueue.Remove(userGroup, out int value);
-                return true;
-            }
-            return false;*/
-
             if(_inFullQueue.Remove(userGroup, out int value))
             {
                 return true;
@@ -118,7 +112,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             return false;
         }
 
-        public bool RemoveFromQueue(string userGroup)
+        /*public bool RemoveFromQueue(string userGroup)
         {
             if(_inQueue.Remove(userGroup, out int value)
                 && _inFullQueue.Remove(userGroup, out int value2))
@@ -126,7 +120,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 return true;
             }
             return false;
-        }
+        }*/
 
         /// <summary>
         /// Dequeu
@@ -140,6 +134,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 {
                     if (_inFullQueue.Values.Contains(queueItem.ConversationId))
                     {
+                        RemoveFromFullQueue(queueItem.Key);
                         return queueItem;
                     }
                 }
@@ -154,9 +149,9 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
             {
                 if(_queue.TryDequeue(out QueueItem queueItem))
                 {
-                    if (_inQueue.Values.Contains(queueItem.ConversationId))
+                    if (_inFullQueue.Values.Contains(queueItem.ConversationId))
                     {
-                        this.RemoveFromQueue(queueItem.Key);
+                        RemoveFromFullQueue(queueItem.Key);
                         return queueItem.ConversationId;
                     }
                 }
@@ -183,16 +178,31 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         }
 
 
-        public static string GetFirstInQueuesWaitTimeAsString()
+        public static string GetFirstInFullQueuesWaitTimeAsString()
         {
             if(_fullQueue.TryPeek(out QueueItem queueItem)) {
                 DateTime from = queueItem.TimeAddedToQueue;
                 TimeSpan span = DateTime.Now - from;
                 return String.Format("{0} minutter, {1} sekunder", (int)span.TotalMinutes, span.Seconds);
             }
-            return null;
+            return "-";
         }
 
-        
+        public string GetFirstInQueuesWaitTimeAsString()
+        {
+            if (_queue.TryPeek(out QueueItem queueItem))
+            {
+                if(_inFullQueue.Values.Contains(queueItem.ConversationId))
+                {
+                    DateTime from = queueItem.TimeAddedToQueue;
+                    TimeSpan span = DateTime.Now - from;
+                    return String.Format("{0} minutter, {1} sekunder", (int)span.TotalMinutes, span.Seconds);
+                }
+
+            }
+            return "-";
+        }
+
+
     }
 }
