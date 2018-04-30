@@ -132,7 +132,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
         /// Dequeu
         /// </summary>
         /// <returns>ConversationID if success, null otherwise</returns>
-        public static int? Dequeue()
+        public static QueueItem Dequeue()
         {
             while (!_fullQueue.IsEmpty)
             {
@@ -140,8 +140,7 @@ namespace Bachelor_Gr4_Chatbot_MVC.Models
                 {
                     if (_inFullQueue.Values.Contains(queueItem.ConversationId))
                     {
-                        RemoveFromFullQueue(queueItem.Key);
-                        return queueItem.ConversationId;
+                        return queueItem;
                     }
                 }
 

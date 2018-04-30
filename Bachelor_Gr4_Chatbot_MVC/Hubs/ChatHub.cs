@@ -536,7 +536,14 @@ namespace Bachelor_Gr4_Chatbot_MVC.Hubs
             }
             else
             {
-                conversationId = ChatQueue.Dequeue();
+                QueueItem item = ChatQueue.Dequeue();
+                conversationId = item.ConversationId;
+                ChatQueue.RemoveFromFullQueue(item.Key);
+                foreach(ChatQueue q in _allChatQueues)
+                {
+                    if (q.RemoveFromQueue(item.Key))
+                        break;
+                }
             }
 
 
