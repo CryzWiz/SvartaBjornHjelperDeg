@@ -232,7 +232,7 @@ function removeBlink() {
     element.appendChild(a);
 }
 
-
+/*
 function displayConversationEnded(startMessage) {
     var str = startMessage;
     str += "Fikk du svar på det du lurte på? ";
@@ -246,6 +246,10 @@ function displayConversationEnded(startMessage) {
     str += "<button id='startChatBot' class='btn btn-success btn-block'>Start ChatBot</button>";
 
     displayReceivedMessage(str);
+}*/
+
+function displayConversationEnded(startMessage) {
+    displayReceivedMessage(startMessage);
 }
 
 //$(function () {
@@ -336,11 +340,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     connection.on('conversationEnded', function (message, id) {
-        resetChatBotVariables();
+        resetChatBotVariables(true);
         conversationIdForResult = id;
         groupId = "";
         displayConversationEnded(message);
         console.log("connection on: conversationEnded");
+        connection.invoke('startConversationWithChatBot');
+        console.log("startConversationWithChatBot initiated");
     });
 
     connection.on('enableInputField', function (test) {
